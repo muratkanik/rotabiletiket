@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { getSiteSettings } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata = {
     title: 'İletişim | Rotabil Etiket',
@@ -85,32 +86,7 @@ export default async function ContactPage() {
                         <h2 className="text-2xl font-bold text-slate-900 mb-2">Mesaj Gönderin</h2>
                         <p className="text-slate-500 mb-6">Size en kısa sürede dönüş yapacağız.</p>
 
-                        <form className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-sm font-medium text-slate-700 mb-1 block">Adınız</label>
-                                    <input className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-slate-700 mb-1 block">Soyadınız</label>
-                                    <input className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-slate-700 mb-1 block">E-posta</label>
-                                <input type="email" className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-slate-700 mb-1 block">Mesajınız</label>
-                                <textarea className="w-full border rounded-lg px-4 py-3 h-32 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 resize-none" />
-                            </div>
-
-                            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-lg h-12">
-                                Gönder
-                            </Button>
-                        </form>
+                        <ContactForm />
                     </div>
                 </div>
             </div>

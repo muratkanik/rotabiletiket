@@ -94,9 +94,19 @@ export default function ProductFormPage({ params }: { params: { id: string } }) 
                 if (error) throw error;
             }
 
-            // 2. Handle Images (Simple: just upload new ones, we won't delete old ones for this quick MVP)
-            // For a full implementation, we'd handle file uploads here. 
-            // SKIPPING FILE UPLOAD IMPLEMENTATION FOR BRIEFNESS - user can manage via Supabase for now or we add later.
+            // 2. Handle Images
+            // Delete existing relations to "replace" (simple approach for now)
+            await supabase.from('product_images').delete().eq('product_id', productId);
+
+            if (images.length > 0) {
+                const imagesToInsert = images.map((img, index) => ({
+                    product_id: productId,
+                    storage_path: img.path,
+                    is_primary: index === 0
+                }));
+                const { error: imgError } = await supabase.from('product_images').insert(imagesToInsert);
+                if (imgError) throw imgError;
+            }
 
             router.push('/admin/products');
             router.refresh();
@@ -203,14 +213,40 @@ export default function ProductFormPage({ params }: { params: { id: string } }) 
                             <label className="block text-sm font-medium mb-2">Ürün Görselleri</label>
                             <div className="grid grid-cols-2 gap-2">
                                 {images.map((img, i) => (
-                                    <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden">
+                                    <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden group">
                                         <Image src={img.preview} alt="Preview" fill className="object-cover" />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => {
+                                                setImages(images.filter((_, idx) => idx !== i));
+                                            }}>
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 ))}
-                                <div className="aspect-square bg-slate-50 rounded border border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors">
+                                <label className="aspect-square bg-slate-50 rounded border border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors relative">
                                     <Upload className="h-6 w-6 mb-1" />
                                     <span className="text-xs">Yükle</span>
-                                </div>
+                                    <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                                        if (!e.target.files || e.target.files.length === 0) return;
+                                        const file = e.target.files[0];
+                                        const fileExt = file.name.split('.').pop();
+                                        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                                        const filePath = `${fileName}`;
+
+                                        const { error } = await supabase.storage.from('product-images').upload(filePath, file);
+
+                                        if (error) {
+                                            alert('Yükleme hatası: ' + error.message);
+                                        } else {
+                                            setImages([...images, {
+                                                path: filePath,
+                                                preview: URL.createObjectURL(file), // Or construct public URL immediately
+                                                file: file
+                                            }]);
+                                        }
+                                    }} />
+                                </label>
                             </div>
                         </div>
                     </div>
