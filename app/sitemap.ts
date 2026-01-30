@@ -42,28 +42,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/sektorel-cozumler/${sector.slug}`,
         lastModified: new Date().toISOString(),
         changeFrequency: 'monthly' as const,
-        priority: 0.7,
-        // Dynamic: Articles (Knowledge Base)
-        const { data: articles } = await supabase.from('articles').select('slug, updated_at');
-        const articleRoutes = articles?.map((article: any) => ({
-            url: `${baseUrl}/bilgi-bankasi/${article.slug}`,
-            lastModified: article.updated_at || new Date().toISOString(),
-            changeFrequency: 'monthly' as const,
-            priority: 0.8,
-        })) || [];
+    }));
 
-        // Static: Knowledge Base & Legal
-        const extraRoutes = [
-            '/bilgi-bankasi',
-            '/kullanici-sozlesmesi',
-            '/gizlilik',
-            '/kvkk'
-        ].map((route) => ({
-            url: `${baseUrl}${route}`,
-            lastModified: new Date().toISOString(),
-            changeFrequency: 'monthly' as const,
-            priority: 0.5,
-        }));
+    // Dynamic: Articles (Knowledge Base)
+    const { data: articles } = await supabase.from('articles').select('slug, updated_at');
+    const articleRoutes = articles?.map((article: any) => ({
+        url: `${baseUrl}/bilgi-bankasi/${article.slug}`,
+        lastModified: article.updated_at || new Date().toISOString(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+    })) || [];
 
-        return [...routes, ...extraRoutes, ...categoryRoutes, ...productRoutes, ...sectorRoutes, ...articleRoutes];
-    }
+    // Static: Knowledge Base & Legal
+    const extraRoutes = [
+        '/bilgi-bankasi',
+        '/kullanici-sozlesmesi',
+        '/gizlilik',
+        '/kvkk'
+    ].map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.5,
+    }));
+
+    return [...routes, ...extraRoutes, ...categoryRoutes, ...productRoutes, ...sectorRoutes, ...articleRoutes];
+}
