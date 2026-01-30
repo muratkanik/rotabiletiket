@@ -85,7 +85,7 @@ export async function Footer() {
                     </p>
                     <div className="flex gap-6 text-sm text-slate-500">
                         <Link href="/gizlilik" className="hover:text-white">Gizlilik Politikası</Link>
-                        <Link href="/kullanim-kosullari" className="hover:text-white">Kullanım Koşulları</Link>
+                        <Link href="/kvkk" className="hover:text-white">Kişisel Verilerin Korunması (KVKK)</Link>
                     </div>
                 </div>
             </div>
