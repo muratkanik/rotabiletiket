@@ -42,7 +42,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/sektorel-cozumler/${sector.slug}`,
         lastModified: new Date().toISOString(),
         changeFrequency: 'monthly' as const,
-    }));
+        priority: 0.7,
+    })) || [];
 
     // Dynamic: Articles (Knowledge Base)
     const { data: articles } = await supabase.from('articles').select('slug, updated_at');
