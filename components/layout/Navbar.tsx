@@ -8,7 +8,7 @@ export async function Navbar() {
     const contactSettings = await getSiteSettings('contact_info');
 
     return (
-        <nav className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
+        <nav className="bg-white shadow-sm sticky top-0 z-50">
             <div className="container flex h-24 items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Link href="/" className="flex items-center gap-2">
