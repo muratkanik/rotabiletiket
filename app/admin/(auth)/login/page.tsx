@@ -37,7 +37,7 @@ export default function AdminLogin() {
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-200">
                 <div className="flex justify-center mb-8">
                     <div className="relative h-12 w-48">
-                        <Image src="/logo.png" alt="Rotabil Admin" fill className="object-contain" />
+                        <Image src="/logo.png" alt="Rotabil Admin" fill className="object-contain" unoptimized />
                     </div>
                 </div>
 
