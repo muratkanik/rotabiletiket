@@ -2,14 +2,15 @@
 
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Save, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default async function ProductFormPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+export default function ProductFormPage() {
+    const params = useParams() as { id: string };
+    const id = params.id;
     const isNew = id === 'new';
     const router = useRouter();
     const supabase = createClient();
@@ -40,7 +41,7 @@ export default async function ProductFormPage({ params }: { params: Promise<{ id
         const { data: product } = await supabase
             .from('products')
             .select('*, product_images(*)')
-            .eq('id', params.id)
+            .eq('id', id)
             .single();
 
         if (product) {
@@ -84,7 +85,7 @@ export default async function ProductFormPage({ params }: { params: Promise<{ id
                 specs: specs.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {})
             };
 
-            let productId = params.id;
+            let productId = id;
 
             if (isNew) {
                 const { data, error } = await supabase.from('products').insert(productData).select().single();
