@@ -17,7 +17,7 @@ export async function Navbar() {
                                 src="/logo.png"
                                 alt="Rotabil Etiket"
                                 fill
-                                className="object-contain mix-blend-multiply"
+                                className="object-contain"
                                 priority
                                 unoptimized
                             />
