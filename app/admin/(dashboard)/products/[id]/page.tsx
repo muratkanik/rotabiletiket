@@ -8,8 +8,9 @@ import { ChevronLeft, Save, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function ProductFormPage({ params }: { params: { id: string } }) {
-    const isNew = params.id === 'new';
+export default async function ProductFormPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const isNew = id === 'new';
     const router = useRouter();
     const supabase = createClient();
 

@@ -21,13 +21,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 }
 
-export default async function SectorDetailPage({ params }: { params: { slug: string } }) {
+export default async function SectorDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     const supabase = await createClient();
 
     const { data: sector } = await supabase
         .from('sectors')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
 
     if (!sector) notFound();

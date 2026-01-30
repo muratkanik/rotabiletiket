@@ -8,12 +8,13 @@ import { Check, Phone, Mail } from 'lucide-react';
 
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     const supabase = await createClient();
     const { data: product } = await supabase
         .from('products')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
 
     return {
@@ -22,13 +23,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 }
 
-export default async function ProductDetailPage({ params }: { params: { slug: string, category: string } }) {
+export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string, category: string }> }) {
+    const { slug, category } = await params;
     const supabase = await createClient();
 
     const { data: product } = await supabase
         .from('products')
         .select('*, product_images(*), categories(*)')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
 
     if (!product) notFound();
