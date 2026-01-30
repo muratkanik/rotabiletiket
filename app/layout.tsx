@@ -13,6 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
         description: seo?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
         openGraph: {
             images: [seo?.og_image_url || '/logo.png']
+        },
+        icons: {
+            icon: '/logo.png',
+            shortcut: '/logo.png',
+            apple: '/logo.png',
         }
     }
 }
