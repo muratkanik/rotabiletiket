@@ -15,9 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
             images: [seo?.og_image_url || '/logo.png']
         },
         icons: {
-            icon: '/logo.png',
-            shortcut: '/logo.png',
-            apple: '/logo.png',
+            icon: '/icon.png',
+            shortcut: '/icon.png',
+            apple: '/icon.png',
         }
     }
 }
