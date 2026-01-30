@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 
 export async function getSiteSettings(key: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase
         .from('site_settings')
         .select('value')

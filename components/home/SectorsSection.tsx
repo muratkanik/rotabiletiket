@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 export async function SectorsSection() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: sectors } = await supabase
         .from('sectors')
         .select('*')
@@ -24,7 +24,7 @@ export async function SectorsSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {sectors?.map((sector) => (
+                    {sectors?.map((sector: any) => (
                         <Link
                             key={sector.id}
                             href={`/sektorel-cozumler/${sector.slug}`}

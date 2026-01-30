@@ -11,7 +11,7 @@ export const metadata = {
 }
 
 export default async function SectorsPage() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: sectors } = await supabase.from('sectors').select('*');
 
     return (
@@ -27,7 +27,7 @@ export default async function SectorsPage() {
 
             <div className="container px-4 md:px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {sectors?.map((sector) => (
+                    {sectors?.map((sector: any) => (
                         <Link
                             key={sector.id}
                             href={`/sektorel-cozumler/${sector.slug}`}

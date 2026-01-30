@@ -9,7 +9,7 @@ const ICONS: Record<string, any> = {
 };
 
 export async function FeatureCards() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: categories } = await supabase
         .from('categories')
         .select('*')
@@ -20,7 +20,7 @@ export async function FeatureCards() {
         <section className="py-24 bg-slate-50">
             <div className="container px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {categories?.map((category) => {
+                    {categories?.map((category: any) => {
                         const Icon = ICONS[category.title] || Tag;
 
                         return (

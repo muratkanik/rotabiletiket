@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata({ params }: { params: { category: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: category } = await supabase
         .from('categories')
         .select('*')
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: { category: string 
 }
 
 export default async function CategoryPage({ params }: { params: { category: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // 1. Fetch Category
     const { data: category } = await supabase
@@ -55,7 +55,7 @@ export default async function CategoryPage({ params }: { params: { category: str
             {/* Grid */}
             <div className="container px-4 md:px-6 py-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {products?.map((product) => (
+                    {products?.map((product: any) => (
                         <ProductCard key={product.id} product={product} categorySlug={params.category} />
                     ))}
                     {products?.length === 0 && (

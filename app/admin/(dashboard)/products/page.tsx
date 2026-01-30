@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
 
 export default async function AdminProductsPage() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: products } = await supabase
         .from('products')
         .select('*, categories(title)')
@@ -31,7 +31,7 @@ export default async function AdminProductsPage() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {products?.map((product) => (
+                        {products?.map((product: any) => (
                             <tr key={product.id} className="hover:bg-slate-50/50 transition-colors">
                                 <td className="px-6 py-4 font-medium text-slate-900">
                                     {product.title}

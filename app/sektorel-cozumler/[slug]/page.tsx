@@ -8,7 +8,7 @@ import Link from 'next/link';
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: sector } = await supabase
         .from('sectors')
         .select('*')
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function SectorDetailPage({ params }: { params: { slug: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data: sector } = await supabase
         .from('sectors')

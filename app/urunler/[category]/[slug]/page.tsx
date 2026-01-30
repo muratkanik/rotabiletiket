@@ -9,7 +9,7 @@ import { Check, Phone, Mail } from 'lucide-react';
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: product } = await supabase
         .from('products')
         .select('*')
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function ProductDetailPage({ params }: { params: { slug: string, category: string } }) {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data: product } = await supabase
         .from('products')
