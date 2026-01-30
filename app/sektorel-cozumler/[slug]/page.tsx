@@ -7,12 +7,13 @@ import Link from 'next/link';
 
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     const supabase = await createClient();
     const { data: sector } = await supabase
         .from('sectors')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
 
     return {
@@ -57,7 +58,17 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
             <div className="container px-4 md:px-6 py-16">
                 <div className="max-w-4xl mx-auto">
                     <div className="prose prose-lg max-w-none text-slate-600 mb-12">
-                        <div dangerouslySetInnerHTML={{ __html: sector.content_html }} />
+                        <div className="prose prose-lg max-w-none text-slate-600 mb-12">
+                            {/* Clean up some legacy artifacts on the fly if needed, though CSS handles most */}
+                            <div dangerouslySetInnerHTML={{
+                                __html: sector.content_html
+                                    .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
+                                    .replace(/src="img\//g, 'src="https://rotabiletiket.com/img/') // Fix old relative paths if they exist strictly, or better:
+                                // Since we don't have the old images hosted, we might need to handle this. 
+                                // For now, let's assume they might be broken or we need to point to a legacy URL if available.
+                                // Actually, better to hide broken images via CSS or just let them be for a moment.
+                            }} />
+                        </div>
                     </div>
 
                     <div className="bg-blue-50 border border-blue-100 rounded-2xl p-8 text-center">
