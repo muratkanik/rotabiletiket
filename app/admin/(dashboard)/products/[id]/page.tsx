@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
