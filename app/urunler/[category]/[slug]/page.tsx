@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { Check, Phone, Mail } from 'lucide-react';
 
 export const revalidate = 3600;
@@ -47,13 +48,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
             <div className="container px-4 md:px-6 py-12">
                 {/* Breadcrumb */}
-                <div className="flex items-center text-sm text-slate-500 mb-8">
-                    <Link href="/" className="hover:text-blue-600">Ana Sayfa</Link>
-                    <span className="mx-2">/</span>
-                    <Link href={`/urunler/${product.categories?.slug}`} className="hover:text-blue-600">{product.categories?.title}</Link>
-                    <span className="mx-2">/</span>
-                    <span className="text-slate-900 font-medium truncate max-w-[200px]">{product.title}</span>
-                </div>
+                <Breadcrumb items={[
+                    { label: 'Ürünlerimiz' },
+                    { label: product.categories?.title || 'Kategori', href: `/urunler/${product.categories?.slug}` },
+                    { label: product.title }
+                ]} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Gallery */}

@@ -26,9 +26,33 @@ export async function Navbar() {
                 </div>
 
                 <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
-                    <Link href="/urunler/etiketler" className="hover:text-blue-700 transition-colors">Etiketler</Link>
-                    <Link href="/urunler/ribonlar" className="hover:text-blue-700 transition-colors">Ribonlar</Link>
-                    <Link href="/urunler/barkod-yazicilar" className="hover:text-blue-700 transition-colors">Yazıcılar</Link>
+                    <div className="relative group h-16 flex items-center">
+                        <button className="hover:text-blue-700 transition-colors flex items-center gap-1 py-4">
+                            Ürünlerimiz
+                            <svg className="w-4 h-4 group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div className="absolute top-16 left-0 w-64 bg-white border border-slate-100 shadow-xl rounded-b-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top translate-y-2 group-hover:translate-y-0">
+                            <div className="p-2 flex flex-col">
+                                <Link href="/urunler/etiketler" className="block px-4 py-3 hover:bg-slate-50 rounded-lg text-slate-600 hover:text-blue-600 transition-colors">
+                                    <span className="font-semibold block">Etiketler</span>
+                                    <span className="text-xs text-slate-400 font-normal">Endüstriyel etiket çeşitleri</span>
+                                </Link>
+                                <Link href="/urunler/ribonlar" className="block px-4 py-3 hover:bg-slate-50 rounded-lg text-slate-600 hover:text-blue-600 transition-colors">
+                                    <span className="font-semibold block">Ribonlar</span>
+                                    <span className="text-xs text-slate-400 font-normal">Termal transfer ribonlar</span>
+                                </Link>
+                                <Link href="/urunler/barkod-yazicilar" className="block px-4 py-3 hover:bg-slate-50 rounded-lg text-slate-600 hover:text-blue-600 transition-colors">
+                                    <span className="font-semibold block">Barkod Yazıcılar</span>
+                                    <span className="text-xs text-slate-400 font-normal">Masaüstü ve endüstriyel</span>
+                                </Link>
+                                <Link href="/urunler/barkod-yazici-kafasi" className="block px-4 py-3 hover:bg-slate-50 rounded-lg text-slate-600 hover:text-blue-600 transition-colors">
+                                    <span className="font-semibold block">Yazıcı Kafaları</span>
+                                    <span className="text-xs text-slate-400 font-normal">Orijinal yedek parçalar</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
                     <Link href="/sektorel-cozumler" className="hover:text-blue-700 transition-colors">Sektörel Çözümler</Link>
                     <Link href="/bilgi-bankasi" className="hover:text-blue-700 transition-colors">Bilgi Bankası</Link>
                     <Link href="/hakkimizda" className="hover:text-blue-700 transition-colors">Hakkımızda</Link>
