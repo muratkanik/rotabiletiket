@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { SEOScripts, SEOBodyScripts } from '@/components/layout/SEOScripts'
 import { getSiteSettings } from '@/lib/settings'
+import { Footer } from '@/components/layout/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,6 +36,7 @@ export default function RootLayout({
             <body className={inter.className}>
                 <SEOBodyScripts />
                 {children}
+                <Footer />
             </body>
         </html>
     )
