@@ -61,8 +61,13 @@ export default async function AboutPage() {
                     <div className="relative">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-4 translate-y-8">
-                                <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative">
-                                    <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center text-slate-400">Görsel 1</div>
+                                <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative cursor-pointer hover:scale-105 transition-transform duration-500">
+                                    <Image
+                                        src="/img/about/production.png"
+                                        alt="Modern Etiket Üretim Tesisi"
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
                                 <div className="aspect-square bg-blue-50 rounded-2xl p-6 flex flex-col justify-center items-center text-center shadow-md">
                                     <span className="text-5xl font-bold text-blue-600 mb-2">{stats[0]?.value}</span>
@@ -74,8 +79,13 @@ export default async function AboutPage() {
                                     <span className="text-5xl font-bold text-orange-600 mb-2">{stats[1]?.value}</span>
                                     <span className="text-sm font-medium text-orange-900">{stats[1]?.label}</span>
                                 </div>
-                                <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative">
-                                    <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center text-slate-400">Görsel 2</div>
+                                <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative cursor-pointer hover:scale-105 transition-transform duration-500">
+                                    <Image
+                                        src="/img/about/quality.png"
+                                        alt="Kalite Kontrol Süreçleri"
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
                             </div>
                         </div>
