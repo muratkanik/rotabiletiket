@@ -12,7 +12,7 @@ export async function Navbar() {
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="relative h-10 w-40">
+                        <div className="relative h-12 w-48">
                             <Image
                                 src="/logo.png"
                                 alt="Rotabil Etiket"
@@ -30,6 +30,7 @@ export async function Navbar() {
                     <Link href="/urunler/ribonlar" className="hover:text-blue-700 transition-colors">Ribonlar</Link>
                     <Link href="/urunler/barkod-yazicilar" className="hover:text-blue-700 transition-colors">Yazıcılar</Link>
                     <Link href="/sektorel-cozumler" className="hover:text-blue-700 transition-colors">Sektörel Çözümler</Link>
+                    <Link href="/bilgi-bankasi" className="hover:text-blue-700 transition-colors">Bilgi Bankası</Link>
                     <Link href="/hakkimizda" className="hover:text-blue-700 transition-colors">Hakkımızda</Link>
                     <Link href="/iletisim" className="hover:text-blue-700 transition-colors">İletişim</Link>
                 </div>
