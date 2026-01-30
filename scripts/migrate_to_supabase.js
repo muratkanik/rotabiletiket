@@ -78,7 +78,8 @@ async function main() {
         item.title &&
         !item.title.includes('Faydalı Linkler') &&
         !['Kurumsal', 'İletişim'].includes(item.category) &&
-        !item.title.includes('ROTABİL Hakkında')
+        !item.title.includes('ROTABİL Hakkında') &&
+        !item.title.includes('WEB SİTESİ')
     );
 
     console.log(`Found ${validItems.length} valid items out of ${rawData.length}`);
@@ -90,7 +91,7 @@ async function main() {
         console.log(`Processing: ${item.title}`);
 
         // Handle Sectors
-        if (item.category === 'Sektörel Çözümler' || item.title.includes('Sektör')) {
+        if (item.category === 'Sektörel Çözümler' || item.title.includes('Sektör') || item.title.includes('ÇÖZÜMLERİ')) {
             const slug = turkishSlugify(item.title);
 
             // Upload first image if exists
