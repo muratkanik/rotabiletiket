@@ -41,7 +41,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         .from('products')
         .select('*, product_images(*)')
         .eq('category_id', category.id)
-        .order('created_at', { ascending: false });
+        .order('title', { ascending: true });
 
     return (
         <main className="min-h-screen bg-slate-50">
