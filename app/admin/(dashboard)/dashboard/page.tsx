@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, Tags, Eye, FileText } from 'lucide-react';
 
 export default async function DashboardPage() {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch some stats
     const { count: productCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
