@@ -10,6 +10,7 @@ export async function Hero() {
     return (
         <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
             {/* Dynamic Background Video */}
+            <div className="absolute inset-0 z-0">
                 {settings.video_url?.endsWith('.mp4') ? (
                     <video
                         autoPlay
@@ -23,9 +24,9 @@ export async function Hero() {
                 ) : (
                     // Fallback to static image if not a video
                     <div className="absolute inset-0">
-                        <img 
-                            src={settings.video_url || '/img/products/printers/zebra_industrial_generic.png'} 
-                            alt="Hero Background" 
+                        <img
+                            src={settings.video_url || '/img/products/printers/zebra_industrial_generic.png'}
+                            alt="Hero Background"
                             className="w-full h-full object-cover opacity-30 grayscale-[20%]"
                         />
                     </div>
