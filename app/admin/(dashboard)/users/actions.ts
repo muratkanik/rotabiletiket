@@ -42,7 +42,7 @@ export async function inviteUser(email: string) {
 
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// const resend = new Resend(process.env.RESEND_API_KEY); // Moved to inside function to avoid build error if key missing
 
 export async function createUserWithPassword(email: string, password: string) {
     const supabase = createAdminClient();
@@ -62,6 +62,7 @@ export async function createUserWithPassword(email: string, password: string) {
     // Send Welcome Email
     if (process.env.RESEND_API_KEY) {
         try {
+            const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
                 from: 'Rotabil Etiket <noreply@rotabiletiket.com>', // User needs to verify domain or use onboard address
                 to: email,
