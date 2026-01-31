@@ -49,8 +49,33 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         ? getImageUrl(images[0].storage_path)
         : '/placeholder-product.jpg';
 
+    // JSON-LD Structured Data
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.seo_title || product.title,
+        image: mainImage, // Use the already processed mainImage URL
+        description: product.seo_description || product.description_html?.replace(/<[^>]*>?/gm, '').substring(0, 160),
+        brand: {
+            '@type': 'Brand',
+            name: 'Rotabil Etiket',
+        },
+        offers: {
+            '@type': 'Offer',
+            url: `https://rotabiletiket.com/urunler/${category}/${slug}`, // Use params.category and params.slug directly
+            priceCurrency: 'TRY',
+            price: '0.00', // Request Quote (Teklif Al) items often use 0 or omit price, but schema prefers valid markup.
+            availability: 'https://schema.org/InStock',
+            priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+        },
+    };
+
     return (
         <main className="min-h-screen bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <Navbar />
 
             <div className="container px-4 md:px-6 py-12">

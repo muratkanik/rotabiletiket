@@ -34,8 +34,40 @@ export default async function ArticlePage({ params }: Props) {
         notFound();
     }
 
+    // JSON-LD Structured Data
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.title,
+        description: article.summary,
+        image: article.image_url ? [article.image_url] : [],
+        datePublished: article.created_at,
+        dateModified: article.updated_at || article.created_at,
+        author: {
+            '@type': 'Organization',
+            name: 'Rotabil Etiket',
+            url: 'https://rotabiletiket.com',
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Rotabil Etiket',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://rotabiletiket.com/logo.png',
+            },
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://rotabiletiket.com/bilgi-bankasi/${params.slug}`,
+        },
+    };
+
     return (
         <article className="min-h-screen bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Header / Hero */}
             <div className="bg-slate-900 text-white py-12">
                 <div className="container px-4 md:px-6">
