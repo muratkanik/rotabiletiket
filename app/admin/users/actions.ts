@@ -4,22 +4,31 @@ import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
 export async function getUsers() {
-    const supabase = createAdminClient();
-    const { data: { users }, error } = await supabase.auth.admin.listUsers();
+    try {
+        const supabase = createAdminClient();
 
-    if (error) {
-        console.error('Error fetching users:', error);
+        if (!supabase) {
+            return [];
+        }
+
+        const { data: { users }, error } = await supabase.auth.admin.listUsers();
+
+        if (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
+
+        return users;
+    } catch (error) {
+        console.error('Unexpected error fetching users:', error);
         return [];
     }
-
-    return users;
 }
 
 export async function inviteUser(email: string) {
     const supabase = createAdminClient();
-    // Use inviteUserByEmail to send an invite link, or createUser to manually set it.
-    // For admin panels, often createUser + password reset is easier if SMTP isn't perfect, 
-    // but sending an invite is standard.
+    if (!supabase) return { success: false, error: "Service Role Key missing" };
+
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(email);
 
     if (error) {
@@ -33,6 +42,8 @@ export async function inviteUser(email: string) {
 
 export async function createUserWithPassword(email: string, password: string) {
     const supabase = createAdminClient();
+    if (!supabase) return { success: false, error: "Service Role Key missing" };
+
     const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
@@ -50,6 +61,8 @@ export async function createUserWithPassword(email: string, password: string) {
 
 export async function deleteUser(userId: string) {
     const supabase = createAdminClient();
+    if (!supabase) return { success: false, error: "Service Role Key missing" };
+
     const { error } = await supabase.auth.admin.deleteUser(userId);
 
     if (error) {
@@ -62,12 +75,13 @@ export async function deleteUser(userId: string) {
 
 export async function sendPasswordReset(email: string) {
     const supabase = createAdminClient();
+    if (!supabase) return { success: false, error: "Service Role Key missing" };
+
     const { error } = await supabase.auth.admin.generateLink({
         type: 'recovery',
         email: email,
     });
-    // Note: generateLink returns the link. resetPasswordForEmail sends the email. 
-    // If we want to send the email:
+
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/admin/update-password`,
     });
