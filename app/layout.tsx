@@ -4,6 +4,8 @@ import './globals.css'
 import { SEOScripts, SEOBodyScripts } from '@/components/layout/SEOScripts'
 import { getSiteSettings } from '@/lib/settings'
 import { Footer } from '@/components/layout/Footer'
+import AnalyticsTracker from '@/components/AnalyticsTracker';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] })
 
