@@ -44,6 +44,7 @@ export async function Footer() {
                             <li><Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link></li>
                             <li><Link href="/hakkimizda" className="hover:text-white transition-colors">Hakkımızda</Link></li>
                             <li><Link href="/sektorel-cozumler" className="hover:text-white transition-colors">Sektörel Çözümler</Link></li>
+                            <li><Link href="/bilgi-bankasi" className="hover:text-white transition-colors">Bilgi Bankası</Link></li>
                             <li><Link href="/iletisim" className="hover:text-white transition-colors">İletişim</Link></li>
                         </ul>
                     </div>

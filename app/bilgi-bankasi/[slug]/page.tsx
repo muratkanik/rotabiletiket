@@ -1,103 +1,95 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { Metadata } from "next";
+import { getArticle, getArticles } from '@/lib/articles';
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Calendar, User } from 'lucide-react';
+import type { Metadata } from 'next';
 
-type Props = {
-    params: Promise<{ slug: string }>
-}
-
-async function getArticle(slug: string) {
-    const supabase = await createClient();
-    const { data } = await supabase.from('articles').select('*').eq('slug', slug).single();
-    return data;
+interface Props {
+    params: { slug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const resolvedParams = await params;
-    const article = await getArticle(resolvedParams.slug);
-    if (!article) return {};
+    const article = await getArticle(params.slug);
+    if (!article) return { title: 'Not Found' };
 
     return {
-        title: article.seo_title || article.title,
-        description: article.seo_description || article.excerpt,
-        openGraph: {
-            images: [article.image_url || '/logo.png']
-        }
-    }
+        title: `${article.title} - Bilgi Bankası`,
+        description: article.summary,
+    };
+}
+
+export async function generateStaticParams() {
+    const articles = await getArticles();
+    return articles.map((article) => ({
+        slug: article.slug,
+    }));
 }
 
 export default async function ArticlePage({ params }: Props) {
-    const resolvedParams = await params;
-    const article = await getArticle(resolvedParams.slug);
+    const article = await getArticle(params.slug);
 
     if (!article) {
         notFound();
     }
 
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: article.title,
-        description: article.excerpt,
-        image: article.image_url ? `https://rotabiletiket.com${article.image_url}` : undefined,
-        datePublished: article.published_at,
-        dateModified: article.updated_at,
-        author: {
-            '@type': 'Organization',
-            name: 'Rotabil Etiket'
-        }
-    };
-
     return (
-        <main className="min-h-screen bg-slate-50">
-            <Navbar />
-
-            <article className="pb-24">
-                {/* Header */}
-                <div className="bg-slate-900 py-16 text-white text-center">
-                    <div className="container px-4 mx-auto max-w-4xl">
-                        <Link href="/bilgi-bankasi" className="inline-flex items-center text-slate-400 hover:text-white mb-6 text-sm transition-colors">
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        <article className="min-h-screen bg-white">
+            {/* Header / Hero */}
+            <div className="bg-slate-900 text-white py-12">
+                <div className="container px-4 md:px-6">
+                    <Button variant="ghost" asChild className="mb-8 text-slate-300 hover:text-white hover:bg-white/10 -ml-4">
+                        <Link href="/bilgi-bankasi">
+                            <ArrowLeft className="mr-2 w-4 h-4" />
                             Bilgi Bankasına Dön
                         </Link>
-                        <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-6">{article.title}</h1>
-                        <time className="text-slate-400 block">{new Date(article.published_at).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                    </Button>
+                    <h1 className="text-3xl md:text-5xl font-bold mb-6 max-w-4xl leading-tight">
+                        {article.title}
+                    </h1>
+                    <div className="flex items-center gap-6 text-slate-400 text-sm">
+                        <div className="flex items-center gap-2">
+                            <Calendar size={16} />
+                            <span>{new Date(article.created_at).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <User size={16} />
+                            <span>Rotabil Editör</span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Content */}
-                <div className="container px-4 md:px-6 -mt-8 mx-auto max-w-3xl relative z-10">
-                    <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden p-8 md:p-12">
-                        {article.image_url && (
-                            <div className="relative w-full h-64 md:h-80 mb-8 rounded-xl overflow-hidden">
-                                <Image
-                                    src={article.image_url}
-                                    alt={article.title}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        )}
+            <div className="container px-4 md:px-6 py-12 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-12">
+                {/* Main Content */}
+                <div className="prose prose-lg max-w-none prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-600 prose-a:text-orange-600 hover:prose-a:text-orange-700 prose-img:rounded-xl">
+                    {/* Featured Image inside content view if needed, usually decorative in list */}
+                    {article.image_url && (
+                        <div className="relative w-full h-[400px] mb-8 rounded-xl overflow-hidden shadow-lg not-prose">
+                            <Image
+                                src={article.image_url}
+                                alt={article.title}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                    )}
+                    <div dangerouslySetInnerHTML={{ __html: article.content_html || '' }} />
+                </div>
 
-                        <div
-                            className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-600 prose-a:text-blue-600 prose-img:rounded-xl"
-                            dangerouslySetInnerHTML={{ __html: article.content_html }}
-                        />
+                {/* Sidebar (Optional: Related Links or Categories) */}
+                <div className="space-y-8">
+                    <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                        <h3 className="font-bold text-lg mb-4 text-slate-900">İlgili Kategoriler</h3>
+                        <ul className="space-y-2 text-slate-600">
+                            <li><Link href="/urunler/etiketler" className="hover:text-orange-600 transition-colors">Etiket Çeşitleri</Link></li>
+                            <li><Link href="/urunler/barkod-yazicilar" className="hover:text-orange-600 transition-colors">Barkod Yazıcılar</Link></li>
+                            <li><Link href="/urunler/ribonlar" className="hover:text-orange-600 transition-colors">Ribonlar</Link></li>
+                        </ul>
                     </div>
                 </div>
-            </article>
-
-            {/* Structured Data */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
-
-            <Footer />
-        </main>
-    )
+            </div>
+        </article>
+    );
 }

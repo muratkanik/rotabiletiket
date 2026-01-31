@@ -1,70 +1,70 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
-import Image from "next/image";
+import { getArticles } from '@/lib/articles';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, BookOpen } from 'lucide-react';
+import type { Metadata } from 'next';
 
-export const metadata = {
-    title: 'Bilgi Bankası | Rotabil Etiket Blog',
-    description: 'Barkod sistemleri, etiket türleri, yazıcı bakımı ve sektörel rehberler. Endüstriyel etiketleme hakkında her şey.'
-}
-
-async function getArticles() {
-    const supabase = await createClient();
-    const { data } = await supabase.from('articles').select('*').order('published_at', { ascending: false });
-    return data || [];
-}
+export const metadata: Metadata = {
+    title: 'Bilgi Bankası - Rotabil Etiket',
+    description: 'Endüstriyel etiket, barkod yazıcı ve otomasyon sistemleri hakkında teknik bilgiler ve rehberler.',
+};
 
 export default async function KnowledgeBasePage() {
     const articles = await getArticles();
 
     return (
-        <main className="min-h-screen bg-slate-50">
-            <Navbar />
-
-            <div className="bg-slate-900 py-16 text-white text-center">
-                <h1 className="text-3xl md:text-5xl font-bold mb-4">Bilgi Bankası</h1>
-                <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                    Barkod teknolojileri, endüstriyel etiketleme ve bakım ipuçları hakkında uzman rehberler.
-                </p>
+        <div className="min-h-screen bg-slate-50">
+            {/* Header */}
+            <div className="bg-slate-900 text-white py-16">
+                <div className="container px-4 md:px-6">
+                    <div className="flex items-center gap-3 mb-4 text-orange-500">
+                        <BookOpen size={32} />
+                        <span className="font-bold tracking-wider uppercase">Teknik Kütüphane</span>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6">Bilgi Bankası</h1>
+                    <p className="text-xl text-slate-300 max-w-2xl">
+                        Barkod yazıcılar, etiket çeşitleri ve endüstriyel otomasyon hakkında merak ettiğiniz her şey.
+                    </p>
+                </div>
             </div>
 
-            <div className="container px-4 md:px-6 py-16 pb-24 max-w-6xl mx-auto">
+            {/* Content Grid */}
+            <div className="container px-4 md:px-6 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {articles.map((article: any) => (
-                        <Link href={`/bilgi-bankasi/${article.slug}`} key={article.id} className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100">
-                            <div className="relative h-48 w-full bg-slate-200 overflow-hidden">
+                    {articles.map((article) => (
+                        <Card key={article.id} className="hover:shadow-lg transition-shadow border-slate-200 overflow-hidden flex flex-col">
+                            <div className="relative h-48 w-full bg-slate-100">
                                 {article.image_url ? (
                                     <Image
                                         src={article.image_url}
                                         alt={article.title}
                                         fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                        className="object-cover"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                        Görsel Yok
+                                    <div className="flex items-center justify-center h-full text-slate-300">
+                                        <BookOpen size={48} />
                                     </div>
                                 )}
                             </div>
-                            <div className="p-6 flex flex-col flex-grow">
-                                <h2 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                                    {article.title}
-                                </h2>
-                                <p className="text-slate-600 mb-4 line-clamp-3 leading-relaxed">
-                                    {article.excerpt}
-                                </p>
-                                <div className="mt-auto flex items-center text-sm font-medium text-blue-600">
-                                    Devamını Oku
-                                    <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                                </div>
-                            </div>
-                        </Link>
+                            <CardHeader>
+                                <CardTitle className="leading-tight text-xl">{article.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1 flex flex-col justify-between text-slate-600">
+                                <p className="mb-6 line-clamp-3">{article.summary}</p>
+                                <Button variant="outline" className="w-full group" asChild>
+                                    <Link href={`/bilgi-bankasi/${article.slug}`}>
+                                        Devamını Oku
+                                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
             </div>
-
-            <Footer />
-        </main>
-    )
+        </div>
+    );
 }
