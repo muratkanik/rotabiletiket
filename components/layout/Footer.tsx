@@ -82,6 +82,10 @@ export async function Footer() {
                 <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-slate-500 text-sm">
                         &copy; {new Date().getFullYear()} Rotabil Etiket. Tüm hakları saklıdır.
+                        <span className="mx-2">|</span>
+                        <a href="https://www.muratkanik.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                            by MK Studio
+                        </a>
                     </p>
                     <div className="flex gap-6 text-sm text-slate-500">
                         <Link href="/gizlilik" className="hover:text-white">Gizlilik Politikası</Link>
