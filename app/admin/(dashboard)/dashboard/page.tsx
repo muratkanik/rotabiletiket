@@ -56,12 +56,54 @@ export default async function AdminDashboard() {
     return (
         <div className="space-y-8">
             <h1 className="text-3xl font-bold text-slate-900">Genel Bakış</h1>
-            <CardContent>
-                <div className="text-2xl font-bold">Aktif</div>
-                <p className="text-xs text-muted-foreground">Ayarlar yapılandırıldı</p>
-            </CardContent>
-        </Card>
-            </div >
-        </div >
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stats.map((stat, i) => (
+                    <Link href={stat.href} key={i}>
+                        <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500">
+                                    {stat.title}
+                                </CardTitle>
+                                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle>Son 7 Günlük Ziyaretçi Grafiği</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-0">
+                        <VisitorsChart data={chartData} />
+                    </CardContent>
+                </Card>
+
+                {/* Quick Actions or Info */}
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle>Son Durum</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <span className="text-sm font-medium text-slate-600">Toplam Ziyaret (Haftalık)</span>
+                                <span className="font-bold text-slate-900">{totalViews}</span>
+                            </div>
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <span className="text-sm font-medium text-slate-600">En Çok Ziyaret Edilen</span>
+                                <span className="font-bold text-slate-900 text-sm">Analiz Yakında...</span>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     );
 }
