@@ -9,6 +9,7 @@ export interface Article {
     image_url: string | null;
     is_published: boolean;
     created_at: string;
+    updated_at?: string;
 }
 
 export async function getArticles(): Promise<Article[]> {

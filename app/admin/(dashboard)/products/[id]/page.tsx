@@ -7,6 +7,16 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, Save, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Switch } from '@/components/ui/switch';
+import dynamic from 'next/dynamic';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+
+const Editor = dynamic(
+    () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
+    { ssr: false }
+);
 
 export default function ProductFormPage() {
     const params = useParams() as { id: string };
@@ -23,7 +33,8 @@ export default function ProductFormPage() {
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
     const [categoryId, setCategoryId] = useState('');
-    const [description, setDescription] = useState(''); // Simple text area for now
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [isPublished, setIsPublished] = useState(true);
     const [specs, setSpecs] = useState<{ key: string, value: string }[]>([]);
     const [images, setImages] = useState<any[]>([]); // { file, preview, existingId, path }
 
@@ -48,7 +59,16 @@ export default function ProductFormPage() {
             setTitle(product.title);
             setSlug(product.slug);
             setCategoryId(product.category_id);
-            setDescription(product.description_html || '');
+            setIsPublished(product.is_published ?? true);
+
+            if (product.description_html) {
+                const blocksFromHTML = convertFromHTML(product.description_html);
+                const contentState = ContentState.createFromBlockArray(
+                    blocksFromHTML.contentBlocks,
+                    blocksFromHTML.entityMap
+                );
+                setEditorState(EditorState.createWithContent(contentState));
+            }
 
             // Transform specs object to array
             const specsArray = Object.entries(product.specs || {}).map(([key, value]) => ({ key, value: String(value) }));
@@ -81,7 +101,8 @@ export default function ProductFormPage() {
                 title,
                 slug,
                 category_id: categoryId,
-                description_html: description,
+                description_html: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+                is_published: isPublished,
                 specs: specs.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {})
             };
 
@@ -154,10 +175,16 @@ export default function ProductFormPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">Açıklama (HTML)</label>
-                            <textarea className="w-full border rounded-lg p-2.5 h-64 outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-                                value={description} onChange={e => setDescription(e.target.value)} />
-                            <p className="text-xs text-slate-400 mt-1">HTML etiketleri kullanabilirsiniz.</p>
+                            <label className="block text-sm font-medium mb-1">Açıklama</label>
+                            <div className="border rounded-lg p-2 min-h-[300px] bg-white">
+                                <Editor
+                                    editorState={editorState}
+                                    onEditorStateChange={setEditorState}
+                                    wrapperClassName="wrapper-class"
+                                    editorClassName="editor-class"
+                                    toolbarClassName="toolbar-class"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -198,7 +225,7 @@ export default function ProductFormPage() {
                 {/* Sidebar Info */}
                 <div className="space-y-6">
                     <div className="bg-white p-6 rounded-xl border shadow-sm space-y-4">
-                        <h3 className="font-semibold text-slate-900 border-b pb-2">Kategori & Medya</h3>
+                        <h3 className="font-semibold text-slate-900 border-b pb-2">Kategori</h3>
 
                         <div>
                             <label className="block text-sm font-medium mb-1">Kategori</label>
@@ -210,46 +237,60 @@ export default function ProductFormPage() {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
-                        <div className="pt-4 border-t">
-                            <label className="block text-sm font-medium mb-2">Ürün Görselleri</label>
-                            <div className="grid grid-cols-2 gap-2">
-                                {images.map((img, i) => (
-                                    <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden group">
-                                        <Image src={img.preview} alt="Preview" fill className="object-cover" />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => {
-                                                setImages(images.filter((_, idx) => idx !== i));
-                                            }}>
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
+                    <div className="bg-white p-6 rounded-xl border shadow-sm space-y-4">
+                        <h3 className="font-semibold text-slate-900 border-b pb-2">Görseller</h3>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            {images.map((img, i) => (
+                                <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden group">
+                                    <Image src={img.preview} alt="Preview" fill className="object-cover" />
+                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => {
+                                            setImages(images.filter((_, idx) => idx !== i));
+                                        }}>
+                                            <X className="h-4 w-4" />
+                                        </Button>
                                     </div>
-                                ))}
-                                <label className="aspect-square bg-slate-50 rounded border border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors relative">
-                                    <Upload className="h-6 w-6 mb-1" />
-                                    <span className="text-xs">Yükle</span>
-                                    <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
-                                        if (!e.target.files || e.target.files.length === 0) return;
-                                        const file = e.target.files[0];
-                                        const fileExt = file.name.split('.').pop();
-                                        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-                                        const filePath = `${fileName}`;
+                                </div>
+                            ))}
+                            <label className="aspect-square bg-slate-50 rounded border border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors relative">
+                                <Upload className="h-6 w-6 mb-1" />
+                                <span className="text-xs">Yükle</span>
+                                <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                                    if (!e.target.files || e.target.files.length === 0) return;
+                                    const file = e.target.files[0];
+                                    const fileExt = file.name.split('.').pop();
+                                    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                                    const filePath = `${fileName}`;
 
-                                        const { error } = await supabase.storage.from('product-images').upload(filePath, file);
+                                    const { error } = await supabase.storage.from('product-images').upload(filePath, file);
 
-                                        if (error) {
-                                            alert('Yükleme hatası: ' + error.message);
-                                        } else {
-                                            setImages([...images, {
-                                                path: filePath,
-                                                preview: URL.createObjectURL(file), // Or construct public URL immediately
-                                                file: file
-                                            }]);
-                                        }
-                                    }} />
-                                </label>
+                                    if (error) {
+                                        alert('Yükleme hatası: ' + error.message);
+                                    } else {
+                                        setImages([...images, {
+                                            path: filePath,
+                                            preview: URL.createObjectURL(file), // Or construct public URL immediately
+                                            file: file
+                                        }]);
+                                    }
+                                }} />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-xl border shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-0.5">
+                                <h3 className="font-semibold text-slate-900">Yayın Durumu</h3>
+                                <p className="text-xs text-slate-500">Kapatıldığında sitede görünmez</p>
                             </div>
+                            <Switch
+                                checked={isPublished}
+                                onCheckedChange={setIsPublished}
+                            />
                         </div>
                     </div>
                 </div>

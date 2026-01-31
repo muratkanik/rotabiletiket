@@ -10,7 +10,8 @@ import {
     Settings,
     LogOut,
     BarChart,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Users
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';

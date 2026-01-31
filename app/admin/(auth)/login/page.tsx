@@ -4,7 +4,10 @@ import { createClient } from '@/utils/supabase/client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import Image from 'next/image';
+import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 
 export default function AdminLogin() {
     const [email, setEmail] = useState('');
@@ -46,24 +49,31 @@ export default function AdminLogin() {
                 <form onSubmit={handleLogin} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">E-posta</label>
-                        <input
+                        <Input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="h-11"
+                            placeholder="ornek@rotabiletiket.com"
                             required
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Şifre</label>
-                        <input
+                        <Input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="h-11"
+                            placeholder="******"
                             required
                         />
+                        <div className="text-right mt-1">
+                            <Link href="/admin/forgot-password" className="text-xs text-orange-600 hover:text-orange-700 transition-colors">
+                                Şifremi Unuttum
+                            </Link>
+                        </div>
                     </div>
 
                     {error && (
@@ -72,8 +82,9 @@ export default function AdminLogin() {
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={loading}>
-                        {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+                    <Button type="submit" className="w-full h-11 bg-slate-900 hover:bg-slate-800 text-base" disabled={loading}>
+                        {loading ? <Loader2 className="animate-spin mr-2" /> : null}
+                        {loading ? 'Giriş Yapılıyor' : 'Giriş Yap'}
                     </Button>
                 </form>
             </div>
