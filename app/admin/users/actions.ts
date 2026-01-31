@@ -40,6 +40,10 @@ export async function inviteUser(email: string) {
     return { success: true };
 }
 
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function createUserWithPassword(email: string, password: string) {
     const supabase = createAdminClient();
     if (!supabase) return { success: false, error: "Service Role Key missing" };
@@ -53,6 +57,37 @@ export async function createUserWithPassword(email: string, password: string) {
     if (error) {
         console.error('Error creating user:', error);
         return { success: false, error: error.message };
+    }
+
+    // Send Welcome Email
+    if (process.env.RESEND_API_KEY) {
+        try {
+            await resend.emails.send({
+                from: 'Rotabil Etiket <noreply@rotabiletiket.com>', // User needs to verify domain or use onboard address
+                to: email,
+                subject: 'Rotabil Admin Hesabınız Oluşturuldu',
+                html: `
+                    <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto;">
+                        <h2 style="color: #333;">Hoş Geldiniz!</h2>
+                        <p>Rotabil Etiket admin panel erişiminiz oluşturulmuştur.</p>
+                        <div style="background: #f4f4f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <p style="margin: 0 0 10px 0;"><strong>Giriş Bilgileriniz:</strong></p>
+                            <p style="margin: 5px 0;">E-posta: ${email}</p>
+                            <p style="margin: 5px 0;">Şifre: <strong>${password}</strong></p>
+                        </div>
+                        <p>Aşağıdaki bağlantıdan giriş yapabilirsiniz:</p>
+                        <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/login" style="background: #ea580c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">Admin Paneline Git</a>
+                        <p style="color: #666; font-size: 12px; margin-top: 30px;">Güvenliğiniz için giriş yaptıktan sonra şifrenizi değiştirmenizi öneririz.</p>
+                    </div>
+                `
+            });
+        } catch (mailError) {
+            console.error('Mail sending failed:', mailError);
+            // Don't fail the whole request if mail fails, but maybe warn?
+            // For now silent fail logging is okay, UI will show success for user creation.
+        }
+    } else {
+        console.warn('RESEND_API_KEY is missing, welcome email not sent.');
     }
 
     revalidatePath('/admin/users');
