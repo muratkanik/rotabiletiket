@@ -38,8 +38,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
     // Sort images (primary first)
     const images = product.product_images?.sort((a: any, b: any) => (b.is_primary ? 1 : -1)) || [];
+    // Helper for image URLs
+    const getImageUrl = (path: string) => {
+        if (!path) return '/placeholder-product.jpg';
+        if (path.startsWith('/') || path.startsWith('http')) return path;
+        return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${path}`;
+    };
+
     const mainImage = images.length > 0
-        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${images[0].storage_path}`
+        ? getImageUrl(images[0].storage_path)
         : '/placeholder-product.jpg';
 
     return (
@@ -71,7 +78,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                                 {images.slice(1).map((img: any) => (
                                     <div key={img.id} className="relative aspect-square bg-slate-50 rounded-lg border overflow-hidden cursor-pointer hover:border-blue-500">
                                         <Image
-                                            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${img.storage_path}`}
+                                            src={getImageUrl(img.storage_path)}
                                             alt="Product Thumbnail"
                                             fill
                                             className="object-contain p-2"
