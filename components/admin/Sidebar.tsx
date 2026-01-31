@@ -21,6 +21,7 @@ const MENU_ITEMS = [
     { name: 'Ürünler', href: '/admin/products', icon: Package },
     { name: 'Kategoriler', href: '/admin/categories', icon: Tags },
     { name: 'Görseller', href: '/admin/images', icon: ImageIcon },
+    { name: 'Kullanıcılar', href: '/admin/users', icon: Users },
     { name: 'Site Ayarları', href: '/admin/settings', icon: Settings },
     { name: 'SEO & Analiz', href: '/admin/seo', icon: BarChart },
 ];
