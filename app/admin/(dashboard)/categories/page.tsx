@@ -37,7 +37,7 @@ export default async function AdminCategoriesPage() {
                                 <td className="px-6 py-4">
                                     <div className="relative w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border">
                                         {category.image_url ? (
-                                            <Image src={category.image_url} alt={category.title} fill className="object-cover" />
+                                            <Image src={category.image_url} alt={category.title} fill className="object-cover" unoptimized />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">Yok</div>
                                         )}
