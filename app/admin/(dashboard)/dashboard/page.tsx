@@ -1,52 +1,67 @@
 import { createClient } from '@/utils/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Tags, Eye, FileText } from 'lucide-react';
+import { VisitorsChart } from '@/components/admin/dashboard/VisitorsChart';
+import { FileText, Image as ImageIcon, LayoutGrid, Users, Eye } from 'lucide-react';
+import Link from 'next/link';
 
-export default async function DashboardPage() {
+// Simple helper to get dates
+function getLast7Days() {
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
+    }
+    return dates;
+}
+
+export default async function AdminDashboard() {
     const supabase = await createClient();
 
-    // Fetch some stats
-    const { count: productCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
-    const { count: categoryCount } = await supabase.from('categories').select('*', { count: 'exact', head: true });
+    // Fetch counts
+    const { count: productsCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
+    const { count: articlesCount } = await supabase.from('articles').select('*', { count: 'exact', head: true });
+    const { count: categoriesCount } = await supabase.from('categories').select('*', { count: 'exact', head: true });
+
+    // Fetch Analytics (Last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const { data: views } = await supabase
+        .from('page_views')
+        .select('visited_at')
+        .gte('visited_at', sevenDaysAgo.toISOString());
+
+    // Process data for chart
+    const last7Days = getLast7Days();
+    const chartData = last7Days.map(date => {
+        const dayViews = views?.filter(v => v.visited_at.startsWith(date)).length || 0;
+        return {
+            name: new Date(date).toLocaleDateString('tr-TR', { weekday: 'short' }),
+            total: dayViews
+        };
+    });
+
+    const totalViews = views?.length || 0;
+    const today = new Date().toISOString().split('T')[0];
+    const todayViews = views?.filter(v => v.visited_at.startsWith(today)).length || 0;
+
+    const stats = [
+        { title: 'Toplam Ürün', value: productsCount || 0, icon: LayoutGrid, href: '/admin/products', color: 'text-blue-600' },
+        { title: 'Blog Yazıları', value: articlesCount || 0, icon: FileText, href: '/admin/articles', color: 'text-green-600' },
+        { title: 'Kategoriler', value: categoriesCount || 0, icon: ImageIcon, href: '/admin/categories', color: 'text-purple-600' },
+        { title: 'Bugünkü Ziyaret', value: todayViews, icon: Eye, href: '#', color: 'text-orange-600' },
+    ];
 
     return (
         <div className="space-y-8">
             <h1 className="text-3xl font-bold text-slate-900">Genel Bakış</h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Toplam Ürün</CardTitle>
-                        <Package className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{productCount || 0}</div>
-                        <p className="text-xs text-muted-foreground">Aktif ürün sayısı</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Kategoriler</CardTitle>
-                        <Tags className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{categoryCount || 0}</div>
-                        <p className="text-xs text-muted-foreground">Ana ve alt kategoriler</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">SEO Durumu</CardTitle>
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">Aktif</div>
-                        <p className="text-xs text-muted-foreground">Ayarlar yapılandırıldı</p>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
+            <CardContent>
+                <div className="text-2xl font-bold">Aktif</div>
+                <p className="text-xs text-muted-foreground">Ayarlar yapılandırıldı</p>
+            </CardContent>
+        </Card>
+            </div >
+        </div >
     );
 }

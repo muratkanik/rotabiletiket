@@ -33,10 +33,12 @@ export default function RootLayout({
             <head>
                 <SEOScripts />
             </head>
-            <body className={inter.className}>
+            <body className={`${inter.className} antialiased`}>
                 <SEOBodyScripts />
+                <AnalyticsTracker />
                 {children}
                 <Footer />
+                <Toaster />
             </body>
         </html>
     )
