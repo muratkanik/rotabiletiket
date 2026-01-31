@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
 
     const { data: views } = await supabase
         .from('page_views')
-        .select('visited_at')
+        .select('visited_at, path, referrer, country')
         .gte('visited_at', sevenDaysAgo.toISOString());
 
     // Process data for chart
@@ -96,10 +96,62 @@ export default async function AdminDashboard() {
                                 <span className="text-sm font-medium text-slate-600">Toplam Ziyaret (Haftalık)</span>
                                 <span className="font-bold text-slate-900">{totalViews}</span>
                             </div>
-                            <div className="flex items-center justify-between border-b pb-2">
-                                <span className="text-sm font-medium text-slate-600">En Çok Ziyaret Edilen</span>
-                                <span className="font-bold text-slate-900 text-sm">Analiz Yakında...</span>
+
+                            <div className="space-y-2 pt-2">
+                                <span className="text-sm font-semibold text-slate-900 block">En Çok Ziyaret Alan Sayfalar</span>
+                                {Object.entries(
+                                    views?.reduce((acc: any, curr) => {
+                                        // Simple path grouping
+                                        const p = curr.path || '/';
+                                        acc[p] = (acc[p] || 0) + 1;
+                                        return acc;
+                                    }, {}) || {}
+                                )
+                                    // @ts-ignore
+                                    .sort(([, a], [, b]) => b - a)
+                                    .slice(0, 5)
+                                    .map(([path, count]: any, i) => (
+                                        <div key={i} className="flex justify-between text-xs">
+                                            <span className="truncate max-w-[200px] text-slate-600" title={path}>{path}</span>
+                                            <span className="font-medium">{count}</span>
+                                        </div>
+                                    ))}
                             </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader><CardTitle>Ziyaret Kaynakları (Referrer)</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="space-y-2">
+                            {views?.filter(v => v.referrer).length === 0 ? (
+                                <p className="text-sm text-slate-500">Henüz kaynak verisi yok.</p>
+                            ) : (
+                                Object.entries(
+                                    views?.filter(v => v.referrer).reduce((acc: any, curr) => {
+                                        try {
+                                            const domain = new URL(curr.referrer).hostname.replace('www.', '');
+                                            // Ignore internal traffic
+                                            if (!domain.includes('rotabiletiket.com') && !domain.includes('localhost')) {
+                                                acc[domain] = (acc[domain] || 0) + 1;
+                                            }
+                                        } catch (e) { }
+                                        return acc;
+                                    }, {}) || {}
+                                )
+                                    // @ts-ignore
+                                    .sort(([, a], [, b]) => b - a)
+                                    .slice(0, 5)
+                                    .map(([domain, count]: any, i) => (
+                                        <div key={i} className="flex justify-between text-sm py-1 border-b last:border-0 border-slate-100">
+                                            <span className="font-medium text-slate-700">{domain}</span>
+                                            <span className="text-slate-500">{count}</span>
+                                        </div>
+                                    ))
+                            )}
                         </div>
                     </CardContent>
                 </Card>
