@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { getSiteSettings } from '@/lib/settings';
+import { MobileMenu } from './MobileMenu';
 
 export async function Navbar() {
     // Fetch settings dynamically (even for Navbar, if we want dynamic links/phones)
@@ -63,6 +64,7 @@ export async function Navbar() {
                     <Button className="bg-orange-600 hover:bg-orange-700 text-white hidden md:inline-flex" asChild>
                         <Link href="/iletisim">Teklif Al</Link>
                     </Button>
+                    <MobileMenu />
                 </div>
             </div>
         </nav>
