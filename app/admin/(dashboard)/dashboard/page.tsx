@@ -15,22 +15,41 @@ function getLast7Days() {
     return dates;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
-    const supabase = await createClient();
+    let productsCount = 0;
+    let articlesCount = 0;
+    let categoriesCount = 0;
+    let views: any[] | null = [];
 
-    // Fetch counts
-    const { count: productsCount } = await supabase.from('products').select('*', { count: 'exact', head: true });
-    const { count: articlesCount } = await supabase.from('articles').select('*', { count: 'exact', head: true });
-    const { count: categoriesCount } = await supabase.from('categories').select('*', { count: 'exact', head: true });
+    try {
+        const supabase = await createClient();
 
-    // Fetch Analytics (Last 7 days)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        // Fetch counts
+        const pRes = await supabase.from('products').select('*', { count: 'exact', head: true });
+        productsCount = pRes.count || 0;
 
-    const { data: views } = await supabase
-        .from('page_views')
-        .select('visited_at, path, referrer, country')
-        .gte('visited_at', sevenDaysAgo.toISOString());
+        const aRes = await supabase.from('articles').select('*', { count: 'exact', head: true });
+        articlesCount = aRes.count || 0;
+
+        const cRes = await supabase.from('categories').select('*', { count: 'exact', head: true });
+        categoriesCount = cRes.count || 0;
+
+        // Fetch Analytics (Last 7 days)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const vRes = await supabase
+            .from('page_views')
+            .select('visited_at, path, referrer, country')
+            .gte('visited_at', sevenDaysAgo.toISOString());
+
+        views = vRes.data || [];
+    } catch (error) {
+        console.error('Dashboard Data Fetch Error:', error);
+        // Continue with empty data to prevent crash
+    }
 
     // Process data for chart
     const last7Days = getLast7Days();
