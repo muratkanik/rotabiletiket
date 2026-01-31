@@ -5,8 +5,9 @@ import { Badge } from '@/components/ui/badge'; // Will need to create Badge
 
 export function ProductCard({ product, categorySlug }: { product: any, categorySlug: string }) {
     // Use first image or placeholder
-    const imageUrl = product.product_images?.[0]?.storage_path
-        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${product.product_images[0].storage_path}`
+    const storagePath = product.product_images?.[0]?.storage_path;
+    const imageUrl = storagePath
+        ? (storagePath.startsWith('/') ? storagePath : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${storagePath}`)
         : '/placeholder-product.jpg';
 
     return (
