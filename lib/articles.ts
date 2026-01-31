@@ -1,4 +1,11 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+// Use a static client that doesn't rely on request cookies
+// This is safe for public data and necessary for generateStaticParams
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export interface Article {
     id: string;
@@ -13,7 +20,6 @@ export interface Article {
 }
 
 export async function getArticles(): Promise<Article[]> {
-    const supabase = await createClient();
     const { data, error } = await supabase
         .from('articles')
         .select('*')
@@ -29,7 +35,6 @@ export async function getArticles(): Promise<Article[]> {
 }
 
 export async function getArticle(slug: string): Promise<Article | null> {
-    const supabase = await createClient();
     const { data, error } = await supabase
         .from('articles')
         .select('*')
