@@ -18,7 +18,7 @@ export async function Footer() {
                                 src="/logo.png"
                                 alt="Rotabil Etiket"
                                 fill
-                                className="object-contain brightness-0 invert opacity-90"
+                                className="object-contain"
                             />
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed">
