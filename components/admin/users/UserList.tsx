@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteUser, sendPasswordReset } from '@/app/admin/users/actions';
+import { deleteUser, sendPasswordReset } from '@/app/admin/(dashboard)/users/actions';
 import { Button } from '@/components/ui/button';
 import { Trash2, Key, Loader2, User } from 'lucide-react';
 import { toast } from 'sonner';
