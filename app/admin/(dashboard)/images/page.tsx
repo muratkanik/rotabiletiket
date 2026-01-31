@@ -20,7 +20,9 @@ export default function AdminImagesPage() {
     async function fetchImages() {
         const { data, error } = await supabase.storage.from('product-images').list();
         if (data) {
-            setImages(data);
+            // Filter out folders and non-image files
+            const imageFiles = data.filter(item => item.name !== '.emptyFolderPlaceholder' && item.name !== 'migrated' && item.metadata);
+            setImages(imageFiles);
         }
         setLoading(false);
     }
