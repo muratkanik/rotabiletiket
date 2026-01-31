@@ -243,16 +243,17 @@ export default function ProductFormPage() {
                         <h3 className="font-semibold text-slate-900 border-b pb-2">Görseller</h3>
 
                         <div className="grid grid-cols-2 gap-2">
-                            {images.map((img, i) => <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden group">
-                                <Image src={img.preview} alt="Preview" fill className="object-cover" unoptimized />
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => {
-                                        setImages(images.filter((_, idx) => idx !== i));
-                                    }}>
-                                        <X className="h-4 w-4" />
-                                    </Button>
+                            {images.map((img, i) => (
+                                <div key={i} className="relative aspect-square bg-slate-50 rounded border overflow-hidden group">
+                                    <Image src={img.preview} alt="Preview" fill className="object-cover" unoptimized />
+                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => {
+                                            setImages(images.filter((_, idx) => idx !== i));
+                                        }}>
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                             <label className="aspect-square bg-slate-50 rounded border border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors relative">
                                 <Upload className="h-6 w-6 mb-1" />
