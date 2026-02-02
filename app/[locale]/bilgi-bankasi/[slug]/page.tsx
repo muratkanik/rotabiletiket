@@ -12,15 +12,20 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = await params;
-    const locale = await getLocale();
-    const article = await getArticle(slug, locale);
-    if (!article) return { title: 'Not Found' };
+    try {
+        const { slug } = await params;
+        const locale = await getLocale();
+        const article = await getArticle(slug, locale);
+        if (!article) return { title: 'Not Found' };
 
-    return {
-        title: `${article.title} - Rotabil Etiket`,
-        description: article.summary,
-    };
+        return {
+            title: `${article.title} - Rotabil Etiket`,
+            description: article.summary,
+        };
+    } catch (error) {
+        console.error('Metadata generation error:', error);
+        return { title: 'Rotabil Etiket' };
+    }
 }
 
 export async function generateStaticParams() {
