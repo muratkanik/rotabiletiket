@@ -104,7 +104,7 @@ export async function getArticle(slug: string, locale: string = 'tr'): Promise<A
         .select('*')
         .eq('article_id', article.id)
         .eq('language_code', locale)
-        .single();
+        .maybeSingle();
 
     if (translation) {
         return {
