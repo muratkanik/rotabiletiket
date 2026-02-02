@@ -57,7 +57,7 @@ export default async function AdminArticlesPage() {
                                         <div className="relative h-12 w-16 bg-slate-100 rounded overflow-hidden">
                                             {article.image_url ? (
                                                 <Image
-                                                    src={article.image_url.startsWith('http') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`}
+                                                    src={article.image_url.startsWith('http') || article.image_url.startsWith('/') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`}
                                                     alt={article.title}
                                                     fill
                                                     className="object-cover"

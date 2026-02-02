@@ -121,7 +121,9 @@ export default async function ArticlePage({ params }: Props) {
                         {article.image_url && (
                             <div className="relative w-full h-[400px] mb-8 rounded-xl overflow-hidden shadow-lg not-prose">
                                 <Image
-                                    src={article.image_url}
+                                    src={article.image_url.startsWith('http') || article.image_url.startsWith('/')
+                                        ? article.image_url
+                                        : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`}
                                     alt={article.title}
                                     fill
                                     className="object-cover"
