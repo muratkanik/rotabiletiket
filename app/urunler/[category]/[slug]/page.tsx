@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const locale = await getLocale();
 
     // Fetch localized product
-    constproduct = await getLocalizedProduct(slug, locale);
+    const product = await getLocalizedProduct(slug, locale);
 
     if (!product) return {
         title: 'Ürün Bulunamadı | Rotabil Etiket',
