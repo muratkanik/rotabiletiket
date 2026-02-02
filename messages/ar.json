@@ -2,9 +2,18 @@
     "Navigation": {
         "home": "الرئيسية",
         "products": "المنتجات",
-        "about": "من نحن",
+        "about": "معلومات عنا",
         "contact": "اتصل بنا",
-        "blog": "قاعدة المعرفة"
+        "blog": "قاعدة المعرفة",
+        "sectoral": "الحلول القطاعية",
+        "labels": "ملصقات",
+        "ribbons": "شرائط",
+        "printers": "طابعات الباركود",
+        "printheads": "رؤوس الطباعة",
+        "labelsDesc": "أنواع الملصقات الصناعية",
+        "ribbonsDesc": "شرائط النقل الحراري",
+        "printersDesc": "سطح المكتب والصناعية",
+        "printheadsDesc": "قطع غيار أصلية"
     },
     "Common": {
         "readMore": "اقرأ المزيد",
@@ -12,9 +21,16 @@
         "getQuote": "احصل على عرض أسعار",
         "loading": "جار التحميل..."
     },
-    "Products": {
-        "title": "منتجاتنا",
-        "description": "حلول التسميات الصناعية والباركود",
-        "details": "التفاصيل"
+    "Hero": {
+        "badge": "حلول الملصقات والباركود الصناعية",
+        "ctaPrimary": "عرض المنتجات",
+        "ctaSecondary": "اتصل بنا"
+    },
+    "KnowledgeBase": {
+        "backToKB": "عودة إلى قاعدة المعرفة",
+        "relatedCategories": "فئات ذات صلة",
+        "labels": "ملصقات",
+        "ribbons": "شرائط",
+        "printers": "طابعات الباركود"
     }
 }

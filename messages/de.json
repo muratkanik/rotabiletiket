@@ -4,17 +4,33 @@
         "products": "Produkte",
         "about": "Über uns",
         "contact": "Kontakt",
-        "blog": "Wissensdatenbank"
+        "blog": "Wissensdatenbank",
+        "sectoral": "Branchenlösungen",
+        "labels": "Etiketten",
+        "ribbons": "Farbbänder",
+        "printers": "Barcode-Drucker",
+        "printheads": "Druckköpfe",
+        "labelsDesc": "Industrielle Etikettentypen",
+        "ribbonsDesc": "Thermotransfer-Farbbänder",
+        "printersDesc": "Desktop und Industrie",
+        "printheadsDesc": "Original-Ersatzteile"
     },
     "Common": {
         "readMore": "Weiterlesen",
         "contactUs": "Kontaktieren Sie uns",
-        "getQuote": "Angebot anfordern",
-        "loading": "Laden..."
+        "getQuote": "Angebot einholen",
+        "loading": "Wird geladen..."
     },
-    "Products": {
-        "title": "Unsere Produkte",
-        "description": "Industrielle Etiketten- und Barcode-Lösungen",
-        "details": "Einzelheiten"
+    "Hero": {
+        "badge": "Industrielle Etiketten- und Barcodelösungen",
+        "ctaPrimary": "Produkte ansehen",
+        "ctaSecondary": "Kontaktieren Sie uns"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Zurück zur Wissensdatenbank",
+        "relatedCategories": "Verwandte Kategorien",
+        "labels": "Etiketten",
+        "ribbons": "Farbbänder",
+        "printers": "Barcode-Drucker"
     }
 }

@@ -4,7 +4,16 @@
         "products": "Produits",
         "about": "À propos",
         "contact": "Contact",
-        "blog": "Base de connaissances"
+        "blog": "Base de connaissances",
+        "sectoral": "Solutions Sectorielles",
+        "labels": "Étiquettes",
+        "ribbons": "Rubans",
+        "printers": "Imprimantes Code-barres",
+        "printheads": "Têtes d'Impression",
+        "labelsDesc": "Types d'étiquettes industrielles",
+        "ribbonsDesc": "Rubans transfert thermique",
+        "printersDesc": "Bureau et industriel",
+        "printheadsDesc": "Pièces de rechange d'origine"
     },
     "Common": {
         "readMore": "Lire la suite",
@@ -12,9 +21,16 @@
         "getQuote": "Obtenir un devis",
         "loading": "Chargement..."
     },
-    "Products": {
-        "title": "Nos Produits",
-        "description": "Solutions d'étiquetage industriel et codes-barres",
-        "details": "Détails"
+    "Hero": {
+        "badge": "Solutions d'étiquetage et de codes-barres industriels",
+        "ctaPrimary": "Voir les produits",
+        "ctaSecondary": "Contactez-nous"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Retour à la base de connaissances",
+        "relatedCategories": "Catégories connexes",
+        "labels": "Étiquettes",
+        "ribbons": "Rubans",
+        "printers": "Imprimantes Code-barres"
     }
 }
