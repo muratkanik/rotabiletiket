@@ -107,7 +107,7 @@ export default function CategoryFormPage() {
                     .select('*')
                     .eq('category_id', id)
                     .eq('language_code', lang)
-                    .single();
+                    .maybeSingle();
 
                 if (trans) {
                     setFormData({
