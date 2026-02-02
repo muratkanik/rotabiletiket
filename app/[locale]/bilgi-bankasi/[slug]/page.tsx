@@ -138,6 +138,9 @@ export default async function ArticlePage({ params }: Props) {
             </article>
         );
     } catch (error: any) {
+        if (error.message === 'NEXT_NOT_FOUND' || (error as any).digest === 'NEXT_NOT_FOUND') {
+            throw error;
+        }
         return (
             <div className="p-10 text-red-600 container">
                 <h1 className="text-2xl font-bold">Something went wrong</h1>
