@@ -41,7 +41,7 @@ export const config = {
 
         // Enable redirects that add missing locales
         // (e.g. `/about` -> `/en/about`)
-        '/((?!_next|_vercel|.*\\..*).*)'
+        '/((?!api|admin|_next|_vercel|.*\\..*).*)'
     ]
 };
 
