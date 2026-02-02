@@ -4,7 +4,16 @@
         "products": "Products",
         "about": "About Us",
         "contact": "Contact",
-        "blog": "Knowledge Base"
+        "blog": "Knowledge Base",
+        "sectoral": "Sectoral Solutions",
+        "labels": "Labels",
+        "ribbons": "Ribbons",
+        "printers": "Barcode Printers",
+        "printheads": "Printheads",
+        "labelsDesc": "Industrial label types",
+        "ribbonsDesc": "Thermal transfer ribbons",
+        "printersDesc": "Desktop and industrial",
+        "printheadsDesc": "Original spare parts"
     },
     "Common": {
         "readMore": "Read More",
@@ -12,9 +21,9 @@
         "getQuote": "Get Quote",
         "loading": "Loading..."
     },
-    "Products": {
-        "title": "Our Products",
-        "description": "Industrial label and barcode solutions",
-        "details": "Details"
+    "Hero": {
+        "badge": "Industrial Label & Barcode Solutions",
+        "ctaPrimary": "View Products",
+        "ctaSecondary": "Contact Us"
     }
 }

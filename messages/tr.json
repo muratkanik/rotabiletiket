@@ -4,7 +4,16 @@
         "products": "Ürünler",
         "about": "Hakkımızda",
         "contact": "İletişim",
-        "blog": "Bilgi Bankası"
+        "blog": "Bilgi Bankası",
+        "sectoral": "Sektörel Çözümler",
+        "labels": "Etiketler",
+        "ribbons": "Ribonlar",
+        "printers": "Barkod Yazıcılar",
+        "printheads": "Yazıcı Kafaları",
+        "labelsDesc": "Endüstriyel etiket çeşitleri",
+        "ribbonsDesc": "Termal transfer ribonlar",
+        "printersDesc": "Masaüstü ve endüstriyel",
+        "printheadsDesc": "Orijinal yedek parçalar"
     },
     "Common": {
         "readMore": "Devamını Oku",
@@ -12,9 +21,9 @@
         "getQuote": "Teklif Al",
         "loading": "Yükleniyor..."
     },
-    "Products": {
-        "title": "Ürünlerimiz",
-        "description": "Endüstriyel etiket ve barkod çözümlerimiz",
-        "details": "Detaylar"
+    "Hero": {
+        "badge": "Endüstriyel Etiket & Barkod Çözümleri",
+        "ctaPrimary": "Ürünleri İncele",
+        "ctaSecondary": "Bize Ulaşın"
     }
 }

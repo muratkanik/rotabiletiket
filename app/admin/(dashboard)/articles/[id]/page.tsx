@@ -123,7 +123,7 @@ export default function ArticleFormPage() {
                     .select('*')
                     .eq('article_id', id)
                     .eq('language_code', lang)
-                    .single();
+                    .maybeSingle();
 
                 if (trans) {
                     setFormData({
