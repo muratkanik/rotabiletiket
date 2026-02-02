@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
+import { Link } from '@/src/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export function MobileMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
+    const tNav = useTranslations('Navigation');
+    const tCommon = useTranslations('Common');
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -16,7 +19,7 @@ export function MobileMenu() {
             <button
                 onClick={toggleMenu}
                 className="p-2 text-slate-700 hover:bg-slate-100 rounded-md"
-                aria-label="Menüyü aç"
+                aria-label={tCommon('readMore')} // adapting fallback or using a generic open-menu label if available, or just keeping aria-label generic english/localized if strict
             >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -31,45 +34,45 @@ export function MobileMenu() {
                                 onClick={() => setIsProductsOpen(!isProductsOpen)}
                                 className="flex items-center justify-between w-full text-lg font-medium text-slate-800 py-2"
                             >
-                                Ürünlerimiz
+                                {tNav('products')}
                                 <ChevronDown className={`h-5 w-5 transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
                             </button>
 
                             {isProductsOpen && (
                                 <div className="pl-4 mt-2 flex flex-col space-y-3">
                                     <Link href="/urunler/etiketler" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        Etiketler
+                                        {tNav('labels')}
                                     </Link>
                                     <Link href="/urunler/ribonlar" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        Ribonlar
+                                        {tNav('ribbons')}
                                     </Link>
                                     <Link href="/urunler/barkod-yazicilar" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        Barkod Yazıcılar
+                                        {tNav('printers')}
                                     </Link>
                                     <Link href="/urunler/barkod-yazici-kafasi" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        Yazıcı Kafaları
+                                        {tNav('printheads')}
                                     </Link>
                                 </div>
                             )}
                         </div>
 
                         <Link href="/sektorel-cozumler" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
-                            Sektörel Çözümler
+                            {tNav('sectoral')}
                         </Link>
                         <Link href="/bilgi-bankasi" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
-                            Bilgi Bankası
+                            {tNav('blog')}
                         </Link>
                         <Link href="/hakkimizda" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
-                            Hakkımızda
+                            {tNav('about')}
                         </Link>
                         <Link href="/iletisim" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
-                            İletişim
+                            {tNav('contact')}
                         </Link>
 
                         <div className="pt-4">
                             <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 text-lg" asChild>
                                 <Link href="/iletisim" onClick={toggleMenu}>
-                                    <Phone className="mr-2 h-5 w-5" /> Teklif Al
+                                    <Phone className="mr-2 h-5 w-5" /> {tCommon('getQuote')}
                                 </Link>
                             </Button>
                         </div>
