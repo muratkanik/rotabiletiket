@@ -25,5 +25,12 @@
         "badge": "Industrial Label & Barcode Solutions",
         "ctaPrimary": "View Products",
         "ctaSecondary": "Contact Us"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Back to Knowledge Base",
+        "relatedCategories": "Related Categories",
+        "labels": "Labels",
+        "ribbons": "Ribbons",
+        "printers": "Barcode Printers"
     }
 }

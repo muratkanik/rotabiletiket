@@ -69,7 +69,7 @@ export async function getArticle(slug: string, locale: string = 'tr'): Promise<A
         .from('articles')
         .select('*')
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
 
     // 2. If not found in base, try finding in translations table (for other langs)
     if (!article && locale !== 'tr') {
@@ -78,14 +78,14 @@ export async function getArticle(slug: string, locale: string = 'tr'): Promise<A
             .select('article_id')
             .eq('slug', slug)
             .eq('language_code', locale)
-            .single();
+            .maybeSingle();
 
         if (translationWithId) {
             const { data: baseArticle } = await supabase
                 .from('articles')
                 .select('*')
                 .eq('id', translationWithId.article_id)
-                .single();
+                .maybeSingle();
             article = baseArticle;
         }
     }

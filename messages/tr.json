@@ -25,5 +25,12 @@
         "badge": "Endüstriyel Etiket & Barkod Çözümleri",
         "ctaPrimary": "Ürünleri İncele",
         "ctaSecondary": "Bize Ulaşın"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Bilgi Bankasına Dön",
+        "relatedCategories": "İlgili Ürün Kategorileri",
+        "labels": "Etiketler",
+        "ribbons": "Ribonlar",
+        "printers": "Barkod Yazıcılar"
     }
 }
