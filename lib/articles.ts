@@ -19,8 +19,9 @@ export interface Article {
     updated_at?: string;
 }
 
-export async function getArticles(): Promise<Article[]> {
-    const { data, error } = await supabase
+export async function getArticles(locale: string = 'tr'): Promise<Article[]> {
+    // 1. Fetch all published base articles
+    const { data: articles, error } = await supabase
         .from('articles')
         .select('*')
         .eq('is_published', true)
@@ -31,20 +32,90 @@ export async function getArticles(): Promise<Article[]> {
         return [];
     }
 
-    return (data as Article[]) || [];
+    if (locale === 'tr') {
+        return (articles as Article[]) || [];
+    }
+
+    // 2. If locale is not 'tr', fetch translations for these articles
+    const articleIds = articles.map(a => a.id);
+    const { data: translations } = await supabase
+        .from('article_translations')
+        .select('*')
+        .in('article_id', articleIds)
+        .eq('language_code', locale);
+
+    // 3. Merge translations
+    const translatedArticles = articles.map(article => {
+        const translation = translations?.find(t => t.article_id === article.id);
+        if (translation) {
+            return {
+                ...article,
+                title: translation.title,
+                slug: translation.slug,
+                summary: translation.summary,
+                content_html: translation.content_html,
+                // Keep image_url from base
+            };
+        }
+        return article;
+    });
+
+    return translatedArticles as Article[];
 }
 
-export async function getArticle(slug: string): Promise<Article | null> {
-    const { data, error } = await supabase
+export async function getArticle(slug: string, locale: string = 'tr'): Promise<Article | null> {
+    // 1. Try to find by slug in base table (for TR)
+    let { data: article, error } = await supabase
         .from('articles')
         .select('*')
         .eq('slug', slug)
         .single();
 
-    if (error) {
-        console.error('Error fetching article:', error);
+    // 2. If not found in base, try finding in translations table (for other langs)
+    if (!article && locale !== 'tr') {
+        const { data: translationWithId } = await supabase
+            .from('article_translations')
+            .select('article_id')
+            .eq('slug', slug)
+            .eq('language_code', locale)
+            .single();
+
+        if (translationWithId) {
+            const { data: baseArticle } = await supabase
+                .from('articles')
+                .select('*')
+                .eq('id', translationWithId.article_id)
+                .single();
+            article = baseArticle;
+        }
+    }
+
+    if (!article) {
         return null;
     }
 
-    return (data as Article) || null;
+    if (locale === 'tr') {
+        return article as Article;
+    }
+
+    // 3. Fetch translation if locale is not TR
+    const { data: translation } = await supabase
+        .from('article_translations')
+        .select('*')
+        .eq('article_id', article.id)
+        .eq('language_code', locale)
+        .single();
+
+    if (translation) {
+        return {
+            ...article,
+            title: translation.title,
+            slug: translation.slug,
+            summary: translation.summary,
+            content_html: translation.content_html,
+            // Keep image_url from base
+        } as Article;
+    }
+
+    return article as Article;
 }

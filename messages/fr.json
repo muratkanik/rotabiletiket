@@ -1,0 +1,20 @@
+{
+    "Navigation": {
+        "home": "Accueil",
+        "products": "Produits",
+        "about": "À propos",
+        "contact": "Contact",
+        "blog": "Base de connaissances"
+    },
+    "Common": {
+        "readMore": "Lire la suite",
+        "contactUs": "Contactez-nous",
+        "getQuote": "Obtenir un devis",
+        "loading": "Chargement..."
+    },
+    "Products": {
+        "title": "Nos Produits",
+        "description": "Solutions d'étiquetage industriel et codes-barres",
+        "details": "Détails"
+    }
+}

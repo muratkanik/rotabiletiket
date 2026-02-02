@@ -1,0 +1,20 @@
+{
+    "Navigation": {
+        "home": "Startseite",
+        "products": "Produkte",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "blog": "Wissensdatenbank"
+    },
+    "Common": {
+        "readMore": "Weiterlesen",
+        "contactUs": "Kontaktieren Sie uns",
+        "getQuote": "Angebot anfordern",
+        "loading": "Laden..."
+    },
+    "Products": {
+        "title": "Unsere Produkte",
+        "description": "Industrielle Etiketten- und Barcode-Lösungen",
+        "details": "Einzelheiten"
+    }
+}

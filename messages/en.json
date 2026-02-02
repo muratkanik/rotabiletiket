@@ -1,0 +1,20 @@
+{
+    "Navigation": {
+        "home": "Home",
+        "products": "Products",
+        "about": "About Us",
+        "contact": "Contact",
+        "blog": "Knowledge Base"
+    },
+    "Common": {
+        "readMore": "Read More",
+        "contactUs": "Contact Us",
+        "getQuote": "Get Quote",
+        "loading": "Loading..."
+    },
+    "Products": {
+        "title": "Our Products",
+        "description": "Industrial label and barcode solutions",
+        "details": "Details"
+    }
+}

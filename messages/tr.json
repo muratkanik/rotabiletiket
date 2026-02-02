@@ -1,0 +1,20 @@
+{
+    "Navigation": {
+        "home": "Anasayfa",
+        "products": "Ürünler",
+        "about": "Hakkımızda",
+        "contact": "İletişim",
+        "blog": "Bilgi Bankası"
+    },
+    "Common": {
+        "readMore": "Devamını Oku",
+        "contactUs": "Bize Ulaşın",
+        "getQuote": "Teklif Al",
+        "loading": "Yükleniyor..."
+    },
+    "Products": {
+        "title": "Ürünlerimiz",
+        "description": "Endüstriyel etiket ve barkod çözümlerimiz",
+        "details": "Detaylar"
+    }
+}

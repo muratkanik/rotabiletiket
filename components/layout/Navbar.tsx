@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { getSiteSettings } from '@/lib/settings';
 import { MobileMenu } from './MobileMenu';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export async function Navbar() {
     // Fetch settings dynamically (even for Navbar, if we want dynamic links/phones)
@@ -60,10 +61,14 @@ export async function Navbar() {
                     <Link href="/iletisim" className="hover:text-blue-700 transition-colors">İletişim</Link>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <Button className="bg-orange-600 hover:bg-orange-700 text-white hidden md:inline-flex" asChild>
+                <div className="hidden md:flex items-center gap-2">
+                    <LanguageSwitcher />
+                    <Button className="bg-orange-600 hover:bg-orange-700 text-white" asChild>
                         <Link href="/iletisim">Teklif Al</Link>
                     </Button>
+                </div>
+                <div className="md:hidden flex items-center gap-2">
+                    <LanguageSwitcher />
                     <MobileMenu />
                 </div>
             </div>

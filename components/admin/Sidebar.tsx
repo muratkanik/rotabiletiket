@@ -11,7 +11,8 @@ import {
     LogOut,
     BarChart,
     Image as ImageIcon,
-    Users
+    Users,
+    BookOpen
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -20,6 +21,7 @@ const MENU_ITEMS = [
     { name: 'Genel Bakış', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Ürünler', href: '/admin/products', icon: Package },
     { name: 'Kategoriler', href: '/admin/categories', icon: Tags },
+    { name: 'Bilgi Bankası', href: '/admin/articles', icon: BookOpen },
     { name: 'Görseller', href: '/admin/images', icon: ImageIcon },
     { name: 'Kullanıcılar', href: '/admin/users', icon: Users },
     { name: 'Site Ayarları', href: '/admin/settings', icon: Settings },

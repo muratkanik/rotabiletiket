@@ -1,21 +1,24 @@
 import { getArticle, getArticles } from '@/lib/articles';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/src/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import type { Metadata } from 'next';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 interface Props {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const article = await getArticle(params.slug);
+    const { slug } = await params;
+    const locale = await getLocale();
+    const article = await getArticle(slug, locale);
     if (!article) return { title: 'Not Found' };
 
     return {
-        title: `${article.title} - Bilgi Bankası`,
+        title: `${article.title} - Rotabil Etiket`,
         description: article.summary,
     };
 }
@@ -28,7 +31,11 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }: Props) {
-    const article = await getArticle(params.slug);
+    const { slug } = await params;
+    const locale = await getLocale();
+    const t = await getTranslations('KnowledgeBase'); // Assuming we add keys here or separate 'Common'
+
+    const article = await getArticle(slug, locale);
 
     if (!article) {
         notFound();
@@ -58,7 +65,7 @@ export default async function ArticlePage({ params }: Props) {
         },
         mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://rotabiletiket.com/bilgi-bankasi/${params.slug}`,
+            '@id': `https://rotabiletiket.com/${locale}/bilgi-bankasi/${article.slug}`,
         },
     };
 
@@ -74,7 +81,7 @@ export default async function ArticlePage({ params }: Props) {
                     <Button variant="ghost" asChild className="mb-8 text-slate-300 hover:text-white hover:bg-white/10 -ml-4">
                         <Link href="/bilgi-bankasi">
                             <ArrowLeft className="mr-2 w-4 h-4" />
-                            Bilgi Bankasına Dön
+                            {t('backToKB')}
                         </Link>
                     </Button>
                     <h1 className="text-3xl md:text-5xl font-bold mb-6 max-w-4xl leading-tight">
@@ -83,7 +90,7 @@ export default async function ArticlePage({ params }: Props) {
                     <div className="flex items-center gap-6 text-slate-400 text-sm">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
-                            <span>{new Date(article.created_at).toLocaleDateString('tr-TR')}</span>
+                            <span>{new Date(article.created_at).toLocaleDateString(locale === 'tr' ? 'tr-TR' : locale)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <User size={16} />
@@ -113,11 +120,11 @@ export default async function ArticlePage({ params }: Props) {
                 {/* Sidebar (Optional: Related Links or Categories) */}
                 <div className="space-y-8">
                     <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                        <h3 className="font-bold text-lg mb-4 text-slate-900">İlgili Kategoriler</h3>
+                        <h3 className="font-bold text-lg mb-4 text-slate-900">{t('relatedCategories')}</h3>
                         <ul className="space-y-2 text-slate-600">
-                            <li><Link href="/urunler/etiketler" className="hover:text-orange-600 transition-colors">Etiket Çeşitleri</Link></li>
-                            <li><Link href="/urunler/barkod-yazicilar" className="hover:text-orange-600 transition-colors">Barkod Yazıcılar</Link></li>
-                            <li><Link href="/urunler/ribonlar" className="hover:text-orange-600 transition-colors">Ribonlar</Link></li>
+                            <li><Link href="/urunler/etiketler" className="hover:text-orange-600 transition-colors">{t('labels')}</Link></li>
+                            <li><Link href="/urunler/barkod-yazicilar" className="hover:text-orange-600 transition-colors">{t('printers')}</Link></li>
+                            <li><Link href="/urunler/ribonlar" className="hover:text-orange-600 transition-colors">{t('ribbons')}</Link></li>
                         </ul>
                     </div>
                 </div>
