@@ -102,7 +102,7 @@ export default function ArticleFormPage() {
 
             if (article.image_url) {
                 setImageUrl(article.image_url);
-                setImagePreview(article.image_url.startsWith('http') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`);
+                setImagePreview(article.image_url.startsWith('http') || article.image_url.startsWith('/') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`);
             }
 
             if (lang === 'tr') {
