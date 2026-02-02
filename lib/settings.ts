@@ -1,7 +1,13 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+// Use a static client for settings as they are public and needed for SSG
+// This avoids using cookies()/headers() which would break static generation
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function getSiteSettings(key: string) {
-    const supabase = await createClient();
     const { data, error } = await supabase
         .from('site_settings')
         .select('value')
