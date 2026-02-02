@@ -14,7 +14,13 @@ export default async function AdminArticlesPage() {
 
     if (error) {
         console.error("Articles fetch error:", error);
-        return <div className="p-8 text-red-500">Hata: Makaleler yüklenemedi.</div>;
+        return (
+            <div className="p-8 text-red-500">
+                <p className="font-bold">Hata: Makaleler yüklenemedi.</p>
+                <p className="text-sm mt-2 font-mono bg-red-50 p-2 rounded">{error.message}</p>
+                <p className="text-xs text-red-400 mt-1">Code: {error.code}, Details: {error.details}</p>
+            </div>
+        );
     }
 
     return (
@@ -71,8 +77,8 @@ export default async function AdminArticlesPage() {
                                     <td className="p-4 text-slate-600">{article.author || '-'}</td>
                                     <td className="p-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${article.is_published
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-yellow-100 text-yellow-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
                                             }`}>
                                             {article.is_published ? 'Yayında' : 'Taslak'}
                                         </span>
