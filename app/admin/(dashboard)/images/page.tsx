@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trash2, Upload } from 'lucide-react';
+import { Loader2, Trash2, Upload, Copy, Code } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -78,6 +78,33 @@ export default function AdminImagesPage() {
                                 unoptimized
                             />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => {
+                                        const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${file.name}`;
+                                        navigator.clipboard.writeText(url);
+                                        toast.success('URL kopyalandı');
+                                    }}
+                                    title="URL'yi Kopyala"
+                                >
+                                    <Copy size={14} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => {
+                                        const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${file.name}`;
+                                        const html = `<img src="${url}" alt="${file.name}" />`;
+                                        navigator.clipboard.writeText(html);
+                                        toast.success('HTML kodu kopyalandı');
+                                    }}
+                                    title="HTML Kodu Kopyala"
+                                >
+                                    <Code size={14} />
+                                </Button>
                                 <Button variant="destructive" size="icon" className="h-8 w-8">
                                     <Trash2 size={14} />
                                 </Button>
