@@ -6,7 +6,11 @@ import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
 
-export function MobileMenu() {
+interface MobileMenuProps {
+    contactInfo?: any;
+}
+
+export function MobileMenu({ contactInfo }: MobileMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const tNav = useTranslations('Navigation');

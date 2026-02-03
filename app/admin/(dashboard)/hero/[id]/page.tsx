@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, Save, Upload, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
@@ -187,34 +188,23 @@ export default function AdminHeroFormPage() {
                         {/* Media Upload */}
                         <div className="space-y-4">
                             <label className="block text-sm font-medium">Arkaplan Görseli/Videosu</label>
-                            {mediaPreview ? (
-                                <div className="relative aspect-video bg-slate-100 rounded-lg overflow-hidden group border">
-                                    {mediaType === 'video' || mediaPreview.endsWith('.mp4') ? (
-                                        <video src={mediaPreview} className="w-full h-full object-cover" autoPlay muted loop />
-                                    ) : (
-                                        <img src={mediaPreview} alt="Preview" className="w-full h-full object-cover" />
-                                    )}
-                                    <button
-                                        onClick={() => { setMediaPreview(null); setMediaFile(null); }}
-                                        className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <X size={16} />
-                                    </button>
-                                </div>
-                            ) : (
-                                <label className="aspect-video bg-slate-50 rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors">
-                                    <Upload className="h-8 w-8 mb-2" />
-                                    <span className="text-sm">Dosya Seç (Resim/Video)</span>
-                                    <input type="file" className="hidden" accept="image/*,video/mp4" onChange={(e) => {
-                                        if (e.target.files?.[0]) {
-                                            const file = e.target.files[0];
-                                            setMediaFile(file);
-                                            setMediaPreview(URL.createObjectURL(file));
-                                            setMediaType(file.type.startsWith('video') ? 'video' : 'image');
-                                        }
-                                    }} />
-                                </label>
-                            )}
+                            <ImageUpload
+                                value={mediaPreview || ''}
+                                onChange={(url) => {
+                                    setMediaPreview(url);
+                                    setBackgroundUrl(url); // Also update state directly if URL is passed (e.g. remove)
+                                    setMediaFile(null); // Clear file if URL is set directly
+                                    if (url) setMediaType(url.match(/\.(mp4|webm)$/i) ? 'video' : 'image');
+                                }}
+                                onUploadStart={() => setLoading(true)}
+                                onUploadEnd={() => setLoading(false)}
+                                // We handle the actual file upload inside ImageUpload now, but wait...
+                                // The ImageUpload component I made handles upload internally and returns URL.
+                                // So I need to adapt this form to just use the URL returned.
+                                // BUT, the previous logic was holding `mediaFile` state to upload on Save.
+                                // Let's simplify: ImageUpload uploads immediately.
+                                bucket="article-images" // Reusing this bucket as per previous logic
+                            />
                         </div>
 
                         <div className="space-y-2">
