@@ -92,11 +92,15 @@ export default function ArticleFormPage() {
             // 1. Fetch Base Article
             const { data: article, error } = await supabase
                 .from('articles')
-                .select('*')
+                .select('id, title, slug, summary, content_html, image_url, is_published, author, created_at, updated_at, published_at')
                 .eq('id', id)
                 .single();
 
-            if (error || !article) throw new Error('Article not found');
+            if (error) {
+                console.error("Supabase Fetch Error:", error);
+                throw error;
+            }
+            if (!article) throw new Error('Article not found');
 
             // Common fields
             setIsPublished(article.is_published ?? true);
@@ -113,7 +117,7 @@ export default function ArticleFormPage() {
                 // Fetch TR keywords from translations if exists
                 const { data: trTrans } = await supabase
                     .from('article_translations')
-                    .select('keywords')
+                    .select('keywords, seo_title, seo_description')
                     .eq('article_id', id)
                     .eq('language_code', 'tr')
                     .maybeSingle();
@@ -123,9 +127,9 @@ export default function ArticleFormPage() {
                     slug: article.slug || '',
                     summary: article.summary || '',
                     content_html: article.content_html || '',
-                    seo_title: article.item_title || article.title,
-                    seo_description: article.item_description || '',
-                    keywords: trTrans?.keywords || '' // Fetch keywords from translation
+                    seo_title: trTrans?.seo_title || article.title,
+                    seo_description: trTrans?.seo_description || '',
+                    keywords: trTrans?.keywords || ''
                 });
                 setEditorContent(article.content_html);
             } else {
@@ -195,7 +199,9 @@ export default function ArticleFormPage() {
     // Auto-slug
     useEffect(() => {
         if (isNew && selectedLang === 'tr' && formData.title) {
-            const newSlug = formData.title.toLowerCase().replace(/PRODUCT_LIST_ITEM/g, '-').replace(/[^a-z0-9-]/g, '');
+            const newSlug = formData.title.toLowerCase()
+                .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+                .replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
             setFormData(prev => ({ ...prev, slug: newSlug }));
         }
     }, [formData.title, isNew, selectedLang]);
