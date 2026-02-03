@@ -34,6 +34,7 @@
         "printers": "Barcode Printers",
         "title": "Knowledge Base",
         "headerSubtitle": "Sectoral Guide and Technical Insights",
-        "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions."
+        "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
+        "readMore": "Read More"
     }
 }

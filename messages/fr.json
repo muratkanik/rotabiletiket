@@ -34,6 +34,7 @@
         "printers": "Imprimantes Code-barres",
         "title": "Base de Connaissances",
         "headerSubtitle": "Guide Sectoriel et Informations Techniques",
-        "headerDescription": "Articles complets, guides et informations techniques sur l'étiquetage industriel, les systèmes de codes-barres et les solutions sectorielles."
+        "headerDescription": "Articles complets, guides et informations techniques sur l'étiquetage industriel, les systèmes de codes-barres et les solutions sectorielles.",
+        "readMore": "Lire la suite"
     }
 }

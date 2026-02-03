@@ -8,6 +8,7 @@ import AnalyticsTracker from '@/components/AnalyticsTracker';
 import { Toaster } from 'sonner';
 import { NextIntlClientProvider } from 'next-intl';
 import CookieBanner from '@/components/layout/CookieBanner';
+import { Navbar } from '@/components/layout/Navbar';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
@@ -60,6 +61,7 @@ export default async function RootLayout({
                 <SEOBodyScripts />
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />
+                    <Navbar />
                     {children}
                     <Footer locale={locale} />
                     <CookieBanner locale={locale} />

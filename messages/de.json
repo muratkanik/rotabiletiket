@@ -34,6 +34,7 @@
         "printers": "Barcode-Drucker",
         "title": "Wissensdatenbank",
         "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
-        "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen."
+        "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
+        "readMore": "Weiterlesen"
     }
 }
