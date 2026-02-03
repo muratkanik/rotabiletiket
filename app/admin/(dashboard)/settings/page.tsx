@@ -25,18 +25,29 @@ export default function AdminSettingsPage() {
         copyright_text: {}
     });
 
+    // Legal Texts (localized)
+    const [privacyPolicy, setPrivacyPolicy] = useState<any>({});
+    const [kvkk, setKvkk] = useState<any>({});
+    const [userAgreement, setUserAgreement] = useState<any>({});
+
     useEffect(() => {
         fetchSettings();
     }, []);
 
     const fetchSettings = async () => {
         setLoading(true);
-        const { data: settings, error } = await supabase.from('site_settings').select('*').in('key', ['contact_info', 'footer_content']);
+        const { data: settings, error } = await supabase
+            .from('site_settings')
+            .select('*')
+            .in('key', ['contact_info', 'footer_content', 'privacy_policy', 'kvkk', 'user_agreement']);
 
         if (settings) {
             settings.forEach(s => {
                 if (s.key === 'contact_info') setContactInfo(s.value);
                 if (s.key === 'footer_content') setFooterContent(s.value);
+                if (s.key === 'privacy_policy') setPrivacyPolicy(s.value);
+                if (s.key === 'kvkk') setKvkk(s.value);
+                if (s.key === 'user_agreement') setUserAgreement(s.value);
             });
         }
         setLoading(false);
@@ -45,11 +56,13 @@ export default function AdminSettingsPage() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            // Save Contact Info
             await supabase.from('site_settings').upsert({ key: 'contact_info', value: contactInfo });
-
-            // Save Footer Content
             await supabase.from('site_settings').upsert({ key: 'footer_content', value: footerContent });
+
+            // Save Legal Texts
+            await supabase.from('site_settings').upsert({ key: 'privacy_policy', value: privacyPolicy });
+            await supabase.from('site_settings').upsert({ key: 'kvkk', value: kvkk });
+            await supabase.from('site_settings').upsert({ key: 'user_agreement', value: userAgreement });
 
             toast.success('Ayarlar kaydedildi');
         } catch (error) {
@@ -63,11 +76,11 @@ export default function AdminSettingsPage() {
     if (loading) return <div className="p-8">Ayarlar yükleniyor...</div>;
 
     return (
-        <div className="max-w-4xl space-y-8">
+        <div className="max-w-6xl space-y-8 pb-20">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900">Site Ayarları</h1>
-                    <p className="text-slate-500 mt-1">Genel site yapılandırması ve içerikleri</p>
+                    <p className="text-slate-500 mt-1">Genel yapılandırma, hukuksal metinler ve footer yönetimi</p>
                 </div>
                 <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700">
                     {saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
@@ -75,9 +88,12 @@ export default function AdminSettingsPage() {
             </div>
 
             <Tabs defaultValue="contact">
-                <TabsList className="w-full justify-start h-12 bg-slate-100 p-1 rounded-lg">
-                    <TabsTrigger value="contact" className="px-6 h-full">İletişim Bilgileri</TabsTrigger>
-                    <TabsTrigger value="footer" className="px-6 h-full">Footer & Sosyal Medya</TabsTrigger>
+                <TabsList className="w-full justify-start h-auto flex-wrap bg-slate-100 p-2 rounded-lg gap-2">
+                    <TabsTrigger value="contact" className="px-6 py-2">İletişim Bilgileri</TabsTrigger>
+                    <TabsTrigger value="footer" className="px-6 py-2">Footer & Sosyal</TabsTrigger>
+                    <TabsTrigger value="privacy" className="px-6 py-2">Gizlilik Politikası</TabsTrigger>
+                    <TabsTrigger value="kvkk" className="px-6 py-2">KVKK</TabsTrigger>
+                    <TabsTrigger value="agreement" className="px-6 py-2">Kullanıcı Sözleşmesi</TabsTrigger>
                 </TabsList>
 
                 {/* Contact Info Tab */}
@@ -118,7 +134,7 @@ export default function AdminSettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* Footer Content Tab (Multi-language) */}
+                {/* Footer Content Tab */}
                 <TabsContent value="footer" className="mt-6 space-y-6">
                     <Card>
                         <CardHeader><CardTitle>Sosyal Medya Linkleri</CardTitle></CardHeader>
@@ -182,6 +198,89 @@ export default function AdminSettingsPage() {
                                                 })}
                                             />
                                         </div>
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* Privacy Policy Tab */}
+                <TabsContent value="privacy" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Gizlilik Politikası Yönetimi</CardTitle>
+                            <p className="text-sm text-slate-500">Her dil için ayrı içerik girebilirsiniz. HTML destekler.</p>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="tr" className="w-full">
+                                <TabsList className="mb-4">
+                                    {LANGUAGES.map(lang => (
+                                        <TabsTrigger key={lang} value={lang} className="uppercase">{lang}</TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                {LANGUAGES.map(lang => (
+                                    <TabsContent key={lang} value={lang}>
+                                        <Textarea
+                                            value={privacyPolicy?.[lang] || ''}
+                                            onChange={e => setPrivacyPolicy({ ...privacyPolicy, [lang]: e.target.value })}
+                                            className="min-h-[400px] font-mono text-sm"
+                                            placeholder={`<h3>Başlık (Örn)</h3>\n<p>İçerik buraya...</p>`}
+                                        />
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* KVKK Tab */}
+                <TabsContent value="kvkk" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>KVKK Metni Yönetimi</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="tr" className="w-full">
+                                <TabsList className="mb-4">
+                                    {LANGUAGES.map(lang => (
+                                        <TabsTrigger key={lang} value={lang} className="uppercase">{lang}</TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                {LANGUAGES.map(lang => (
+                                    <TabsContent key={lang} value={lang}>
+                                        <Textarea
+                                            value={kvkk?.[lang] || ''}
+                                            onChange={e => setKvkk({ ...kvkk, [lang]: e.target.value })}
+                                            className="min-h-[400px] font-mono text-sm"
+                                        />
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* User Agreement Tab */}
+                <TabsContent value="agreement" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Kullanıcı Sözleşmesi Yönetimi</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="tr" className="w-full">
+                                <TabsList className="mb-4">
+                                    {LANGUAGES.map(lang => (
+                                        <TabsTrigger key={lang} value={lang} className="uppercase">{lang}</TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                {LANGUAGES.map(lang => (
+                                    <TabsContent key={lang} value={lang}>
+                                        <Textarea
+                                            value={userAgreement?.[lang] || ''}
+                                            onChange={e => setUserAgreement({ ...userAgreement, [lang]: e.target.value })}
+                                            className="min-h-[400px] font-mono text-sm"
+                                        />
                                     </TabsContent>
                                 ))}
                             </Tabs>
