@@ -17,6 +17,7 @@ export interface Article {
     is_published: boolean;
     created_at: string;
     updated_at?: string;
+    keywords?: string; // Add keywords
 }
 
 export async function getArticles(locale: string = 'tr'): Promise<Article[]> {
@@ -113,6 +114,7 @@ export async function getArticle(slug: string, locale: string = 'tr'): Promise<A
             slug: translation.slug,
             summary: translation.summary,
             content_html: translation.content_html,
+            keywords: translation.keywords, // Add keywords
             // Keep image_url from base
         } as Article;
     }

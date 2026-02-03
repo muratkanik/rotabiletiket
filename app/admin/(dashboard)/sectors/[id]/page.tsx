@@ -47,7 +47,7 @@ export default function AdminSectorFormPage() {
         } else {
             // Init translations
             const initialTrans: any = {};
-            LANGUAGES.forEach(l => initialTrans[l.code] = { title: '', description: '', content_html: '' });
+            LANGUAGES.forEach(l => initialTrans[l.code] = { title: '', description: '', content_html: '', seo_title: '', seo_description: '', keywords: '' });
             setTranslations(initialTrans);
         }
     }, [id]);
@@ -66,7 +66,7 @@ export default function AdminSectorFormPage() {
         const { data: trans, error: transError } = await supabase.from('sector_translations').select('*').eq('sector_id', id);
 
         const transMap: any = {};
-        LANGUAGES.forEach(l => transMap[l.code] = { title: '', description: '', content_html: '' });
+        LANGUAGES.forEach(l => transMap[l.code] = { title: '', description: '', content_html: '', seo_title: '', seo_description: '', keywords: '' });
 
         if (trans) {
             trans.forEach((t: any) => {
@@ -121,7 +121,10 @@ export default function AdminSectorFormPage() {
                 language_code: code,
                 title: data.title,
                 description: data.description,
-                content_html: data.content_html
+                content_html: data.content_html,
+                seo_title: data.seo_title,
+                seo_description: data.seo_description,
+                keywords: data.keywords
             }));
 
             const { error: transErr } = await supabase.from('sector_translations').upsert(transToUpsert, { onConflict: 'sector_id, language_code' });
@@ -217,36 +220,75 @@ export default function AdminSectorFormPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-5">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-700">Başlık</label>
-                            <input
-                                className="w-full border rounded-lg p-2.5 font-medium text-lg"
-                                placeholder="Sektör Başlığı"
-                                value={currentTrans.title || ''}
-                                onChange={e => handleTransChange('title', e.target.value)}
-                            />
-                        </div>
+                        <Tabs defaultValue="content" className="w-full">
+                            <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
+                                <TabsTrigger value="content" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">Genel İçerik</TabsTrigger>
+                                <TabsTrigger value="seo" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">SEO Ayarları</TabsTrigger>
+                            </TabsList>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-700">Kısa Açıklama (Opsiyonel)</label>
-                            <textarea
-                                className="w-full border rounded-lg p-3 min-h-[80px]"
-                                placeholder="Kart üzerinde görünecek kısa özet..."
-                                value={currentTrans.description || ''}
-                                onChange={e => handleTransChange('description', e.target.value)}
-                            />
-                        </div>
+                            <TabsContent value="content" className="space-y-5 mt-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">Başlık</label>
+                                    <input
+                                        className="w-full border rounded-lg p-2.5 font-medium text-lg"
+                                        placeholder="Sektör Başlığı"
+                                        value={currentTrans.title || ''}
+                                        onChange={e => handleTransChange('title', e.target.value)}
+                                    />
+                                </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-700">İçerik (HTML)</label>
-                            <Textarea
-                                className="w-full min-h-[300px] font-mono text-sm"
-                                placeholder="<p>Detaylı içerik...</p>"
-                                value={currentTrans.content_html || ''}
-                                onChange={(e: any) => handleTransChange('content_html', e.target.value)}
-                            />
-                            <p className="text-xs text-slate-400">HTML etiketleri kullanabilirsiniz. İleri düzey düzenleme için HTML yazın.</p>
-                        </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">Kısa Açıklama (Opsiyonel)</label>
+                                    <textarea
+                                        className="w-full border rounded-lg p-3 min-h-[80px]"
+                                        placeholder="Kart üzerinde görünecek kısa özet..."
+                                        value={currentTrans.description || ''}
+                                        onChange={e => handleTransChange('description', e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">İçerik (HTML)</label>
+                                    <Textarea
+                                        className="w-full min-h-[300px] font-mono text-sm"
+                                        placeholder="<p>Detaylı içerik...</p>"
+                                        value={currentTrans.content_html || ''}
+                                        onChange={(e: any) => handleTransChange('content_html', e.target.value)}
+                                    />
+                                    <p className="text-xs text-slate-400">HTML etiketleri kullanabilirsiniz. İleri düzey düzenleme için HTML yazın.</p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="seo" className="space-y-5 mt-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">SEO Başlığı (Meta Title)</label>
+                                    <input
+                                        className="w-full border rounded-lg p-2.5"
+                                        placeholder="Boş bırakılırsa ana başlık kullanılır"
+                                        value={currentTrans.seo_title || ''}
+                                        onChange={e => handleTransChange('seo_title', e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">SEO Açıklaması (Meta Description)</label>
+                                    <textarea
+                                        className="w-full border rounded-lg p-3 h-24"
+                                        placeholder="Arama motorlarında görünecek açıklama..."
+                                        value={currentTrans.seo_description || ''}
+                                        onChange={e => handleTransChange('seo_description', e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700">Anahtar Kelimeler (Keywords)</label>
+                                    <input
+                                        className="w-full border rounded-lg p-2.5"
+                                        placeholder="virgül, ile, ayırın"
+                                        value={currentTrans.keywords || ''}
+                                        onChange={e => handleTransChange('keywords', e.target.value)}
+                                    />
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </CardContent>
                 </Card>
             </div>

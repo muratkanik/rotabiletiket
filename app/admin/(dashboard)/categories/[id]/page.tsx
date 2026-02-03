@@ -94,32 +94,43 @@ export default function CategoryFormPage() {
                 setImagePreview(category.image_url.startsWith('http') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`);
             }
 
+            // Always fetch translation for SEO fields (even for TR)
+            const { data: trans } = await supabase
+                .from('category_translations')
+                .select('*')
+                .eq('category_id', id)
+                .eq('language_code', lang)
+                .maybeSingle();
+
             if (lang === 'tr') {
                 setFormData({
                     title: category.title || '',
                     slug: category.slug || '',
-                    description: category.description || ''
+                    description: category.description || '',
+                    // SEO from translation table if exists
+                    seo_title: trans?.seo_title || '',
+                    seo_description: trans?.seo_description || '',
+                    keywords: trans?.keywords || ''
                 });
             } else {
                 // Fetch Translation
-                const { data: trans } = await supabase
-                    .from('category_translations')
-                    .select('*')
-                    .eq('category_id', id)
-                    .eq('language_code', lang)
-                    .maybeSingle();
-
                 if (trans) {
                     setFormData({
                         title: trans.title || '',
                         slug: trans.slug || '',
-                        description: trans.description || ''
+                        description: trans.description || '',
+                        seo_title: trans.seo_title || '',
+                        seo_description: trans.seo_description || '',
+                        keywords: trans.keywords || ''
                     });
                 } else {
                     setFormData({
                         title: '',
                         slug: '',
-                        description: ''
+                        description: '',
+                        seo_title: '',
+                        seo_description: '',
+                        keywords: ''
                     });
                 }
             }
@@ -157,6 +168,12 @@ export default function CategoryFormPage() {
                 description: formData.description
             };
 
+            const seoData = {
+                seo_title: formData.seo_title,
+                seo_description: formData.seo_description,
+                keywords: formData.keywords
+            };
+
             if (selectedLang === 'tr') {
                 const upsertData = { ...commonData, ...contentData };
 
@@ -168,6 +185,24 @@ export default function CategoryFormPage() {
                     const { error } = await supabase.from('categories').update(upsertData).eq('id', categoryId);
                     if (error) throw error;
                 }
+
+                // ALSO upsert SEO data for TR in translations table
+                const translationData = {
+                    category_id: categoryId,
+                    language_code: 'tr',
+                    // We don't necessarily need to duplicate title/desc here if we rely on categories table, 
+                    // BUT for consistency and "backup" it doesn't hurt.
+                    // However, to keep it clean, let's just save SEO fields + basic required fields if any constraint exists?
+                    // sector_translations table might not have constraints other than PK.
+                    // But usually translations table expects title/description. 
+                    // Let's save ALL fields to translation table for TR as well, so we have a full copy there too? 
+                    // Reference: In `Sector` logic, we upsert ALL translations.
+                    // Let's do the same here for consistency.
+                    ...contentData,
+                    ...seoData
+                };
+                await supabase.from('category_translations').upsert(translationData, { onConflict: 'category_id, language_code' });
+
             } else {
                 if (isNew) {
                     toast.error("Önce Türkçe (Ana Dil) olarak kaydedin.");
@@ -177,7 +212,8 @@ export default function CategoryFormPage() {
                 const translationData = {
                     category_id: categoryId,
                     language_code: selectedLang,
-                    ...contentData
+                    ...contentData,
+                    ...seoData
                 };
                 const { error } = await supabase.from('category_translations').upsert(translationData, { onConflict: 'category_id, language_code' });
                 if (error) throw error;
@@ -318,29 +354,67 @@ export default function CategoryFormPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Kategori Adı</label>
-                                <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
-                                    value={formData.title}
-                                    onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                />
-                            </div>
+                            <Tabs defaultValue="basic" className="w-full">
+                                <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
+                                    <TabsTrigger value="basic" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">Temel Bilgiler</TabsTrigger>
+                                    <TabsTrigger value="seo" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">SEO Ayarları</TabsTrigger>
+                                </TabsList>
 
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Slug (URL)</label>
-                                <input className="w-full border rounded-lg p-2.5 bg-slate-50 text-slate-500 font-mono text-sm"
-                                    value={formData.slug}
-                                    onChange={e => setFormData({ ...formData, slug: e.target.value })}
-                                />
-                            </div>
+                                <TabsContent value="basic" className="space-y-6 mt-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Kategori Adı</label>
+                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
+                                            value={formData.title}
+                                            onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        />
+                                    </div>
 
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Açıklama</label>
-                                <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
-                                    value={formData.description}
-                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                />
-                            </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Slug (URL)</label>
+                                        <input className="w-full border rounded-lg p-2.5 bg-slate-50 text-slate-500 font-mono text-sm"
+                                            value={formData.slug}
+                                            onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Açıklama</label>
+                                        <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
+                                            value={formData.description}
+                                            onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="seo" className="space-y-6 mt-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">SEO Başlığı (Meta Title)</label>
+                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder={formData.title}
+                                            value={formData.seo_title || ''}
+                                            onChange={e => setFormData({ ...formData, seo_title: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">SEO Açıklaması (Meta Description)</label>
+                                        <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                                            placeholder="Arama sonuçlarında görünecek açıklama..."
+                                            value={formData.seo_description || ''}
+                                            onChange={e => setFormData({ ...formData, seo_description: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Anahtar Kelimeler</label>
+                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="etiket, rulo etiket, baskı"
+                                            value={formData.keywords || ''}
+                                            onChange={e => setFormData({ ...formData, keywords: e.target.value })}
+                                        />
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
                         </CardContent>
                     </Card>
                 </TabsContent>

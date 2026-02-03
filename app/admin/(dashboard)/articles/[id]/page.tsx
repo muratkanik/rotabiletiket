@@ -29,6 +29,7 @@ interface ArticleData {
     content_html: string;
     seo_title: string;
     seo_description: string;
+    keywords: string; // Add keywords
 }
 
 const LANGUAGES = [
@@ -65,7 +66,8 @@ export default function ArticleFormPage() {
         summary: '',
         content_html: '',
         seo_title: '',
-        seo_description: ''
+        seo_description: '',
+        keywords: '' // Add keywords
     });
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -107,13 +109,23 @@ export default function ArticleFormPage() {
 
             if (lang === 'tr') {
                 // Use base fields
+
+                // Fetch TR keywords from translations if exists
+                const { data: trTrans } = await supabase
+                    .from('article_translations')
+                    .select('keywords')
+                    .eq('article_id', id)
+                    .eq('language_code', 'tr')
+                    .maybeSingle();
+
                 setFormData({
                     title: article.title || '',
                     slug: article.slug || '',
                     summary: article.summary || '',
                     content_html: article.content_html || '',
-                    seo_title: article.item_title || article.title, // Assume simplified or missing SEO on base for now if not structured
-                    seo_description: article.item_description || ''
+                    seo_title: article.item_title || article.title,
+                    seo_description: article.item_description || '',
+                    keywords: trTrans?.keywords || '' // Fetch keywords from translation
                 });
                 setEditorContent(article.content_html);
             } else {
@@ -132,7 +144,8 @@ export default function ArticleFormPage() {
                         summary: trans.summary || '',
                         content_html: trans.content_html || '',
                         seo_title: trans.seo_title || '',
-                        seo_description: trans.seo_description || ''
+                        seo_description: trans.seo_description || '',
+                        keywords: trans.keywords || '' // Fetch keywords
                     });
                     setEditorContent(trans.content_html);
                 } else {
@@ -143,7 +156,8 @@ export default function ArticleFormPage() {
                         summary: '',
                         content_html: '',
                         seo_title: '',
-                        seo_description: ''
+                        seo_description: '',
+                        keywords: ''
                     });
                     setEditorContent('');
                 }
@@ -218,6 +232,19 @@ export default function ArticleFormPage() {
                     const { error } = await supabase.from('articles').update(upsertData).eq('id', articleId);
                     if (error) throw error;
                 }
+
+                // ALSO save to article_translations for TR (to store keywords and SEO)
+                // This ensures consistency and future-proofs the specific SEO fields not in base table
+                const trTranslationData = {
+                    article_id: articleId,
+                    language_code: 'tr',
+                    ...contentData,
+                    seo_title: formData.seo_title,
+                    seo_description: formData.seo_description,
+                    keywords: formData.keywords
+                };
+                await supabase.from('article_translations').upsert(trTranslationData, { onConflict: 'article_id, language_code' });
+
             } else {
                 if (isNew) {
                     toast.error("Önce Türkçe (Ana Dil) olarak kaydedin.");
@@ -229,7 +256,8 @@ export default function ArticleFormPage() {
                     language_code: selectedLang,
                     ...contentData,
                     seo_title: formData.seo_title,
-                    seo_description: formData.seo_description
+                    seo_description: formData.seo_description,
+                    keywords: formData.keywords
                 };
                 const { error } = await supabase.from('article_translations').upsert(translationData, { onConflict: 'article_id, language_code' });
                 if (error) throw error;
@@ -438,6 +466,14 @@ export default function ArticleFormPage() {
                                     <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 h-[100px]"
                                         value={formData.seo_description}
                                         onChange={e => setFormData({ ...formData, seo_description: e.target.value })}
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium mb-1">Anahtar Kelimeler (Keywords)</label>
+                                    <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="etiket, barkod, yazıcı (virgül ile ayırın)"
+                                        value={formData.keywords}
+                                        onChange={e => setFormData({ ...formData, keywords: e.target.value })}
                                     />
                                 </div>
                             </div>

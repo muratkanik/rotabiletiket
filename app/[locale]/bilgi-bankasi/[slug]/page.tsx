@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         return {
             title: `${article.title} - Rotabil Etiket`,
             description: article.summary,
+            keywords: article.keywords || '',
         };
     } catch (error) {
         console.error('Metadata generation error:', error);

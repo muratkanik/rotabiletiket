@@ -17,7 +17,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             sector_translations (
                 language_code,
                 title,
-                content_html
+                content_html,
+                seo_title,
+                seo_description,
+                keywords
             )
         `)
         .eq('slug', slug)
@@ -28,11 +31,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
         || sector.sector_translations?.find((t: any) => t.language_code === 'tr')
         || {};
-    const title = trans.title || sector.title;
+
+    const title = trans.seo_title || trans.title || sector.title;
+    const description = trans.seo_description || `${title} için özel etiketleme çözümleri ve endüstriyel uygulamalar.`;
+    const keywords = trans.keywords || '';
 
     return {
         title: `${title} | Rotabil Etiket`,
-        description: `${title} için özel etiketleme çözümleri ve endüstriyel uygulamalar.`
+        description: description,
+        keywords: keywords
     }
 }
 

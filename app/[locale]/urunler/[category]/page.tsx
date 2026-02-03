@@ -2,33 +2,66 @@ import { createClient } from '@/utils/supabase/server';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Navbar } from '@/components/layout/Navbar';
 import { notFound } from 'next/navigation';
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import { Link } from '@/src/i18n/routing';
+import { getLocale } from 'next-intl/server';
 
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
     const { category: categorySlug } = await params;
+    const locale = await getLocale();
     const supabase = await createClient();
+
+    // Fetch Category with Translations
     const { data: category } = await supabase
         .from('categories')
-        .select('*')
+        .select(`
+            *,
+            category_translations (
+                language_code,
+                title,
+                description,
+                seo_title,
+                seo_description,
+                keywords
+            )
+        `)
         .eq('slug', categorySlug)
         .single();
 
+    if (!category) return { title: 'Ürünler | Rotabil Etiket' };
+
+    const trans = category.category_translations?.find((t: any) => t.language_code === locale)
+        || category.category_translations?.find((t: any) => t.language_code === 'tr')
+        || {};
+
+    const title = trans.seo_title || trans.title || category.title;
+    const description = trans.seo_description || trans.description || category.description || `En kaliteli ${title} çeşitleri.`;
+    const keywords = trans.keywords || '';
+
     return {
-        title: category ? `${category.title} | Rotabil Etiket` : 'Ürünler',
-        description: `En kaliteli ${category?.title || 'etiket ve barkod'} çeşitleri.`
+        title: `${title} | Rotabil Etiket`,
+        description: description,
+        keywords: keywords
     }
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
     const { category: categorySlug } = await params;
+    const locale = await getLocale();
     const supabase = await createClient();
 
-    // 1. Fetch Category
+    // 1. Fetch Category with Translations
     const { data: category } = await supabase
         .from('categories')
-        .select('*')
+        .select(`
+            *,
+            category_translations (
+                language_code,
+                title,
+                description
+            )
+        `)
         .eq('slug', categorySlug)
         .single();
 
@@ -36,12 +69,38 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         notFound();
     }
 
+    const trans = category.category_translations?.find((t: any) => t.language_code === locale)
+        || category.category_translations?.find((t: any) => t.language_code === 'tr')
+        || {};
+
+    const displayTitle = trans.title || category.title;
+    const displayDesc = trans.description || category.description;
+
     // 2. Fetch Products
-    const { data: products } = await supabase
+    const { data: rawProducts } = await supabase
         .from('products')
-        .select('*, product_images(*)')
+        .select(`
+            *,
+            product_images(*),
+            product_translations (
+                language_code,
+                title,
+                slug,
+                description_html
+            )
+        `)
         .eq('category_id', category.id)
         .order('title', { ascending: true });
+
+    const products = rawProducts?.map((p: any) => {
+        const trans = p.product_translations?.find((t: any) => t.language_code === locale);
+        return {
+            ...p,
+            title: trans?.title || p.title,
+            slug: trans?.slug || p.slug,
+            description_html: trans?.description_html || p.description_html
+        };
+    });
 
     return (
         <main className="min-h-screen bg-slate-50">
@@ -64,15 +123,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                             <li aria-current="page">
                                 <div className="flex items-center">
                                     <span className="mx-2 text-slate-600">/</span>
-                                    <span className="text-white font-medium">{category.title}</span>
+                                    <span className="text-white font-medium">{displayTitle}</span>
                                 </div>
                             </li>
                         </ol>
                     </nav>
                 </div>
-                <h1 className="text-4xl font-bold mb-4">{category.title}</h1>
+                <h1 className="text-4xl font-bold mb-4">{displayTitle}</h1>
                 <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                    {category.description || `Endüstriyel standartlarda, yüksek kaliteli ${category.title.toLowerCase()} çözümlerimiz.`}
+                    {displayDesc || `Endüstriyel standartlarda, yüksek kaliteli ${displayTitle.toLowerCase()} çözümlerimiz.`}
                 </p>
             </div>
 

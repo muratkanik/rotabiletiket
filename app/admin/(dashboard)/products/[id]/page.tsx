@@ -501,6 +501,14 @@ export default function ProductFormPage() {
                                         onChange={e => setFormData({ ...formData, seo_description: e.target.value })}
                                     />
                                 </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium mb-1">Anahtar Kelimeler (Keywords)</label>
+                                    <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="etiket, ürün, özellik"
+                                        value={formData.keywords || ''}
+                                        onChange={e => setFormData({ ...formData, keywords: e.target.value })}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

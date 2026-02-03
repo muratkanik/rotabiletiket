@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     return {
         title: product.seo_title || `${product.title} | Rotabil Etiket`,
-        description: product.seo_description || product.title
+        description: product.seo_description || product.description_html?.replace(/<[^>]*>?/gm, '').substring(0, 160) || product.title,
+        keywords: product.keywords || ''
     }
 }
 
