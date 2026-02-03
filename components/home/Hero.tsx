@@ -1,42 +1,52 @@
-import { Button } from '@/components/ui/button';
-import { getSiteSettings } from '@/lib/settings';
-import { HeroClient } from './HeroClient'; // We'll move the framer-motion client stuff here
+import { createClient } from '@supabase/supabase-js';
+import { HeroClient } from './HeroClient';
 
-export async function Hero() {
-    const settings = await getSiteSettings('hero_section');
+// Static client for public data to avoid DYNAMIC_SERVER_USAGE
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-    if (!settings) return null;
+export async function Hero({ locale }: { locale: string }) {
+    // Fetch slides and translations
+    const { data: slides, error } = await supabase
+        .from('hero_slides')
+        .select(`
+            *,
+            hero_slide_translations (
+                language_code,
+                title,
+                subtitle,
+                badge_text,
+                cta_primary_text,
+                cta_primary_link,
+                cta_secondary_text,
+                cta_secondary_link
+            )
+        `)
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+    if (error || !slides || slides.length === 0) {
+        console.error('Hero slides fetch error:', error);
+        return null;
+    }
+
+    // Process slides to inject correct translation
+    const localizedSlides = slides.map((slide: any) => {
+        const translation = slide.hero_slide_translations.find((t: any) => t.language_code === locale)
+            || slide.hero_slide_translations.find((t: any) => t.language_code === 'tr') // Fallback to TR
+            || slide.hero_slide_translations[0]; // Fallback to any
+
+        return {
+            ...slide,
+            ...translation // Flatten translation fields into the slide object
+        };
+    });
 
     return (
-        <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-            {/* Dynamic Background Video */}
-            <div className="absolute inset-0 z-0">
-                {settings.video_url?.endsWith('.mp4') ? (
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover opacity-40 grayscale-[20%]"
-                    >
-                        <source src={settings.video_url} type="video/mp4" />
-                    </video>
-                ) : (
-                    // Fallback to static image if not a video
-                    <div className="absolute inset-0">
-                        <img
-                            src={settings.video_url || '/img/products/printers/zebra_industrial_generic.png'}
-                            alt="Hero Background"
-                            className="w-full h-full object-cover opacity-30 grayscale-[20%]"
-                        />
-                    </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/30" />
-            </div>
-
-            <div className="container relative z-10 px-4 md:px-6">
-                <HeroClient settings={settings} />
-            </div>
+        <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-900">
+            <HeroClient slides={localizedSlides} />
         </div >
     );
 }
