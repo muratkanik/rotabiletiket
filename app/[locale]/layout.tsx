@@ -60,7 +60,7 @@ export default async function RootLayout({
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />
                     {children}
-                    <Footer />
+                    <Footer locale={locale} />
                     <Toaster />
                 </NextIntlClientProvider>
             </body>
