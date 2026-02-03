@@ -29,6 +29,7 @@ export default function AdminSettingsPage() {
     const [privacyPolicy, setPrivacyPolicy] = useState<any>({});
     const [kvkk, setKvkk] = useState<any>({});
     const [userAgreement, setUserAgreement] = useState<any>({});
+    const [cookieConsent, setCookieConsent] = useState<any>({});
 
     useEffect(() => {
         fetchSettings();
@@ -39,7 +40,7 @@ export default function AdminSettingsPage() {
         const { data: settings, error } = await supabase
             .from('site_settings')
             .select('*')
-            .in('key', ['contact_info', 'footer_content', 'privacy_policy', 'kvkk', 'user_agreement']);
+            .in('key', ['contact_info', 'footer_content', 'privacy_policy', 'kvkk', 'user_agreement', 'cookie_consent']);
 
         if (settings) {
             settings.forEach(s => {
@@ -48,6 +49,7 @@ export default function AdminSettingsPage() {
                 if (s.key === 'privacy_policy') setPrivacyPolicy(s.value);
                 if (s.key === 'kvkk') setKvkk(s.value);
                 if (s.key === 'user_agreement') setUserAgreement(s.value);
+                if (s.key === 'cookie_consent') setCookieConsent(s.value);
             });
         }
         setLoading(false);
@@ -63,6 +65,7 @@ export default function AdminSettingsPage() {
             await supabase.from('site_settings').upsert({ key: 'privacy_policy', value: privacyPolicy });
             await supabase.from('site_settings').upsert({ key: 'kvkk', value: kvkk });
             await supabase.from('site_settings').upsert({ key: 'user_agreement', value: userAgreement });
+            await supabase.from('site_settings').upsert({ key: 'cookie_consent', value: cookieConsent });
 
             toast.success('Ayarlar kaydedildi');
         } catch (error) {
@@ -94,6 +97,7 @@ export default function AdminSettingsPage() {
                     <TabsTrigger value="privacy" className="px-6 py-2">Gizlilik Politikası</TabsTrigger>
                     <TabsTrigger value="kvkk" className="px-6 py-2">KVKK</TabsTrigger>
                     <TabsTrigger value="agreement" className="px-6 py-2">Kullanıcı Sözleşmesi</TabsTrigger>
+                    <TabsTrigger value="cookie" className="px-6 py-2">Çerez (Cookie) Uyarısı</TabsTrigger>
                 </TabsList>
 
                 {/* Contact Info Tab */}
@@ -280,6 +284,35 @@ export default function AdminSettingsPage() {
                                             value={userAgreement?.[lang] || ''}
                                             onChange={e => setUserAgreement({ ...userAgreement, [lang]: e.target.value })}
                                             className="min-h-[400px] font-mono text-sm"
+                                        />
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* Cookie Consent Tab */}
+                <TabsContent value="cookie" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Çerez Uyarısı Metni (Cookie Consent)</CardTitle>
+                            <p className="text-sm text-slate-500">Kullanıcı siteye girdiğinde alt bantta görünecek kısa uyarı metni.</p>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="tr" className="w-full">
+                                <TabsList className="mb-4">
+                                    {LANGUAGES.map(lang => (
+                                        <TabsTrigger key={lang} value={lang} className="uppercase">{lang}</TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                {LANGUAGES.map(lang => (
+                                    <TabsContent key={lang} value={lang}>
+                                        <Textarea
+                                            value={cookieConsent?.[lang] || ''}
+                                            onChange={e => setCookieConsent({ ...cookieConsent, [lang]: e.target.value })}
+                                            className="min-h-[150px] font-mono text-sm"
+                                            placeholder="Çerez kullanım uyarısı..."
                                         />
                                     </TabsContent>
                                 ))}
