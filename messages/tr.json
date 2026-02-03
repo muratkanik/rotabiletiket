@@ -31,6 +31,9 @@
         "relatedCategories": "İlgili Ürün Kategorileri",
         "labels": "Etiketler",
         "ribbons": "Ribonlar",
-        "printers": "Barkod Yazıcılar"
+        "printers": "Barkod Yazıcılar",
+        "title": "Bilgi Bankası",
+        "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
+        "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler."
     }
 }

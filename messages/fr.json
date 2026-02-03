@@ -31,6 +31,9 @@
         "relatedCategories": "Catégories connexes",
         "labels": "Étiquettes",
         "ribbons": "Rubans",
-        "printers": "Imprimantes Code-barres"
+        "printers": "Imprimantes Code-barres",
+        "title": "Base de Connaissances",
+        "headerSubtitle": "Guide Sectoriel et Informations Techniques",
+        "headerDescription": "Articles complets, guides et informations techniques sur l'étiquetage industriel, les systèmes de codes-barres et les solutions sectorielles."
     }
 }

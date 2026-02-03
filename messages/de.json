@@ -31,6 +31,9 @@
         "relatedCategories": "Verwandte Kategorien",
         "labels": "Etiketten",
         "ribbons": "Farbbänder",
-        "printers": "Barcode-Drucker"
+        "printers": "Barcode-Drucker",
+        "title": "Wissensdatenbank",
+        "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
+        "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen."
     }
 }
