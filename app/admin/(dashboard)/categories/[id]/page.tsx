@@ -16,6 +16,9 @@ interface CategoryData {
     title: string;
     slug: string;
     description: string;
+    seo_title: string;
+    seo_description: string;
+    keywords: string;
 }
 
 const LANGUAGES = [
@@ -49,7 +52,10 @@ export default function CategoryFormPage() {
     const [formData, setFormData] = useState<CategoryData>({
         title: '',
         slug: '',
-        description: ''
+        description: '',
+        seo_title: '',
+        seo_description: '',
+        keywords: ''
     });
 
     useEffect(() => {

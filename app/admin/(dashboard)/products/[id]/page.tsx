@@ -28,6 +28,7 @@ interface ProductData {
     description_html: string;
     seo_title: string;
     seo_description: string;
+    keywords: string;
 }
 
 const LANGUAGES = [
@@ -64,7 +65,8 @@ export default function ProductFormPage() {
         slug: '',
         description_html: '',
         seo_title: '',
-        seo_description: ''
+        seo_description: '',
+        keywords: ''
     });
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -125,12 +127,16 @@ export default function ProductFormPage() {
 
             if (lang === 'tr') {
                 // Use base fields
+                // Fetch TR keywords from translation if exists
+                const { data: trTrans } = await supabase.from('product_translations').select('keywords').eq('product_id', id).eq('language_code', 'tr').maybeSingle();
+
                 setFormData({
                     title: product.title || '',
                     slug: product.slug || '',
                     description_html: product.description_html || '',
                     seo_title: product.seo_title || '',
-                    seo_description: product.seo_description || ''
+                    seo_description: product.seo_description || '',
+                    keywords: trTrans?.keywords || ''
                 });
                 setEditorContent(product.description_html);
             } else {
@@ -148,7 +154,8 @@ export default function ProductFormPage() {
                         slug: trans.slug || '',
                         description_html: trans.description_html || '',
                         seo_title: trans.seo_title || '',
-                        seo_description: trans.seo_description || ''
+                        seo_description: trans.seo_description || '',
+                        keywords: trans.keywords || ''
                     });
                     setEditorContent(trans.description_html);
                 } else {
@@ -158,7 +165,8 @@ export default function ProductFormPage() {
                         slug: '',
                         description_html: '',
                         seo_title: '',
-                        seo_description: ''
+                        seo_description: '',
+                        keywords: ''
                     });
                     setEditorContent('');
                 }
@@ -220,7 +228,8 @@ export default function ProductFormPage() {
                 slug: formData.slug,
                 description_html: formData.description_html,
                 seo_title: formData.seo_title,
-                seo_description: formData.seo_description
+                seo_description: formData.seo_description,
+                keywords: formData.keywords
             };
 
             if (selectedLang === 'tr') {
@@ -235,6 +244,14 @@ export default function ProductFormPage() {
                     const { error } = await supabase.from('products').update(upsertData).eq('id', productId);
                     if (error) throw error;
                 }
+
+                // ALSO upsert TR translation for keywords/SEO
+                const trTransData = {
+                    product_id: productId,
+                    language_code: 'tr',
+                    ...contentData
+                };
+                await supabase.from('product_translations').upsert(trTransData, { onConflict: 'product_id, language_code' });
             } else {
                 // UPSERT TRANSLATION (Only if product exists)
                 if (isNew) {
