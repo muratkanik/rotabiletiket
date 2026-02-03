@@ -2,29 +2,53 @@ import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 
-export async function SectorsSection() {
+export async function SectorsSection({ locale }: { locale: string }) {
     const supabase = await createClient();
+    const t = await getTranslations('Navigation'); // reusing 'sectoral' key
+    const common = await getTranslations('Common');
+
     const { data: sectors } = await supabase
         .from('sectors')
-        .select('*')
+        .select(`
+            *,
+            sector_translations (
+                language_code,
+                title
+            )
+        `)
         .limit(4);
+
+    const localizedSectors = sectors?.map((sec: any) => {
+        const trans = sec.sector_translations?.find((t: any) => t.language_code === locale)
+            || sec.sector_translations?.find((t: any) => t.language_code === 'tr')
+            || {};
+        return { ...sec, title: trans.title || sec.title };
+    }) || [];
 
     return (
         <section className="py-24 bg-white">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                     <div>
-                        <span className="text-orange-600 font-semibold tracking-wider text-sm uppercase">Sektörel Çözümler</span>
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Her Sektör İçin Özel Üretim</h2>
+                        <span className="text-orange-600 font-semibold tracking-wider text-sm uppercase">{t('sectoral')}</span>
+                        {/* If we want this localized fully, we need a key. For now reusing logical keys or DB? User said "everything". Let's assume generic text for now or add key. */}
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-2">
+                            {locale === 'en' ? 'Special Production for Every Sector' :
+                                locale === 'de' ? 'Spezialproduktion für jeden Sektor' :
+                                    locale === 'fr' ? 'Production spéciale pour chaque secteur' :
+                                        locale === 'ar' ? 'إنتاج خاص لكل قطاع' :
+                                            'Her Sektör İçin Özel Üretim'}
+                        </h2>
                     </div>
                     <Link href="/sektorel-cozumler" className="hidden md:flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                        Tüm Sektörleri Gör <ArrowRight className="ml-2 w-4 h-4" />
+                        {common('readMore')} <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {sectors?.map((sector: any) => (
+                    {localizedSectors.map((sector: any) => (
                         <Link
                             key={sector.id}
                             href={`/sektorel-cozumler/${sector.slug}`}
@@ -48,17 +72,16 @@ export async function SectorsSection() {
                                 </h3>
                                 <div className="h-0 group-hover:h-auto overflow-hidden transition-all duration-300">
                                     <span className="text-white/80 text-sm inline-flex items-center">
-                                        Detaylı Bilgi <ArrowRight className="ml-2 w-3 h-3" />
+                                        {common('readMore')} <ArrowRight className="ml-2 w-3 h-3" />
                                     </span>
                                 </div>
                             </div>
                         </Link>
                     ))}
                 </div>
-
                 <div className="mt-8 text-center md:hidden">
                     <Link href="/sektorel-cozumler" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                        Tüm Sektörleri Gör <ArrowRight className="ml-2 w-4 h-4" />
+                        {common('readMore')} <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
                 </div>
             </div>

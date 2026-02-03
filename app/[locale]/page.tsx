@@ -9,8 +9,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <main className="min-h-screen bg-slate-50 font-sans text-slate-900">
             <Navbar />
             <Hero locale={locale} />
-            <FeatureCards />
-            <SectorsSection />
+            <FeatureCards locale={locale} />
+            <SectorsSection locale={locale} />
 
             {/* Footer Placeholder (Using layout usually, but for now explicitly here or in layout) */}
         </main>

@@ -1,27 +1,71 @@
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { ArrowRight, Tag, Printer, ScrollText } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
 const ICONS: Record<string, any> = {
     'Etiketler': Tag,
     'Ribonlar': ScrollText,
-    'Barkod Yazıcılar': Printer
+    'Barkod Yazıcılar': Printer,
+    'Labels': Tag,
+    'Ribbons': ScrollText,
+    'Printers': Printer,
+    'Etiketten': Tag,
+    'Farbbänder': ScrollText,
+    'Drucker': Printer,
+    'Étiquettes': Tag,
+    'Rubans': ScrollText,
+    'Imprimantes': Printer,
+    'ملصقات': Tag,
+    'شرائط': ScrollText,
+    'طابعات': Printer
 };
 
-export async function FeatureCards() {
+// Helper to map English/German/etc titles to Icon keys if needed, 
+// or just ensure ICONS has keys for translated titles.
+
+export async function FeatureCards({ locale }: { locale: string }) {
     const supabase = await createClient();
+    const t = await getTranslations('Common');
+
+    // Fetch categories with translations
     const { data: categories } = await supabase
         .from('categories')
-        .select('*')
-        .order('created_at', { ascending: true }) // Or add a separate 'order' column later
+        .select(`
+            *,
+            category_translations (
+                language_code,
+                title,
+                description
+            )
+        `)
+        .order('created_at', { ascending: true })
         .limit(3);
+
+    const localizedCategories = categories?.map((cat: any) => {
+        const trans = cat.category_translations?.find((t: any) => t.language_code === locale)
+            || cat.category_translations?.find((t: any) => t.language_code === 'tr')
+            || {};
+
+        return {
+            ...cat,
+            title: trans.title || cat.title,
+            description: trans.description // potentially use this if available
+        };
+    }) || [];
 
     return (
         <section className="py-24 bg-slate-50">
             <div className="container px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {categories?.map((category: any) => {
-                        const Icon = ICONS[category.title] || Tag;
+                    {localizedCategories.map((category: any) => {
+                        // Icon mapping might be tricky if title changes. 
+                        // Maybe rely on the original Turkish title or ID for Icon mapping?
+                        // Let's use the 'slug' or original 'title' if we can, but we mapped title.
+                        // Actually, let's map based on known keywords in the translated title.
+                        let Icon = Tag;
+                        if (category.title.match(/ribon|ribbon|farbbänder|ruban|شرائط/i)) Icon = ScrollText;
+                        else if (category.title.match(/yazıcı|printer|drucker|imprimante|طابعات/i)) Icon = Printer;
 
                         return (
                             <Link
@@ -43,11 +87,12 @@ export async function FeatureCards() {
                                     </h3>
 
                                     <p className="text-slate-600 mb-6 leading-relaxed">
-                                        Endüstriyel ihtiyaçlarınıza uygun yüksek kaliteli {category.title.toLowerCase()} çözümleri.
+                                        {/* Fallback description logic or just simple text */}
+                                        {category.title}
                                     </p>
 
                                     <div className="flex items-center text-sm font-semibold text-blue-600 group-hover:text-orange-600 transition-colors">
-                                        Ürünleri İncele <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        {t('readMore')} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </div>
                             </Link>
