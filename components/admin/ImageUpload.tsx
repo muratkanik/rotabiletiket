@@ -46,11 +46,10 @@ export function ImageUpload({
 
             if (uploadError) throw uploadError;
 
-            const { data } = supabase.storage
-                .from(bucket)
-                .getPublicUrl(fileName);
+            // Manually construct public URL to ensure consistency
+            const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${fileName}`;
 
-            onChange(data.publicUrl);
+            onChange(publicUrl);
             toast.success('Dosya yüklendi');
         } catch (error) {
             console.error('Upload Error:', error);

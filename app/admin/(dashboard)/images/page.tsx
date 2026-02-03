@@ -71,7 +71,7 @@ export default function AdminImagesPage() {
                     {images.map((file) => (
                         <div key={file.id} className="group relative aspect-square bg-slate-100 rounded-lg overflow-hidden border">
                             <Image
-                                src={`https://zninvhkeicgkixhigufo.supabase.co/storage/v1/object/public/product-images/${file.name}`}
+                                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${file.name}`}
                                 alt={file.name}
                                 fill
                                 className="object-cover"
