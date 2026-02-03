@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
@@ -12,6 +12,10 @@ export default function AdminSectorsPage() {
     const supabase = createClient();
     const [sectors, setSectors] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortKey, setSortKey] = useState<'display_order' | 'title'>('display_order');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     useEffect(() => {
         fetchSectors();
@@ -60,6 +64,42 @@ export default function AdminSectorsPage() {
         }
     };
 
+    const handleSort = (key: 'display_order' | 'title') => {
+        if (sortKey === key) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortKey(key);
+            setSortOrder('asc');
+        }
+    };
+
+    const filteredAndSortedSectors = sectors
+        .filter(sector => {
+            const trData = sector.sector_translations?.find((t: any) => t.language_code === 'tr');
+            const title = trData?.title?.toLowerCase() || '';
+            const slug = sector.slug.toLowerCase();
+            const searchLower = searchTerm.toLowerCase();
+            return title.includes(searchLower) || slug.includes(searchLower);
+        })
+        .sort((a, b) => {
+            let aValue: any = '';
+            let bValue: any = '';
+
+            if (sortKey === 'title') {
+                const aTr = a.sector_translations?.find((t: any) => t.language_code === 'tr');
+                const bTr = b.sector_translations?.find((t: any) => t.language_code === 'tr');
+                aValue = aTr?.title || '';
+                bValue = bTr?.title || '';
+            } else {
+                aValue = a.display_order;
+                bValue = b.display_order;
+            }
+
+            if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+            return 0;
+        });
+
     if (loading) return <div className="p-8">Yükleniyor...</div>;
 
     return (
@@ -76,21 +116,43 @@ export default function AdminSectorsPage() {
                 </Button>
             </div>
 
+            {/* Search Bar */}
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                    type="text"
+                    placeholder="Sektör ara..."
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
             <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50 border-b">
                         <tr>
-                            <th className="p-4 font-semibold text-slate-700 w-16">Sıra</th>
+                            <th className="p-4 font-semibold text-slate-700 w-16 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('display_order')}>
+                                <div className="flex items-center gap-1">
+                                    Sıra
+                                    {sortKey === 'display_order' && <ArrowUpDown className="h-3 w-3" />}
+                                </div>
+                            </th>
                             <th className="p-4 font-semibold text-slate-700 w-24">Görsel</th>
-                            <th className="p-4 font-semibold text-slate-700">Başlık (TR)</th>
+                            <th className="p-4 font-semibold text-slate-700 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('title')}>
+                                <div className="flex items-center gap-1">
+                                    Başlık (TR)
+                                    {sortKey === 'title' && <ArrowUpDown className="h-3 w-3" />}
+                                </div>
+                            </th>
                             <th className="p-4 font-semibold text-slate-700">Slug</th>
                             <th className="p-4 font-semibold text-slate-700">Durum</th>
                             <th className="p-4 font-semibold text-slate-700 text-right">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
-                        {sectors.length > 0 ? (
-                            sectors.map((sector) => {
+                        {filteredAndSortedSectors.length > 0 ? (
+                            filteredAndSortedSectors.map((sector) => {
                                 const trData = sector.sector_translations?.find((t: any) => t.language_code === 'tr');
                                 return (
                                     <tr key={sector.id} className="hover:bg-slate-50/50 transition-colors">
