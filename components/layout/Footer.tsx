@@ -2,11 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSiteSettings } from '@/lib/settings';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { getSiteSettings } from '@/lib/settings';
-import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 export async function Footer({ locale }: { locale: string }) {
@@ -66,7 +61,6 @@ export async function Footer({ locale }: { locale: string }) {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="font-bold text-lg mb-6">{t('about')}? No, corporate generic title "Kurumsal"</h3>
                         {/* Assuming 'Corporate' translation exists or hardcode localized logic */}
                         <h3 className="font-bold text-lg mb-6">
                             {locale === 'en' ? 'Corporate' : locale === 'ar' ? 'الشركة' : 'Kurumsal'}
@@ -119,8 +113,6 @@ export async function Footer({ locale }: { locale: string }) {
                             by MK Studio
                         </a>
                     </p>
-
-                    {/* Legal Links - Translate these too if keys exist */}
                     <div className="flex gap-6 text-sm text-slate-500">
                         <Link href="/gizlilik" className="hover:text-white">
                             {locale === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'}
