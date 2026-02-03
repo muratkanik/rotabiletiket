@@ -112,7 +112,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     <nav className="flex justify-center text-sm text-slate-400 mb-4" aria-label="Breadcrumb">
                         <ol className="inline-flex items-center space-x-1 md:space-x-3">
                             <li className="inline-flex items-center">
-                                <a href="/" className="hover:text-white transition-colors">Anasayfa</a>
+                                <Link href="/" className="hover:text-white transition-colors">Anasayfa</Link>
                             </li>
                             <li>
                                 <div className="flex items-center">

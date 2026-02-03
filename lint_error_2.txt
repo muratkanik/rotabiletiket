@@ -1,0 +1,358 @@
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\actions\seed-categories.ts[24m[0m
+[0m  [2m47:9[22m   [31merror[39m  'results' is never reassigned. Use 'const' instead  [2mprefer-const[22m[0m
+[0m  [2m54:13[22m  [31merror[39m  'dbCat' is never reassigned. Use 'const' instead    [2mprefer-const[22m[0m
+[0m  [2m88:64[22m  [31merror[39m  Unexpected any. Specify a different type            [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\bilgi-bankasi\[slug]\page.tsx[24m[0m
+[0m   [2m1:22[22m  [33mwarning[39m  'getArticles' is defined but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m59:23[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m59:70[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\gizlilik\page.tsx[24m[0m
+[0m  [2m7:11[22m  [33mwarning[39m  't' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\hakkimizda\page.tsx[24m[0m
+[0m  [2m104:46[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m130:61[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\iletisim\page.tsx[24m[0m
+[0m  [2m3:10[22m  [33mwarning[39m  'Button' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\kvkk\page.tsx[24m[0m
+[0m  [2m4:42[22m  [33mwarning[39m  'params' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\layout.tsx[24m[0m
+[0m  [2m44:45[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\sektorel-cozumler\[slug]\page.tsx[24m[0m
+[0m  [2m31:56[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m32:49[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m65:56[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m66:49[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\sektorel-cozumler\page.tsx[24m[0m
+[0m  [2m49:44[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m50:76[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m51:69[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\sektorel-cozumler\urunler\[category]\[slug]\page.tsx[24m[0m
+[0m   [2m7:10[22m  [33mwarning[39m  'Check' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m37:53[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m37:61[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m70:60[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m99:94[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\sektorel-cozumler\urunler\[category]\page.tsx[24m[0m
+[0m  [2m58:46[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\urunler\[category]\[slug]\page.tsx[24m[0m
+[0m    [2m7:10[22m  [33mwarning[39m  'Check' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m43:53[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m43:61[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m107:60[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m136:94[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\[locale]\urunler\[category]\page.tsx[24m[0m
+[0m   [2m34:60[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m35:53[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m72:60[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m73:53[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m95:43[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m96:56[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m141:46[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\articles\[id]\page.tsx[24m[0m
+[0m   [2m79:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchArticleData' and 'isNew'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m187:22[22m  [33mwarning[39m  'e' is defined but never used                                                                                                      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m290:21[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                           [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\articles\page.tsx[24m[0m
+[0m   [2m5:29[22m  [33mwarning[39m  'Trash2' is defined but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m6:10[22m  [33mwarning[39m  'formatDate' is defined but never used    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m54:52[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\categories\[id]\page.tsx[24m[0m
+[0m   [2m46:62[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m66:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchCategoryData', 'fetchParentCategories', 'isNew', and 'selectedLang'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m72:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchCategoryData', 'isNew', and 'loading'. Either include them or remove the dependency array                                [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m250:21[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\dashboard\page.tsx[24m[0m
+[0m    [2m4:52[22m  [33mwarning[39m  'Users' is defined but never used                                                                                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m24:16[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m122:57[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m129:37[22m  [31merror[39m    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  [2m@typescript-eslint/ban-ts-comment[22m[0m
+[0m  [2m132:58[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m153:81[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m160:50[22m  [33mwarning[39m  'e' is defined but never used                                                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m164:37[22m  [31merror[39m    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  [2m@typescript-eslint/ban-ts-comment[22m[0m
+[0m  [2m167:60[22m  [31merror[39m    Unexpected any. Specify a different type                                                                             [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\hero\[id]\page.tsx[24m[0m
+[0m    [2m7:29[22m  [33mwarning[39m  'Upload' is defined but never used                                                                                           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m7:37[22m  [33mwarning[39m  'X' is defined but never used                                                                                                [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m    [2m9:8[22m   [33mwarning[39m  'Image' is defined but never used                                                                                            [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m11:10[22m  [33mwarning[39m  'Tabs' is defined but never used                                                                                             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m11:16[22m  [33mwarning[39m  'TabsContent' is defined but never used                                                                                      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m11:29[22m  [33mwarning[39m  'TabsList' is defined but never used                                                                                         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m11:39[22m  [33mwarning[39m  'TabsTrigger' is defined but never used                                                                                      [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m43:69[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m51:33[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m59:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchSlide' and 'isNew'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m77:37[22m  [33mwarning[39m  'transError' is assigned a value but never used                                                                              [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m79:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m87:31[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m139:92[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m157:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\hero\page.tsx[24m[0m
+[0m   [2m6:32[22m  [33mwarning[39m  'Eye' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m12:42[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m32:9[22m   [31merror[39m    Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\hero\page.tsx:32:9[0m
+[0m  30 |[0m
+[0m  31 |     useEffect(() => {[0m
+[0m> 32 |         fetchSlides();[0m
+[0m     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  33 |     }, []);[0m
+[0m  34 |[0m
+[0m  35 |     const handleDelete = async (id: string) => {  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m  [2m33:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchSlides'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m86:88[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m95:57[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\images\page.tsx[24m[0m
+[0m  [2m11:42[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m17:23[22m  [33mwarning[39m  'error' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m27:9[22m   [31merror[39m    Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\images\page.tsx:27:9[0m
+[0m  25 |[0m
+[0m  26 |     useEffect(() => {[0m
+[0m> 27 |         fetchImages();[0m
+[0m     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  28 |     }, []);[0m
+[0m  29 |[0m
+[0m  30 |     async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m  [2m28:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchImages'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\products\[id]\page.tsx[24m[0m
+[0m   [2m56:50[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                               [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m59:42[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                               [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m79:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchCategories', 'fetchProductData', 'isNew', and 'selectedLang'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m86:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchProductData', 'isNew', and 'loading'. Either include them or remove the dependency array                          [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m121:60[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                               [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m298:21[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                               [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m451:63[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                               [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\sectors\[id]\page.tsx[24m[0m
+[0m   [2m41:69[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m49:33[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m53:8[22m   [33mwarning[39m  React Hook useEffect has missing dependencies: 'fetchSector' and 'isNew'. Either include them or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m66:37[22m  [33mwarning[39m  'transError' is assigned a value but never used                                                                               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m68:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m72:31[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m119:92[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m136:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m256:55[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                      [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\sectors\page.tsx[24m[0m
+[0m   [2m13:44[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m21:9[22m   [31merror[39m    Error: Cannot access variable before it is declared[0m
+[0m[0m
+[0m`fetchSectors` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\sectors\page.tsx:21:9[0m
+[0m  19 |[0m
+[0m  20 |     useEffect(() => {[0m
+[0m> 21 |         fetchSectors();[0m
+[0m     |         ^^^^^^^^^^^^ `fetchSectors` accessed before it is declared[0m
+[0m  22 |     }, []);[0m
+[0m  23 |[0m
+[0m  24 |     const fetchSectors = async () => {[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\sectors\page.tsx:24:5[0m
+[0m  22 |     }, []);[0m
+[0m  23 |[0m
+[0m> 24 |     const fetchSectors = async () => {[0m
+[0m     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 25 |         setLoading(true);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 26 |         const { data, error } = await supabase[0m
+[0m     …[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 43 |         setLoading(false);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 44 |     };[0m
+[0m     | ^^^^^^^ `fetchSectors` is declared here[0m
+[0m  45 |[0m
+[0m  46 |     const handleDelete = async (id: string) => {[0m
+[0m  47 |         if (!confirm('Bu sektörü ve tüm çevirilerini silmek istediğinize emin misiniz?')) return;  [2mreact-hooks/immutability[22m[0m
+[0m   [2m22:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchSectors'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m78:65[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m85:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m86:25[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m89:61[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m90:61[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m156:85[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\seo\page.tsx[24m[0m
+[0m  [2m10:19[22m  [33mwarning[39m  'settings' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\settings\page.tsx[24m[0m
+[0m  [2m21:52[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m22:56[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m29:56[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m30:38[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m31:56[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m32:56[22m  [31merror[39m    Unexpected any. Specify a different type                                                                          [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m36:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchSettings'. Either include it or remove the dependency array  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m40:33[22m  [33mwarning[39m  'error' is assigned a value but never used                                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\(dashboard)\users\actions.ts[24m[0m
+[0m   [2m32:13[22m  [33mwarning[39m  'data' is assigned a value but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m51:13[22m  [33mwarning[39m  'data' is assigned a value but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m116:13[22m  [33mwarning[39m  'error' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\admin\update-password\page.tsx[24m[0m
+[0m  [2m16:11[22m  [33mwarning[39m  'router' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\app\sitemap.ts[24m[0m
+[0m  [2m23:51[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m32:55[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m41:48[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m50:51[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\admin\ImageUpload.tsx[24m[0m
+[0m  [2m5:10[22m  [33mwarning[39m  'Button' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\admin\products\ProductList.tsx[24m[0m
+[0m  [2m7:24[22m  [33mwarning[39m  'Trash2' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\admin\users\AddUserForm.tsx[24m[0m
+[0m  [2m26:18[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\admin\users\UserList.tsx[24m[0m
+[0m   [2m9:60[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m39:18[22m  [33mwarning[39m  'error' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\home\FeatureCards.tsx[24m[0m
+[0m   [2m6:7[22m   [33mwarning[39m  'ICONS' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m6:29[22m  [31merror[39m    Unexpected any. Specify a different type    [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m45:55[22m  [31merror[39m    Unexpected any. Specify a different type    [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m46:59[22m  [31merror[39m    Unexpected any. Specify a different type    [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m47:52[22m  [31merror[39m    Unexpected any. Specify a different type    [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m61:57[22m  [31merror[39m    Unexpected any. Specify a different type    [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\home\Hero.tsx[24m[0m
+[0m  [2m36:48[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m37:68[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m38:55[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\home\HeroClient.tsx[24m[0m
+[0m  [2m16:50[22m  [31merror[39m    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m31:37[22m  [33mwarning[39m  'index' is defined but never used                                                                                                                                                                                                                                                        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m47:37[22m  [33mwarning[39m  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  [2m@next/next/no-img-element[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\home\SectorsSection.tsx[24m[0m
+[0m  [2m23:49[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m24:57[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m25:50[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m51:52[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\layout\CookieBanner.tsx[24m[0m
+[0m  [2m17:13[22m  [31merror[39m    Error: Cannot access variable before it is declared[0m
+[0m[0m
+[0m`fetchConsentText` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\layout\CookieBanner.tsx:17:13[0m
+[0m  15 |             // Fetch settings client-side or assume passed?[0m
+[0m  16 |             // Since this is a client component inside Layout, we can fetch on mount.[0m
+[0m> 17 |             fetchConsentText();[0m
+[0m     |             ^^^^^^^^^^^^^^^^ `fetchConsentText` accessed before it is declared[0m
+[0m  18 |         }[0m
+[0m  19 |     }, [locale]);[0m
+[0m  20 |[0m
+[0m[0m
+[0mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\layout\CookieBanner.tsx:21:5[0m
+[0m  19 |     }, [locale]);[0m
+[0m  20 |[0m
+[0m> 21 |     const fetchConsentText = async () => {[0m
+[0m     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 22 |         const settings = await getSiteSettings('cookie_consent');[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 23 |         if (settings) {[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 24 |             setConsentText(settings[locale] || settings['tr'] || '');[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 25 |             setIsVisible(true);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 26 |         }[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 27 |     };[0m
+[0m     | ^^^^^^^ `fetchConsentText` is declared here[0m
+[0m  28 |[0m
+[0m  29 |     const handleAccept = () => {[0m
+[0m  30 |         localStorage.setItem('cookie_consent_accepted', 'true');  [2mreact-hooks/immutability[22m[0m
+[0m  [2m19:8[22m   [33mwarning[39m  React Hook useEffect has a missing dependency: 'fetchConsentText'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           [2mreact-hooks/exhaustive-deps[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\layout\Footer.tsx[24m[0m
+[0m  [2m12:11[22m  [33mwarning[39m  'common' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m15:29[22m  [31merror[39m    Unexpected any. Specify a different type     [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\layout\MobileMenu.tsx[24m[0m
+[0m  [2m10:19[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m13:30[22m  [33mwarning[39m  'contactInfo' is defined but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\product\ProductCard.tsx[24m[0m
+[0m  [2m4:10[22m  [33mwarning[39m  'Badge' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m6:67[22m  [31merror[39m    Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\ui\input.tsx[24m[0m
+[0m  [2m5:18[22m  [31merror[39m  An interface declaring no members is equivalent to its supertype  [2m@typescript-eslint/no-empty-object-type[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\components\ui\textarea.tsx[24m[0m
+[0m  [2m5:18[22m  [31merror[39m  An interface declaring no members is equivalent to its supertype  [2m@typescript-eslint/no-empty-object-type[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\lib\articles.ts[24m[0m
+[0m  [2m69:26[22m  [31merror[39m    'error' is never reassigned. Use 'const' instead  [2mprefer-const[22m[0m
+[0m  [2m69:26[22m  [33mwarning[39m  'error' is assigned a value but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\scripts\migrate_to_supabase.js[24m[0m
+[0m    [2m1:26[22m  [31merror[39m    A `require()` style import is forbidden     [2m@typescript-eslint/no-require-imports[22m[0m
+[0m    [2m2:12[22m  [31merror[39m    A `require()` style import is forbidden     [2m@typescript-eslint/no-require-imports[22m[0m
+[0m    [2m3:14[22m  [31merror[39m    A `require()` style import is forbidden     [2m@typescript-eslint/no-require-imports[22m[0m
+[0m   [2m17:10[22m  [33mwarning[39m  'slugify' is defined but never used         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m53:17[22m  [33mwarning[39m  'data' is assigned a value but never used   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m128:27[22m  [33mwarning[39m  'error' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\src\i18n\request.ts[24m[0m
+[0m  [2m9:56[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\tailwind.config.ts[24m[0m
+[0m  [2m78:15[22m  [31merror[39m  A `require()` style import is forbidden  [2m@typescript-eslint/no-require-imports[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\utils\supabase\middleware.ts[24m[0m
+[0m  [2m20:58[22m  [33mwarning[39m  'options' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\mkani\OneDrive\Belgeler\GitHub\rotabiletiket\rotabiletiket\utils\supabase\queries.ts[24m[0m
+[0m  [2m7:9[22m  [31merror[39m    'translationData' is never reassigned. Use 'const' instead  [2mprefer-const[22m[0m
+[0m  [2m7:9[22m  [33mwarning[39m  'translationData' is assigned a value but never used        [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[31m[1m✖ 167 problems (110 errors, 57 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[31m[1m  3 errors and 0 warnings potentially fixable with the `--fix` option.[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

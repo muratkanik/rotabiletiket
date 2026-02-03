@@ -13,10 +13,6 @@ export default function AdminImagesPage() {
     const [uploading, setUploading] = useState(false);
     const supabase = createClient();
 
-    useEffect(() => {
-        fetchImages();
-    }, []);
-
     async function fetchImages() {
         const { data, error } = await supabase.storage.from('product-images').list();
         if (data) {
@@ -26,6 +22,10 @@ export default function AdminImagesPage() {
         }
         setLoading(false);
     }
+
+    useEffect(() => {
+        fetchImages();
+    }, []);
 
     async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files || e.target.files.length === 0) return;

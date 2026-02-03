@@ -44,14 +44,14 @@ const CATEGORIES = [
 
 export async function seedAccessoryData() {
     const supabase = await createClient();
-    let results = [];
+    const results = [];
 
     // 1. Fetch existing categories to map IDs
     const { data: existingCats } = await supabase.from('categories').select('*');
 
     for (const cat of CATEGORIES) {
         // Find by slug-like match or create
-        let dbCat = existingCats?.find(c => c.slug?.includes(cat.key) || c.title?.toLowerCase().includes(cat.tr.title.toLowerCase()));
+        const dbCat = existingCats?.find(c => c.slug?.includes(cat.key) || c.title?.toLowerCase().includes(cat.tr.title.toLowerCase()));
 
         let catId;
 

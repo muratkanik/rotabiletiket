@@ -12,12 +12,8 @@ export default function AdminHeroPage() {
     const [slides, setSlides] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchSlides();
-    }, []);
-
     const fetchSlides = async () => {
-        setLoading(true);
+        // setLoading(true); // Initial state is true
         const { data, error } = await supabase
             .from('hero_slides')
             .select('*, hero_slide_translations(title, language_code)')
@@ -31,6 +27,10 @@ export default function AdminHeroPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        fetchSlides();
+    }, []);
 
     const handleDelete = async (id: string) => {
         if (!confirm('Bu slaytı silmek istediğinize emin misiniz?')) return;

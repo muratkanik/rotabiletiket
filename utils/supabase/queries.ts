@@ -4,7 +4,7 @@ export async function getLocalizedProduct(slug: string, locale: string) {
     const supabase = await createClient();
 
     let productId = null;
-    let translationData = null;
+    // translationData removed as it was unused
 
     // 1. Try to find the product in the base table (Turkish/Default)
     const { data: baseProduct } = await supabase
