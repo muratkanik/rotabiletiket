@@ -7,32 +7,60 @@ import Link from 'next/link';
 
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string, locale: string }> }) {
+    const { slug, locale } = await params;
     const supabase = await createClient();
     const { data: sector } = await supabase
         .from('sectors')
-        .select('*')
+        .select(`
+            *,
+            sector_translations (
+                language_code,
+                title,
+                content_html
+            )
+        `)
         .eq('slug', slug)
         .single();
 
+    if (!sector) return { title: 'Not Found' };
+
+    const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
+        || sector.sector_translations?.find((t: any) => t.language_code === 'tr')
+        || {};
+    const title = trans.title || sector.title;
+
     return {
-        title: sector ? `${sector.title} | Rotabil Etiket` : 'Sektörel Çözüm',
-        description: `${sector?.title} için özel etiketleme çözümleri.`
+        title: `${title} | Rotabil Etiket`,
+        description: `${title} için özel etiketleme çözümleri ve endüstriyel uygulamalar.`
     }
 }
 
-export default async function SectorDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export default async function SectorDetailPage({ params }: { params: Promise<{ slug: string, locale: string }> }) {
+    const { slug, locale } = await params;
     const supabase = await createClient();
 
     const { data: sector } = await supabase
         .from('sectors')
-        .select('*')
+        .select(`
+            *,
+            sector_translations (
+                language_code,
+                title,
+                content_html
+            )
+        `)
         .eq('slug', slug)
         .single();
 
     if (!sector) notFound();
+
+    const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
+        || sector.sector_translations?.find((t: any) => t.language_code === 'tr')
+        || {};
+
+    const displayTitle = trans.title || sector.title;
+    const displayContent = trans.content_html || '<p>İçerik hazırlanıyor...</p>';
 
     return (
         <main className="min-h-screen bg-white">
@@ -43,14 +71,14 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                 <div className="absolute inset-0">
                     <Image
                         src={sector.image_url || '/placeholder-sector.jpg'}
-                        alt={sector.title}
+                        alt={displayTitle}
                         fill
                         className="object-cover"
                     />
                     <div className="absolute inset-0 bg-slate-900/60" />
                 </div>
                 <div className="relative z-10 text-center text-white px-4">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{sector.title}</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{displayTitle}</h1>
                     <p className="text-xl text-slate-200">Endüstriyel Özel Çözümler</p>
                 </div>
             </div>
@@ -59,9 +87,8 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                 <div className="max-w-4xl mx-auto">
                     <div className="prose prose-lg max-w-none text-slate-600 mb-12">
                         <div className="prose prose-lg max-w-none text-slate-600 mb-12">
-                            {/* Clean up some legacy artifacts on the fly if needed, though CSS handles most */}
                             <div dangerouslySetInnerHTML={{
-                                __html: sector.content_html
+                                __html: displayContent
                                     .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
                                     .replace(/src="img\//g, 'src="https://rotabiletiket.com/img/') // Fix old relative paths if they exist strictly, or better:
                                 // Since we don't have the old images hosted, we might need to handle this. 
