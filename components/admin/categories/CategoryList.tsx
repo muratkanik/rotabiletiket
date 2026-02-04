@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, ArrowUpDown, Search, Pencil } from 'lucide-react';
+import { calculateSeoScore } from '@/utils/seo-helper';
+import { cn } from '@/lib/utils';
 
 interface Category {
     id: string;
@@ -15,6 +17,10 @@ interface Category {
     parent: {
         title: string;
     } | null;
+    description?: string | null;
+    seo_title?: string | null;
+    seo_description?: string | null;
+    keywords?: string | null;
 }
 
 interface CategoryListProps {
@@ -96,6 +102,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                     Üst Kategori <ArrowUpDown size={14} />
                                 </div>
                             </th>
+                            <th className="px-6 py-4">SEO Skoru</th>
                             <th className="px-6 py-4">Slug</th>
                             <th className="px-6 py-4 text-right">İşlemler</th>
                         </tr>
@@ -121,6 +128,33 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                     </td>
                                     <td className="px-6 py-4 font-medium text-slate-900">{category.title}</td>
                                     <td className="px-6 py-4 text-slate-600">{category.parent?.title || '-'}</td>
+                                    <td className="px-6 py-4">
+                                        {(() => {
+                                            const { score } = calculateSeoScore(
+                                                category.seo_title || category.title,
+                                                category.seo_description || category.description,
+                                                category.description, // Categories usually rely on description as content
+                                                category.keywords?.split(',')[0]
+                                            );
+                                            return (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={cn("h-full transition-all",
+                                                                score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                            )}
+                                                            style={{ width: `${score}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className={cn("text-xs font-bold",
+                                                        score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
+                                                    )}>
+                                                        {score}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })()}
+                                    </td>
                                     <td className="px-6 py-4 text-slate-500">{category.slug}</td>
                                     <td className="px-6 py-4 text-right">
                                         <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700">

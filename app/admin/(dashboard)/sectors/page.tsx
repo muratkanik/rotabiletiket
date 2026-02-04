@@ -7,6 +7,8 @@ import { Plus, Pencil, Trash2, Search, ArrowUpDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import { calculateSeoScore } from '@/utils/seo-helper';
+import { cn } from '@/lib/utils';
 
 export default function AdminSectorsPage() {
     const supabase = createClient();
@@ -29,7 +31,11 @@ export default function AdminSectorsPage() {
                 *,
                 sector_translations (
                     language_code,
-                    title
+                    title,
+                    description,
+                    seo_description,
+                    keywords,
+                    content_html
                 )
             `)
             .order('display_order', { ascending: true });
@@ -145,6 +151,7 @@ export default function AdminSectorsPage() {
                                     {sortKey === 'title' && <ArrowUpDown className="h-3 w-3" />}
                                 </div>
                             </th>
+                            <th className="p-4 font-semibold text-slate-700">SEO Skoru</th>
                             <th className="p-4 font-semibold text-slate-700">Slug</th>
                             <th className="p-4 font-semibold text-slate-700">Durum</th>
                             <th className="p-4 font-semibold text-slate-700 text-right">İşlemler</th>
@@ -174,6 +181,34 @@ export default function AdminSectorsPage() {
                                         </td>
                                         <td className="p-4 font-medium text-slate-900">
                                             {trData?.title || <span className="text-slate-400 italic">Çeviri Yok</span>}
+                                        </td>
+                                        <td className="p-4">
+                                            {(() => {
+                                                const title = trData?.title || '';
+                                                const desc = trData?.seo_description || trData?.description || '';
+                                                const content = trData?.content_html || sector.content_html || '';
+                                                const keyword = trData?.keywords?.split(',')[0] || '';
+
+                                                const { score } = calculateSeoScore(title, desc, content, keyword);
+
+                                                return (
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                            <div
+                                                                className={cn("h-full transition-all",
+                                                                    score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                                )}
+                                                                style={{ width: `${score}%` }}
+                                                            />
+                                                        </div>
+                                                        <span className={cn("text-xs font-bold",
+                                                            score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
+                                                        )}>
+                                                            {score}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="p-4 text-slate-500 font-mono text-xs">
                                             {sector.slug}

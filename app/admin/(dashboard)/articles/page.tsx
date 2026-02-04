@@ -3,13 +3,24 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Eye, Trash2 } from 'lucide-react';
-import { formatDate } from '@/lib/utils'; // Assuming this exists or I'll use simple date formatting
+import { formatDate, cn } from '@/lib/utils';
+import { calculateSeoScore } from '@/utils/seo-helper';
 
 export default async function AdminArticlesPage() {
     const supabase = await createClient();
     const { data: articles, error } = await supabase
         .from('articles')
-        .select('*')
+        .select(`
+            *,
+            article_translations (
+                language_code,
+                title,
+                summary,
+                content_html,
+                seo_description,
+                keywords
+            )
+        `)
         .order('published_at', { ascending: false });
 
     if (error) {
@@ -43,6 +54,7 @@ export default async function AdminArticlesPage() {
                         <tr>
                             <th className="p-4 font-semibold text-slate-700 w-20">Görsel</th>
                             <th className="p-4 font-semibold text-slate-700">Başlık</th>
+                            <th className="p-4 font-semibold text-slate-700">SEO Skoru</th>
                             <th className="p-4 font-semibold text-slate-700">Yazar</th>
                             <th className="p-4 font-semibold text-slate-700">Durum</th>
                             <th className="p-4 font-semibold text-slate-700">Tarih</th>
@@ -73,6 +85,37 @@ export default async function AdminArticlesPage() {
                                     <td className="p-4 font-medium text-slate-900">
                                         {article.title}
                                         <div className="text-xs text-slate-400 font-mono mt-0.5">{article.slug}</div>
+                                    </td>
+                                    <td className="p-4">
+                                        {(() => {
+                                            const trData = article.article_translations?.find((t: any) => t.language_code === 'tr');
+
+                                            // Fallback to article main fields if translation missing
+                                            const title = trData?.title || article.title || '';
+                                            const desc = trData?.seo_description || trData?.summary || article.summary || '';
+                                            const content = trData?.content_html || article.content_html || '';
+                                            const keyword = trData?.keywords?.split(',')[0] || '';
+
+                                            const { score } = calculateSeoScore(title, desc, content, keyword);
+
+                                            return (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={cn("h-full transition-all",
+                                                                score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                            )}
+                                                            style={{ width: `${score}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className={cn("text-xs font-bold",
+                                                        score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
+                                                    )}>
+                                                        {score}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })()}
                                     </td>
                                     <td className="p-4 text-slate-600">{article.author || '-'}</td>
                                     <td className="p-4">

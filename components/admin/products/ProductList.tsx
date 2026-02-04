@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Pencil, Trash2, Eye, ArrowUpDown, Search } from 'lucide-react';
+import { calculateSeoScore } from '@/utils/seo-helper';
+import { cn } from '@/lib/utils';
 
 interface Product {
     id: string;
@@ -15,6 +17,9 @@ interface Product {
         slug: string;
     } | null;
     is_published?: boolean;
+    description_html?: string | null;
+    seo_description?: string | null;
+    keywords?: string | null;
 }
 
 interface ProductListProps {
@@ -101,6 +106,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
                                     Durum <ArrowUpDown size={14} />
                                 </div>
                             </th>
+                            <th className="px-6 py-4">SEO Skoru</th>
                             <th className="px-6 py-4 text-right">İşlemler</th>
                         </tr>
                     </thead>
@@ -116,11 +122,38 @@ export function ProductList({ initialProducts }: ProductListProps) {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${(product.is_published ?? true)
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-red-100 text-red-800'
                                             }`}>
                                             {(product.is_published ?? true) ? 'Yayında' : 'Pasif'}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {(() => {
+                                            const { score } = calculateSeoScore(
+                                                product.title,
+                                                product.seo_description, // Products use seo_description
+                                                product.description_html,
+                                                product.keywords?.split(',')[0]
+                                            );
+                                            return (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={cn("h-full transition-all",
+                                                                score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                            )}
+                                                            style={{ width: `${score}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className={cn("text-xs font-bold",
+                                                        score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
+                                                    )}>
+                                                        {score}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })()}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2">
