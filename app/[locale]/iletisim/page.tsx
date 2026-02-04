@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/Navbar";
+
 import { getSiteSettings } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
@@ -14,7 +14,7 @@ export default async function ContactPage() {
 
     return (
         <main className="min-h-screen bg-slate-50">
-            <Navbar />
+
 
             <div className="bg-slate-900 py-20 text-white text-center">
                 <h1 className="text-4xl font-bold mb-4">İletişim</h1>

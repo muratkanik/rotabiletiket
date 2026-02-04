@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
-import { Navbar } from '@/components/layout/Navbar';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
@@ -27,7 +27,7 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
 
     return (
         <main className="min-h-screen bg-slate-50">
-            <Navbar />
+
 
             <div className="bg-slate-900 py-16 text-white text-center">
                 <h1 className="text-4xl font-bold mb-4">

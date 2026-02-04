@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { ProductCard } from '@/components/product/ProductCard';
-import { Navbar } from '@/components/layout/Navbar';
+
 import { notFound } from 'next/navigation';
 import { Link } from '@/src/i18n/routing';
 import { getLocale } from 'next-intl/server';
@@ -104,7 +104,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
     return (
         <main className="min-h-screen bg-slate-50">
-            <Navbar />
+
 
             {/* Header */}
             <div className="bg-slate-900 py-16 text-white text-center">

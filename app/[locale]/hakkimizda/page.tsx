@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/Navbar";
+
 import { getSiteSettings } from "@/lib/settings";
 import Image from "next/image";
 import { CheckCircle2, Factory, ShieldCheck, Users, TrendingUp, History, LucideIcon } from "lucide-react";
@@ -29,7 +29,7 @@ export default async function AboutPage() {
 
     return (
         <main className="min-h-screen bg-white">
-            <Navbar />
+
 
             {/* Introduction Hero */}
             <div className="relative bg-slate-900 py-24 text-white overflow-hidden">
