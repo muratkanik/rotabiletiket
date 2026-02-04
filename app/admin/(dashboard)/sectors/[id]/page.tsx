@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea'; // Assuming we have this or use native
+import { Textarea } from '@/components/ui/textarea';
+import { SeoScore } from '@/components/admin/SeoScore';
 
 const LANGUAGES = [
     { code: 'tr', name: 'Türkçe' },
@@ -260,6 +261,12 @@ export default function AdminSectorFormPage() {
                             </TabsContent>
 
                             <TabsContent value="seo" className="space-y-5 mt-4">
+                                <SeoScore
+                                    title={currentTrans.title || ''}
+                                    description={currentTrans.description || ''}
+                                    content={currentTrans.content_html || ''}
+                                    keyword={currentTrans.keywords?.split(',')[0]}
+                                />
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-700">SEO Başlığı (Meta Title)</label>
                                     <input

@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import { SeoScore } from '@/components/admin/SeoScore';
 
 const Editor = dynamic(
     () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
@@ -421,6 +422,12 @@ export default function ArticleFormPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
+                            <SeoScore
+                                title={formData.title}
+                                description={formData.summary} // Summary acts as description often
+                                content={formData.content_html}
+                                keyword={formData.keywords?.split(',')[0]}
+                            />
                             <div>
                                 <label className="block text-sm font-medium mb-1">Makale Başlığı</label>
                                 <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-lg"
