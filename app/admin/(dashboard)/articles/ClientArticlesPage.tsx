@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Eye, Sparkles } from 'lucide-react';
+import { Plus, Pencil, Eye, Sparkles, ArrowUpDown } from 'lucide-react';
 import { formatDate, cn } from '@/lib/utils';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { HackerScreenModal } from './HackerScreenModal';
@@ -14,6 +14,51 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     const [enhancingArticleId, setEnhancingArticleId] = useState<string | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
     const [isHackerScreenOpen, setIsHackerScreenOpen] = useState(false);
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+    const processedArticles = useMemo(() => {
+        return articles.map(article => {
+            const trData = article.article_translations?.find((t: any) => t.language_code === 'tr');
+            const translatedTitle = trData?.title || article.title || '';
+            const desc = trData?.seo_description || trData?.summary || article.summary || '';
+            const content = trData?.content_html || article.content_html || '';
+            const keyword = trData?.keywords?.split(',')[0] || '';
+            const { score } = calculateSeoScore(translatedTitle, desc, content, keyword);
+            return { ...article, _seoScore: score, _translatedTitle: translatedTitle };
+        });
+    }, [articles]);
+
+    const sortedArticles = useMemo(() => {
+        let sortable = [...processedArticles];
+        if (sortConfig !== null) {
+            sortable.sort((a, b) => {
+                let aVal, bVal;
+                if (sortConfig.key === 'title') {
+                    aVal = a._translatedTitle.toLowerCase();
+                    bVal = b._translatedTitle.toLowerCase();
+                } else if (sortConfig.key === 'seo_score') {
+                    aVal = a._seoScore;
+                    bVal = b._seoScore;
+                } else if (sortConfig.key === 'status') {
+                    aVal = a.is_published ? 1 : 0;
+                    bVal = b.is_published ? 1 : 0;
+                }
+
+                if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return sortable;
+    }, [processedArticles, sortConfig]);
+
+    const requestSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
 
     const handleEnhance = async (articleId: string, articleTitle: string) => {
         setEnhancingArticleId(articleId);
@@ -69,15 +114,21 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                     <thead className="bg-slate-50 border-b">
                         <tr>
                             <th className="p-4 font-semibold text-slate-700 w-20">Görsel</th>
-                            <th className="p-4 font-semibold text-slate-700">Başlık</th>
-                            <th className="p-4 font-semibold text-slate-700">SEO Skoru</th>
-                            <th className="p-4 font-semibold text-slate-700">Durum</th>
+                            <th className="p-4 font-semibold text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors select-none" onClick={() => requestSort('title')}>
+                                <div className="flex items-center gap-1">Başlık {sortConfig?.key === 'title' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : <ArrowUpDown className="h-3 w-3 text-slate-400" />}</div>
+                            </th>
+                            <th className="p-4 font-semibold text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors select-none" onClick={() => requestSort('seo_score')}>
+                                <div className="flex items-center gap-1">SEO Skoru {sortConfig?.key === 'seo_score' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : <ArrowUpDown className="h-3 w-3 text-slate-400" />}</div>
+                            </th>
+                            <th className="p-4 font-semibold text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors select-none" onClick={() => requestSort('status')}>
+                                <div className="flex items-center gap-1">Durum {sortConfig?.key === 'status' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : <ArrowUpDown className="h-3 w-3 text-slate-400" />}</div>
+                            </th>
                             <th className="p-4 font-semibold text-slate-700 text-right">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
-                        {articles && articles.length > 0 ? (
-                            articles.map((article: any) => (
+                        {sortedArticles && sortedArticles.length > 0 ? (
+                            sortedArticles.map((article: any) => (
                                 <tr key={article.id} className="hover:bg-slate-50/50 transition-colors">
                                     <td className="p-4">
                                         <div className="relative h-12 w-16 bg-slate-100 rounded overflow-hidden">
@@ -102,35 +153,21 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                                         <div className="text-xs text-slate-400 font-mono mt-0.5">{article.slug}</div>
                                     </td>
                                     <td className="p-4">
-                                        {(() => {
-                                            const trData = article.article_translations?.find((t: any) => t.language_code === 'tr');
-
-                                            // Fallback to article main fields if translation missing
-                                            const title = trData?.title || article.title || '';
-                                            const desc = trData?.seo_description || trData?.summary || article.summary || '';
-                                            const content = trData?.content_html || article.content_html || '';
-                                            const keyword = trData?.keywords?.split(',')[0] || '';
-
-                                            const { score } = calculateSeoScore(title, desc, content, keyword);
-
-                                            return (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                                                        <div
-                                                            className={cn("h-full transition-all",
-                                                                score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
-                                                            )}
-                                                            style={{ width: `${score}%` }}
-                                                        />
-                                                    </div>
-                                                    <span className={cn("text-xs font-bold",
-                                                        score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
-                                                    )}>
-                                                        {score}
-                                                    </span>
-                                                </div>
-                                            );
-                                        })()}
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className={cn("h-full transition-all",
+                                                        article._seoScore >= 80 ? "bg-green-500" : article._seoScore >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                    )}
+                                                    style={{ width: `${article._seoScore}%` }}
+                                                />
+                                            </div>
+                                            <span className={cn("text-xs font-bold",
+                                                article._seoScore >= 80 ? "text-green-600" : article._seoScore >= 50 ? "text-orange-600" : "text-red-600"
+                                            )}>
+                                                {article._seoScore}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="p-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${article.is_published
