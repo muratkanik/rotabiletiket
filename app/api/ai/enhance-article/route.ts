@@ -138,7 +138,7 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
 
         if (trUpdateError) {
             console.error("Translation Update Error:", trUpdateError)
-            return NextResponse.json({ error: "Türkçe veri kaydedilirken hata oluştu." }, { status: 500 });
+            return NextResponse.json({ error: "Türkçe veri kaydedilirken hata oluştu: " + trUpdateError.message, details: trUpdateError.details }, { status: 500 });
         }
 
 

@@ -28,7 +28,7 @@ export function HackerScreenModal({ isOpen, logs, onClose }: HackerScreenModalPr
         <Dialog open={isOpen} onOpenChange={(open) => {
             if (!open && onClose) onClose();
         }}>
-            <DialogContent className="sm:max-w-[700px] border-none bg-black text-green-400 font-mono shadow-[0_0_50px_rgba(0,255,0,0.15)] overflow-hidden">
+            <DialogContent aria-describedby={undefined} className="sm:max-w-[700px] border-none bg-black text-green-400 font-mono shadow-[0_0_50px_rgba(0,255,0,0.15)] overflow-hidden">
                 <DialogHeader className="border-b border-green-900 pb-4 mb-4">
                     <DialogTitle className="text-green-500 font-bold tracking-widest flex items-center gap-2 text-xl">
                         <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
