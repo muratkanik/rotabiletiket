@@ -17,7 +17,8 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { SeoScore } from '@/components/admin/SeoScore';
-
+import { HackerScreenModal } from '../HackerScreenModal';
+import { Sparkles } from 'lucide-react';
 const Editor = dynamic(
     () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
     { ssr: false }
@@ -52,6 +53,11 @@ export default function ArticleFormPage() {
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
     const [selectedLang, setSelectedLang] = useState('tr');
+
+    // AI Enhance Status
+    const [enhancing, setEnhancing] = useState(false);
+    const [logs, setLogs] = useState<string[]>([]);
+    const [isHackerScreenOpen, setIsHackerScreenOpen] = useState(false);
 
     // Base Data (Shared across langs or specific to TR)
     const [isPublished, setIsPublished] = useState(true);
@@ -207,6 +213,66 @@ export default function ArticleFormPage() {
         }
     }, [formData.title, isNew, selectedLang]);
 
+    const handleEnhance = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isNew) {
+            toast.error("AI Enhance özelliğini kullanmak için makaleyi önce taslak olarak kaydetmelisiniz!");
+            return;
+        }
+
+        setEnhancing(true);
+        setLogs([`> BAŞLATILIYOR: "${formData.title || 'İsimsiz'}" için AI Enhance süreci...`]);
+        setIsHackerScreenOpen(true);
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            setLogs(prev => [...prev, `> SERP API Bağlantısı Kuruluyor... Google analiz ediliyor...`]);
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            setLogs(prev => [...prev, `> OpenAI'a veri gönderiliyor... İçerik yeniden yazılıyor...`]);
+
+            const res = await fetch(`/api/ai/enhance-article`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ articleId: id, mock: false })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || "API Hatası");
+            }
+            const data = await res.json();
+
+            setLogs(prev => [...prev, `> Çeviriler hazırlanıyor...`]);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            setLogs(prev => [...prev, `> İŞLEM BAŞARILI. Veritabanı güncellendi! Ekrana yansıtılıyor...`]);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            if (data.data) {
+                setFormData(prev => ({
+                    ...prev,
+                    title: data.data.seo_title || data.data.title || prev.title,
+                    seo_title: data.data.seo_title || data.data.title || prev.seo_title,
+                    summary: data.data.summary || prev.summary,
+                    content_html: data.data.content_html || prev.content_html,
+                    seo_description: data.data.seo_description || prev.seo_description,
+                    keywords: data.data.keywords || prev.keywords
+                }));
+                setEditorContent(data.data.content_html || formData.content_html);
+            }
+
+            toast.success("Makale başarıyla AI tarafından geliştirildi!");
+
+        } catch (error: any) {
+            setLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
+        } finally {
+            setTimeout(() => {
+                setIsHackerScreenOpen(false);
+                setEnhancing(false);
+            }, 3000);
+        }
+    };
+
     async function handleSave() {
         setSaving(true);
         try {
@@ -316,7 +382,7 @@ export default function ArticleFormPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew}>
+                    <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew || enhancing}>
                         <SelectTrigger className="w-[180px] bg-white">
                             <SelectValue placeholder="Dil Seçiniz" />
                         </SelectTrigger>
@@ -326,7 +392,12 @@ export default function ArticleFormPage() {
                             ))}
                         </SelectContent>
                     </Select>
-                    <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
+                    {(!isNew && selectedLang === 'tr') && (
+                        <Button onClick={handleEnhance} disabled={enhancing || saving} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
+                            {enhancing ? 'Yazılıyor...' : <><Sparkles className="mr-2 h-4 w-4" /> AI Enhance</>}
+                        </Button>
+                    )}
+                    <Button onClick={handleSave} disabled={saving || enhancing} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
                         {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
                     </Button>
                 </div>
@@ -494,6 +565,11 @@ export default function ArticleFormPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            <HackerScreenModal
+                isOpen={isHackerScreenOpen}
+                logs={logs}
+            />
         </div>
     );
 }
