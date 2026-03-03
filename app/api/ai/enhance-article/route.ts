@@ -142,7 +142,7 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
         }
 
 
-        // Translate to other languages
+        // Translate to other languages in parallel to avoid Vercel 60s timeout
         const targetLanguages = [
             { code: 'en', instruction: 'Translate to English' },
             { code: 'de', instruction: 'Translate to German (Deutsch)' },
@@ -150,7 +150,7 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
             { code: 'ar', instruction: 'Translate to Arabic (العربية)' }
         ];
 
-        for (const lang of targetLanguages) {
+        await Promise.all(targetLanguages.map(async (lang) => {
             const translatePrompt = `Aşağıdaki JSON verisindeki tüm metin değerlerini çevir. HTML yapılarını, JSON anahtarlarını (keys) ve etiketlerini hiçbir şekilde bozma. Sadece içeriği çevir.
 Gelen Veri: ${generatedRaw}`;
 
@@ -180,7 +180,7 @@ Gelen Veri: ${generatedRaw}`;
             } catch (translErr) {
                 console.error(`Translation failed for ${lang.code}`, translErr);
             }
-        }
+        }));
 
         return NextResponse.json({
             success: true,
