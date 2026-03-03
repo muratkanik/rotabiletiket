@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, ArrowUpRight, Copy, AlignLeft, Bot, Sparkles, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
@@ -18,7 +18,7 @@ import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-
 import draftToHtml from 'draftjs-to-html';
 import { SeoScore } from '@/components/admin/SeoScore';
 import { HackerScreenModal } from '../HackerScreenModal';
-import { Sparkles } from 'lucide-react';
+// import { Sparkles } from 'lucide-react'; // This was duplicated, removed.
 const Editor = dynamic(
     () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
     { ssr: false }
@@ -51,6 +51,7 @@ export default function ArticleFormPage() {
 
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
+    const [generatingImage, setGeneratingImage] = useState(false); // New state
     const [activeTab, setActiveTab] = useState('general');
     const [selectedLang, setSelectedLang] = useState('tr');
 
@@ -256,6 +257,46 @@ export default function ArticleFormPage() {
             setLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
         } finally {
             setEnhancing(false);
+        }
+    };
+
+    const handleAIGenerateImage = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isNew) {
+            toast.error("Önce makaleyi taslak olarak kaydetmelisiniz!");
+            return;
+        }
+
+        if (!formData.title) {
+            toast.error("Görsel üretmek için makale başlığı gereklidir.");
+            return;
+        }
+
+        setGeneratingImage(true);
+        toast.info("Yapay Zeka (DALL-E 3) kullanılarak görsel çiziliyor. Bu işlem 15-30 saniye sürebilir, lütfen bekleyin...");
+
+        try {
+            const res = await fetch('/api/ai/generate-article-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ articleId: id, promptText: formData.title })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Görsel üretilirken bir hata oluştu');
+            }
+
+            // Immediately set to view
+            setImageUrl(data.image_url);
+            setImagePreview(data.full_url);
+            toast.success("Makale görseli başarıyla üretildi ve veritabanına otomatik olarak kaydedildi.");
+
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setGeneratingImage(false);
         }
     };
 
@@ -467,6 +508,24 @@ export default function ArticleFormPage() {
                                             </label>
                                         )}
                                         {selectedLang !== 'tr' && <p className="text-xs text-amber-600">Görsel ayarları sadece ana dilde değiştirilebilir.</p>}
+
+                                        {!isNew && selectedLang === 'tr' && (
+                                            <div className="pt-2 border-t mt-4 border-slate-100 border-dashed">
+                                                <Button
+                                                    onClick={handleAIGenerateImage}
+                                                    disabled={generatingImage || saving || enhancing}
+                                                    className="w-full bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700"
+                                                    variant="secondary"
+                                                >
+                                                    {generatingImage ? (
+                                                        <span className="flex items-center"><Sparkles className="mr-2 h-4 w-4 animate-spin text-indigo-500" /> Çiziliyor...</span>
+                                                    ) : (
+                                                        <span className="flex items-center"><ImageIcon className="mr-2 h-4 w-4 text-indigo-500" />Yapay Zeka İle Görsel Üret</span>
+                                                    )}
+                                                </Button>
+                                                <p className="text-[10px] text-slate-400 text-center mt-2 leading-tight">DALL-E 3 modeli kullanılarak makale başlığına göre profesyonel bir kapak resmi oluşturulur ve doğrudan kaydedilir.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
