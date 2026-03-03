@@ -1,4 +1,4 @@
-import { createAdminClient } from '@/utils/supabase/admin';
+import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Article ID eksik." }, { status: 400 });
         }
 
-        const supabase = createAdminClient();
+        const supabase = await createClient();
         if (!supabase) return NextResponse.json({ error: "Supabase istemcisi oluşturulamadı." }, { status: 500 });
 
         // Fetch article
