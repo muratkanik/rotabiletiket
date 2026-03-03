@@ -142,27 +142,44 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
         }
 
 
-        // (Optional) Here we can add a translation step to EN and AR right away
-        const translatePrompt = `Çevirmen.Aşağıdaki HTML ve metinleri İngilizce'ye çevir. JSON formatını bozma.
+        // Translate to other languages
+        const targetLanguages = [
+            { code: 'en', instruction: 'Translate to English' },
+            { code: 'de', instruction: 'Translate to German (Deutsch)' },
+            { code: 'fr', instruction: 'Translate to French (Français)' },
+            { code: 'ar', instruction: 'Translate to Arabic (العربية)' }
+        ];
+
+        for (const lang of targetLanguages) {
+            const translatePrompt = `Aşağıdaki JSON verisindeki tüm metin değerlerini çevir. HTML yapılarını, JSON anahtarlarını (keys) ve etiketlerini hiçbir şekilde bozma. Sadece içeriği çevir.
 Gelen Veri: ${generatedRaw}`;
 
-        try {
-            const enCompletion = await openai.chat.completions.create({
-                model: "gpt-4o-mini",
-                messages: [{ role: "system", content: "You are a professional translator and SEO expert. Translate to English. Output JSON." }, { role: "user", content: translatePrompt }],
-                response_format: { type: "json_object" }
-            });
+            try {
+                const langCompletion = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        { role: "system", content: `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.` },
+                        { role: "user", content: translatePrompt }
+                    ],
+                    response_format: { type: "json_object" }
+                });
 
-            const enRaw = enCompletion.choices[0]?.message.content;
-            if (enRaw) {
-                const enContent = JSON.parse(enRaw);
-                await supabase.from('article_translations').upsert({
-                    article_id: articleId, language_code: 'en',
-                    title: enContent.seo_title || enContent.title, slug: article.slug, summary: enContent.summary, content_html: enContent.content_html, seo_description: enContent.seo_description, keywords: enContent.keywords
-                }, { onConflict: 'article_id,language_code' });
+                const langRaw = langCompletion.choices[0]?.message.content;
+                if (langRaw) {
+                    const langContent = JSON.parse(langRaw);
+                    await supabase.from('article_translations').upsert({
+                        article_id: articleId, language_code: lang.code,
+                        title: langContent.seo_title || langContent.title || article.title,
+                        slug: article.slug,
+                        summary: langContent.summary,
+                        content_html: langContent.content_html,
+                        seo_description: langContent.seo_description,
+                        keywords: langContent.keywords
+                    }, { onConflict: 'article_id,language_code' });
+                }
+            } catch (translErr) {
+                console.error(`Translation failed for ${lang.code}`, translErr);
             }
-        } catch (translErr) {
-            console.error("EN Translation failed, skipping", translErr);
         }
 
         return NextResponse.json({

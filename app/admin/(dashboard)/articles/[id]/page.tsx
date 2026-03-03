@@ -248,28 +248,14 @@ export default function ArticleFormPage() {
             setLogs(prev => [...prev, `> İŞLEM BAŞARILI. Veritabanı güncellendi! Ekrana yansıtılıyor...`]);
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            if (data.data) {
-                setFormData(prev => ({
-                    ...prev,
-                    title: data.data.seo_title || data.data.title || prev.title,
-                    seo_title: data.data.seo_title || data.data.title || prev.seo_title,
-                    summary: data.data.summary || prev.summary,
-                    content_html: data.data.content_html || prev.content_html,
-                    seo_description: data.data.seo_description || prev.seo_description,
-                    keywords: data.data.keywords || prev.keywords
-                }));
-                setEditorContent(data.data.content_html || formData.content_html);
-            }
-
-            toast.success("Makale başarıyla AI tarafından geliştirildi!");
+            // Reload data for the currently selected tab
+            await fetchArticleData(selectedLang);
+            toast.success("Makale başarıyla AI tarafından geliştirildi ve çevrildi.");
 
         } catch (error: any) {
             setLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
         } finally {
-            setTimeout(() => {
-                setIsHackerScreenOpen(false);
-                setEnhancing(false);
-            }, 3000);
+            setEnhancing(false);
         }
     };
 
