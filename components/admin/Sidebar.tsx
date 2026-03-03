@@ -12,7 +12,10 @@ import {
     BarChart,
     Image as ImageIcon,
     Users,
-    BookOpen
+    BookOpen,
+    Instagram,
+    TrendingUp,
+    Settings2
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -28,6 +31,9 @@ const MENU_ITEMS = [
     { name: 'Kullanıcılar', href: '/admin/users', icon: Users },
     { name: 'Site Ayarları', href: '/admin/settings', icon: Settings },
     { name: 'SEO & Analiz', href: '/admin/seo', icon: BarChart },
+    { name: 'Meta Ayarları', href: '/admin/meta-settings', icon: Settings2 },
+    { name: 'Instagram', href: '/admin/instagram', icon: Instagram },
+    { name: 'Meta Reklamları', href: '/admin/ads', icon: TrendingUp },
 ];
 
 export function AdminSidebar() {
