@@ -171,7 +171,7 @@ Gelen Veri: ${generatedRaw}`;
         });
 
     } catch (e: any) {
-        console.error("AI Enhance Error:", e);
-        return NextResponse.json({ error: "Bir hata oluştu: " + e.message }, { status: 500 });
+        console.error("AI Enhance FULL Error:", e.message, e.stack);
+        return NextResponse.json({ error: "Kritik sunucu hatası: " + (e.message || "Bilinmiyor"), details: e.stack }, { status: 500 });
     }
 }
