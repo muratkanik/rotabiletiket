@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Eye, Sparkles, ArrowUpDown } from 'lucide-react';
+import { Plus, Pencil, Eye, Sparkles, ArrowUpDown, Link2 } from 'lucide-react';
 import { formatDate, cn } from '@/lib/utils';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { HackerScreenModal } from './HackerScreenModal';
@@ -14,6 +14,12 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     const [enhancingArticleId, setEnhancingArticleId] = useState<string | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
     const [isHackerScreenOpen, setIsHackerScreenOpen] = useState(false);
+
+    // Bulk Linking States
+    const [bulkLogs, setBulkLogs] = useState<string[]>([]);
+    const [isBulkLinkScreenOpen, setIsBulkLinkScreenOpen] = useState(false);
+    const [isBulkLinking, setIsBulkLinking] = useState(false);
+
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
     const processedArticles = useMemo(() => {
@@ -95,6 +101,48 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
         }
     };
 
+    const handleBulkLink = async () => {
+        setIsBulkLinking(true);
+        setBulkLogs([`> BAŞLATILIYOR: Toplu İç Linkleme süreci...`]);
+        setIsBulkLinkScreenOpen(true);
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            setBulkLogs(prev => [...prev, `> Veritabanından Anahtar Kelimeler (Keywords) çekiliyor...`]);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setBulkLogs(prev => [...prev, `> Makale ve Ürün URL'leri eşleştiriliyor... Makale içerikleri taranıyor...`]);
+
+            const res = await fetch(`/api/articles/bulk-link`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!res.ok) throw new Error("API Hatası: " + res.statusText);
+            const data = await res.json();
+
+            setBulkLogs(prev => [...prev, `> Eşleştirmeler tamamlandı ve linkler eklendi.`]);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            if (data.success && data.stats) {
+                setBulkLogs(prev => [
+                    ...prev,
+                    `> İSTATİSTİKLER:`,
+                    `   - Bulunan Anahtar Kelime: ${data.stats.totalKeywordsFound}`,
+                    `   - Güncellenen Makale Sayısı: ${data.stats.articlesUpdated}`,
+                    `   - Oluşturulan Toplam Link: ${data.stats.totalLinksCreated}`
+                ]);
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setBulkLogs(prev => [...prev, `> İŞLEM BAŞARILI. Tüm makaleler için Ağ (Network) örüldü!`]);
+
+        } catch (error: any) {
+            setBulkLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
+        } finally {
+            setIsBulkLinking(false);
+        }
+    };
+
     return (
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
@@ -102,11 +150,21 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                     <h1 className="text-3xl font-bold text-slate-900">Bilgi Bankası</h1>
                     <p className="text-slate-500 mt-1">Makaleleri yönetin, SEO optimizasyonu ve AI destekli geliştirme yapın.</p>
                 </div>
-                <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                    <Link href="/admin/articles/new">
-                        <Plus className="mr-2 h-4 w-4" /> Yeni Makale
-                    </Link>
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button
+                        onClick={handleBulkLink}
+                        disabled={isBulkLinking}
+                        variant="outline"
+                        className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                    >
+                        <Link2 className="mr-2 h-4 w-4" /> Toplu İç Linkleme
+                    </Button>
+                    <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                        <Link href="/admin/articles/new">
+                            <Plus className="mr-2 h-4 w-4" /> Yeni Makale
+                        </Link>
+                    </Button>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
@@ -216,10 +274,24 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                 </table>
             </div>
 
+            {/* AI Enhance Hacker Screen */}
             <HackerScreenModal
                 isOpen={isHackerScreenOpen}
                 logs={logs}
                 onClose={() => setIsHackerScreenOpen(false)}
+                title="AI SERP ENHANCER OVERRIDE"
+            />
+
+            {/* Bulk Internal Linking Hacker Screen */}
+            <HackerScreenModal
+                isOpen={isBulkLinkScreenOpen}
+                logs={bulkLogs}
+                onClose={() => {
+                    setIsBulkLinkScreenOpen(false);
+                    // It's a good idea to refresh the page after bulk linking to see updated SEO scores or content
+                    window.location.reload();
+                }}
+                title="INTERNAL LINKING MATRIX BUILDER"
             />
         </div>
     );

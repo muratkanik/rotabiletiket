@@ -12,9 +12,10 @@ interface HackerScreenModalProps {
     isOpen: boolean;
     logs: string[];
     onClose?: () => void;
+    title?: string;
 }
 
-export function HackerScreenModal({ isOpen, logs, onClose }: HackerScreenModalProps) {
+export function HackerScreenModal({ isOpen, logs, onClose, title = "AI SERP ENHANCER OVERRIDE" }: HackerScreenModalProps) {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom of logs
@@ -32,7 +33,7 @@ export function HackerScreenModal({ isOpen, logs, onClose }: HackerScreenModalPr
                 <DialogHeader className="border-b border-green-900 pb-4 mb-4">
                     <DialogTitle className="text-green-500 font-bold tracking-widest flex items-center gap-2 text-xl">
                         <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                        AI SERP ENHANCER OVERRIDE
+                        {title}
                     </DialogTitle>
                     <div id="hacker-screen-desc" className="sr-only">AI Enhancement Process Logs</div>
                 </DialogHeader>
