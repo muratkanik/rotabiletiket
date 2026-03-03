@@ -23,16 +23,13 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
         try {
             await new Promise((resolve) => setTimeout(resolve, 800));
             setLogs(prev => [...prev, `> SERP API Bağlantısı Kuruluyor...`]);
-            await new Promise((resolve) => setTimeout(resolve, 1200));
-            setLogs(prev => [...prev, `> ERROR: SERP API Key bulunamadı (serper.dev). Mock SERP modu aktif.`]);
             await new Promise((resolve) => setTimeout(resolve, 1500));
             setLogs(prev => [...prev, `> OpenAI'a veri gönderiliyor... İçerik yeniden yazılıyor...`]);
 
-            // TODO: Call actual API route here
             const res = await fetch(`/api/ai/enhance-article`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ articleId, mock: true })
+                body: JSON.stringify({ articleId, mock: false })
             });
 
             if (!res.ok) throw new Error("API Hatası");

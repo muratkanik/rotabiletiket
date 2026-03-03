@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         // Fetch API Key from Settings
         const { data: settings } = await supabase
             .from('meta_settings')
-            .select('openai_api_key')
+            .select('openai_api_key, serper_api_key')
             .single();
 
         if (!settings?.openai_api_key) {
@@ -42,37 +42,68 @@ export async function POST(req: Request) {
         let serpDataText = "GERÇEK ZAMANLI VERİ YOK. MOCK MODU AKTİF.";
 
         if (!mock) {
-            // In the future: call Serper.dev here with article.title
-            // e.g. const serpRes = await fetch("https://google.serper.dev/search" .... )
-            // const snippets = result.organic.map(o => o.snippet).join(" \n ")
+            if (!settings?.serper_api_key) {
+                return NextResponse.json({ error: "Sistemde Serper.dev API Key tanımlı değil. (Ayarlar > Entegrasyonlar)." }, { status: 400 });
+            }
+
+            try {
+                const serpRes = await fetch("https://google.serper.dev/search", {
+                    method: 'POST',
+                    headers: {
+                        'X-API-KEY': settings.serper_api_key,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        q: article.title,
+                        gl: "tr",
+                        hl: "tr"
+                    })
+                });
+
+                if (serpRes.ok) {
+                    const serpJson = await serpRes.json();
+                    if (serpJson.organic && Array.isArray(serpJson.organic)) {
+                        serpDataText = serpJson.organic.map((o: any) => `Başlık: ${o.title}\nÖzet: ${o.snippet}`).join("\n\n");
+                    } else {
+                        serpDataText = "Arama sonucu bulunamadı.";
+                    }
+                } else {
+                    console.error("Serper API error status:", serpRes.status);
+                    serpDataText = "Serper API bağlantı hatası.";
+                }
+            } catch (err) {
+                console.error("Serper API Error:", err);
+                serpDataText = "Serper API isteği başarısız oldu.";
+            }
+
         } else {
             serpDataText = "SEO Uyumlu uçak bileti blog yazısı örneği: Kullanıcıların en ucuz biletleri bulmak için Salı günleri arama yapması tavsiye edilir. Uçak bileti sitelerinde gizli sekme kullanmak algoritmayı kandırarak fiyatların artmasını engeller...";
         }
 
         const systemPrompt = `
 Sen uzman bir SEO İçerik Yöneticisi ve Metin Yazarı'sın. 
-Görevin, aşağıdaki SERP verisini (rakiplerin Google'da ne yazdığını) ve kullanıcının mevcut makalesini inceleyerek;
-En kapsamlı, %100 özgün (intihal içermeyen), okunabilirliği yüksek ve SEO skoru 100 olacak yeni bir içerik oluşturmaktır.
+Görevin, aşağıdaki SERP verisini(rakiplerin Google'da ne yazdığını) ve kullanıcının mevcut makalesini inceleyerek;
+En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve SEO skoru 100 olacak yeni bir içerik oluşturmaktır.
 
-Çıktıyı kesinlikle geçerli bir JSON formatında ver. JSON şeması şöyledir:
-{
-  "seo_title": "Max 60 karakter dikkat çekici başlık",
-  "seo_description": "Max 150 karakter özet açıklama meta",
-  "keywords": "virgülle ayrılmış 3-5 anahtar kelime",
-  "summary": "Makalenin kısa 2 cümlelik özeti",
-  "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir)"
-}
-`;
+Çıktıyı kesinlikle geçerli bir JSON formatında ver.JSON şeması şöyledir:
+                            {
+                                "seo_title": "Max 60 karakter dikkat çekici başlık",
+                                "seo_description": "Max 150 karakter özet açıklama meta",
+                                "keywords": "virgülle ayrılmış 3-5 anahtar kelime",
+                                "summary": "Makalenin kısa 2 cümlelik özeti",
+                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir)"
+                            }
+                                `;
 
         const userPrompt = `
 Mevcut Makale Başlığı: ${article.title}
-SERP Analizi Raporu (Rakiplerin İçerik Özeti): 
-${serpDataText}
+SERP Analizi Raporu(Rakiplerin İçerik Özeti):
+                            ${serpDataText}
 
 Mevcut Makalenin Eski İçeriği:
-${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
+                            ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
-Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret (JSON formatında geri dön).`;
+Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön).`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini", // Cost efficient model
@@ -111,8 +142,8 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
 
 
         // (Optional) Here we can add a translation step to EN and AR right away
-        const translatePrompt = `Çevirmen. Aşağıdaki HTML ve metinleri İngilizce'ye çevir. JSON formatını bozma. 
-        Gelen Veri: ${generatedRaw}`;
+        const translatePrompt = `Çevirmen.Aşağıdaki HTML ve metinleri İngilizce'ye çevir. JSON formatını bozma.
+Gelen Veri: ${generatedRaw}`;
 
         try {
             const enCompletion = await openai.chat.completions.create({
