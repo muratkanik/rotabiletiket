@@ -39,7 +39,8 @@ export async function POST(req: Request) {
 
         const openai = new OpenAI({ apiKey: settings.openai_api_key });
 
-        let serpDataText = "GERÇEK ZAMANLI VERİ YOK. MOCK MODU AKTİF.";
+        let trSerpDataText = "GERÇEK ZAMANLI TÜRKÇE VERİ YOK.";
+        let enSerpDataText = "GERÇEK ZAMANLI İNGİLİZCE VERİ YOK.";
 
         if (!mock) {
             if (!settings?.serper_api_key) {
@@ -47,48 +48,64 @@ export async function POST(req: Request) {
             }
 
             try {
-                const serpRes = await fetch("https://google.serper.dev/search", {
-                    method: 'POST',
-                    headers: {
-                        'X-API-KEY': settings.serper_api_key,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        q: article.title,
-                        gl: "tr",
-                        hl: "tr"
-                    })
+                // 1. Translate Title to English for English SERP
+                const translateRes = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        { role: "system", content: "You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else." },
+                        { role: "user", content: article.title }
+                    ]
                 });
+                const englishTitle = translateRes.choices[0]?.message.content?.trim() || article.title;
 
-                if (serpRes.ok) {
-                    const serpJson = await serpRes.json();
-                    if (serpJson.organic && Array.isArray(serpJson.organic)) {
-                        serpDataText = serpJson.organic.map((o: any) => `Başlık: ${o.title}\nÖzet: ${o.snippet}`).join("\n\n");
-                    } else {
-                        serpDataText = "Arama sonucu bulunamadı.";
+                // 2. Fetch Helper Function
+                const fetchSerp = async (query: string, gl: string, hl: string) => {
+                    const res = await fetch("https://google.serper.dev/search", {
+                        method: 'POST',
+                        headers: {
+                            'X-API-KEY': settings.serper_api_key,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ q: query, gl, hl, num: 10 }) // Top 10 results
+                    });
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json.organic && Array.isArray(json.organic)) {
+                            return json.organic.map((o: any) => `Başlık/Title: ${o.title}\nÖzet/Snippet: ${o.snippet}`).join("\n\n");
+                        }
                     }
-                } else {
-                    console.error("Serper API error status:", serpRes.status);
-                    serpDataText = "Serper API bağlantı hatası.";
-                }
+                    return "Sonuç bulunamadı.";
+                };
+
+                // 3. Fetch both in parallel
+                const [trSerp, enSerp] = await Promise.all([
+                    fetchSerp(article.title, "tr", "tr"),
+                    fetchSerp(englishTitle, "us", "en")
+                ]);
+
+                trSerpDataText = trSerp;
+                enSerpDataText = enSerp;
+
             } catch (err) {
                 console.error("Serper API Error:", err);
-                serpDataText = "Serper API isteği başarısız oldu.";
+                trSerpDataText = "Serper API isteği başarısız oldu.";
+                enSerpDataText = "Serper API isteği başarısız oldu.";
             }
 
         } else {
-            serpDataText = "SEO Uyumlu uçak bileti blog yazısı örneği: Kullanıcıların en ucuz biletleri bulmak için Salı günleri arama yapması tavsiye edilir. Uçak bileti sitelerinde gizli sekme kullanmak algoritmayı kandırarak fiyatların artmasını engeller...";
+            trSerpDataText = "SEO Uyumlu uçak bileti blog yazısı örneği...";
+            enSerpDataText = "SEO Friendly flight ticket blog post example...";
         }
 
         const systemPrompt = `
 Sen uzman bir SEO İçerik Yöneticisi ve Metin Yazarı'sın. 
-Görevin, aşağıdaki SERP verisini(rakiplerin Google'da ne yazdığını) ve kullanıcının mevcut makalesini inceleyerek;
-En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve kesinlikle 100 SEO skoruna sahip yeni bir içerik oluşturmaktır.
+Görevin, aşağıdaki Türkçe ve İngilizce SERP verilerini (dünya genelindeki rakiplerin Google'da ne yazdığını) harmanlayıp kullanıcının mevcut makalesini inceleyerek;
+En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve kesinlikle 100 SEO skoruna sahip yeni bir Türkçe içerik oluşturmaktır.
 
 MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
 1. SEO Başlığı (seo_title): Kesinlikle 30 ile 60 karakter arasında uzunluğa sahip olmalıdır.
 2. SEO Açıklaması (seo_description): Kesinlikle 150 karakterden uzun olmalı, tıklamaya teşvik etmelidir.
-3. İçerik Uzunluğu (content_html): Kesinlikle en az 300 kelime olmalıdır. Kısa ve yüzeysel içerik kabul edilmez.
+3. İçerik Uzunluğu (content_html): Kesinlikle en az 300 kelime olmalıdır. Kısa ve yüzeysel içerik kabul edilmez. İngilizce SERP'ten aldığın değerli bilgileri Türkçe içeriğe kaynaştırarak kaliteyi artır.
 4. Anahtar Kelime Kullanımı: Ürettiğin anahtar kelimeleri (keywords) makale içeriğine (content_html) doğal bir dille ve SEO uyumlu bir şekilde mutlaka yedirmelisin.
 
 Çıktıyı kesinlikle geçerli bir JSON formatında ver.JSON şeması şöyledir:
@@ -103,13 +120,17 @@ MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
 
         const userPrompt = `
 Mevcut Makale Başlığı: ${article.title}
-SERP Analizi Raporu(Rakiplerin İçerik Özeti):
-                            ${serpDataText}
+
+1) TÜRKÇE SERP Analizi Raporu(Türkiye'deki Rakiplerin İçerik Özeti):
+${trSerpDataText}
+
+2) İNGİLİZCE SERP Analizi Raporu (Global Rakiplerin İçerik Özeti):
+${enSerpDataText}
 
 Mevcut Makalenin Eski İçeriği:
-                            ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
+${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
-Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword yerleşimi) harfiyen uyarak, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
+Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword yerleşimi) harfiyen uyarak, hem Türkiye hem de Global verileri harmanlayıp HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret (JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini", // Cost efficient model
