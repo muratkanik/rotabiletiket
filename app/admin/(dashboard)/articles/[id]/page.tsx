@@ -262,6 +262,13 @@ export default function ArticleFormPage() {
     async function handleSave() {
         setSaving(true);
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                toast.error("Oturumunuzun süresi dolmuş. Lütfen sayfayı yenileyip tekrar giriş yapın (401 Unauthorized).");
+                setSaving(false);
+                return;
+            }
+
             let articleId = id;
 
             // 1. Common Data
