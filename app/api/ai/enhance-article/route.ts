@@ -122,6 +122,21 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
 
         const generatedContent = JSON.parse(generatedRaw);
 
+        // Update the base article table for default TR view
+        const { error: baseUpdateError } = await supabase
+            .from('articles')
+            .update({
+                title: generatedContent.seo_title || article.title,
+                summary: generatedContent.summary,
+                content_html: generatedContent.content_html
+            })
+            .eq('id', articleId);
+
+        if (baseUpdateError) {
+            console.error("Base Article Update Error:", baseUpdateError)
+            return NextResponse.json({ error: "Ana makale güncellenirken hata oluştu: " + baseUpdateError.message }, { status: 500 });
+        }
+
         // Update the current language (Assuming TR is default/primary for this system)
         const { error: trUpdateError } = await supabase
             .from('article_translations')
