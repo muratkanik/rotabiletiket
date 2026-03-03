@@ -60,39 +60,47 @@ export async function createUserWithPassword(email: string, password: string) {
     }
 
     // Send Welcome Email
+    let emailSent = false;
+    let emailError = "Mail gönderimi ayarlarda e-posta API anahtarı (RESEND_API_KEY) tanımlanmadığı için devre dışı.";
+
     if (process.env.RESEND_API_KEY) {
         try {
             const resend = new Resend(process.env.RESEND_API_KEY);
-            await resend.emails.send({
-                from: 'Rotabil Etiket <noreply@rotabiletiket.com>', // User needs to verify domain or use onboard address
+            const response = await resend.emails.send({
+                from: 'Rotabiletiket <info@rotabiletiket.com>', // User needs to verify domain on Resend
                 to: email,
-                subject: 'Rotabil Admin Hesabınız Oluşturuldu',
+                subject: 'Rotabiletiket Admin Panel Hesabınız Oluşturuldu',
                 html: `
-                    <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto;">
-                        <h2 style="color: #333;">Hoş Geldiniz!</h2>
-                        <p>Rotabil Etiket admin panel erişiminiz oluşturulmuştur.</p>
-                        <div style="background: #f4f4f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                            <p style="margin: 0 0 10px 0;"><strong>Giriş Bilgileriniz:</strong></p>
-                            <p style="margin: 5px 0;">E-posta: ${email}</p>
-                            <p style="margin: 5px 0;">Şifre: <strong>${password}</strong></p>
+                    <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #333;">
+                        <h2 style="color: #1e40af;">Hoş Geldiniz!</h2>
+                        <p>Rotabiletiket sistemine yeni bir admin kullanıcısı olarak eklendiniz.</p>
+                        <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
+                            <p style="margin: 0 0 10px 0; font-size: 16px;"><strong>🔑 Giriş Bilgileriniz:</strong></p>
+                            <p style="margin: 5px 0;"><strong>E-posta:</strong> ${email}</p>
+                            <p style="margin: 5px 0;"><strong>Şifre:</strong> <span style="font-family: monospace; background: white; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1;">${password}</span></p>
                         </div>
-                        <p>Aşağıdaki bağlantıdan giriş yapabilirsiniz:</p>
-                        <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/login" style="background: #ea580c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">Admin Paneline Git</a>
-                        <p style="color: #666; font-size: 12px; margin-top: 30px;">Güvenliğiniz için giriş yaptıktan sonra şifrenizi değiştirmenizi öneririz.</p>
+                        <p>Aşağıdaki bağlantıyı kullanarak sisteme giriş yapabilirsiniz:</p>
+                        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://rotabiletiket.com'}/admin/login" style="background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin: 10px 0;">Yönetim Paneline Git</a>
+                        <p style="color: #64748b; font-size: 13px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px;">Güvenliğiniz için ilk girişten sonra şifrenizi sağ üst menüden değiştirmeniz tavsiye edilir.</p>
                     </div>
                 `
             });
-        } catch (mailError) {
+
+            if (response.error) {
+                console.error('Resend API error:', response.error);
+                emailError = response.error.message;
+            } else {
+                emailSent = true;
+                emailError = "";
+            }
+        } catch (mailError: any) {
             console.error('Mail sending failed:', mailError);
-            // Don't fail the whole request if mail fails, but maybe warn?
-            // For now silent fail logging is okay, UI will show success for user creation.
+            emailError = mailError.message || "Bilinmeyen bir hata oluştu";
         }
-    } else {
-        console.warn('RESEND_API_KEY is missing, welcome email not sent.');
     }
 
     revalidatePath('/admin/users');
-    return { success: true };
+    return { success: true, emailSent, emailError };
 }
 
 export async function deleteUser(userId: string) {

@@ -18,7 +18,12 @@ export function AddUserForm() {
         try {
             const res = await createUserWithPassword(email, password);
             if (res.success) {
-                toast.success('Kullanıcı başarıyla oluşturuldu');
+                if (res.emailSent) {
+                    toast.success('Kullanıcı başarıyla oluşturuldu ve hoş geldin e-postası şifresiyle beraber gönderildi.');
+                } else {
+                    toast.success('Kullanıcı oluşturuldu.');
+                    toast.warning(`Ancak E-posta gönderilemedi: ${res.emailError}`);
+                }
                 (document.getElementById('add-user-form') as HTMLFormElement)?.reset();
             } else {
                 toast.error(res.error || 'Bir hata oluştu');
