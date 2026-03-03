@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,37 @@ import Link from 'next/link';
 export default function UpdatePasswordPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdated, setIsUpdated] = useState(false);
+    const [hasToken, setHasToken] = useState<boolean | null>(null);
     const router = useRouter();
+    const supabase = createClient();
+
+    useEffect(() => {
+        // Check if there is a session or a hash fragment containing the access token
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setHasToken(true);
+            } else {
+                // Supabase hash fragment automatically creates a session if valid
+                const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
+                        setHasToken(true);
+                    }
+                });
+
+                // If after a short delay no session is established, consider it invalid
+                setTimeout(() => {
+                    setHasToken(prev => prev === null ? false : prev);
+                }, 1500);
+
+                return () => {
+                    authListener.subscription.unsubscribe();
+                }
+            }
+        };
+
+        checkSession();
+    }, [supabase]);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -29,7 +59,6 @@ export default function UpdatePasswordPage() {
             return;
         }
 
-        const supabase = createClient();
         const { error } = await supabase.auth.updateUser({
             password: password
         });
@@ -82,32 +111,45 @@ export default function UpdatePasswordPage() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Yeni Şifre</label>
-                        <Input
-                            name="password"
-                            type="password"
-                            required
-                            minLength={6}
-                            className="h-11"
-                        />
+                {hasToken === false ? (
+                    <div className="text-center space-y-4">
+                        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100">
+                            Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş. Lütfen tekrar sıfırlama talebinde bulunun.
+                        </div>
+                        <Button asChild variant="outline" className="w-full mt-4">
+                            <Link href="/admin/forgot-password">Yeniden Talep Et</Link>
+                        </Button>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Yeni Şifre (Tekrar)</label>
-                        <Input
-                            name="confirmPassword"
-                            type="password"
-                            required
-                            minLength={6}
-                            className="h-11"
-                        />
-                    </div>
-                    <Button type="submit" className="w-full h-11 bg-orange-600 hover:bg-orange-700 font-medium" disabled={isLoading}>
-                        {isLoading ? <Loader2 className="animate-spin mr-2" /> : null}
-                        Şifreyi Güncelle
-                    </Button>
-                </form>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Yeni Şifre</label>
+                            <Input
+                                name="password"
+                                type="password"
+                                required
+                                minLength={6}
+                                className="h-11"
+                                disabled={hasToken === null}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Yeni Şifre (Tekrar)</label>
+                            <Input
+                                name="confirmPassword"
+                                type="password"
+                                required
+                                minLength={6}
+                                className="h-11"
+                                disabled={hasToken === null}
+                            />
+                        </div>
+                        <Button type="submit" className="w-full h-11 bg-orange-600 hover:bg-orange-700 font-medium" disabled={isLoading || hasToken === null}>
+                            {isLoading || hasToken === null ? <Loader2 className="animate-spin mr-2" /> : null}
+                            {hasToken === null ? 'Bağlantı Kontrol Ediliyor...' : 'Şifreyi Güncelle'}
+                        </Button>
+                    </form>
+                )}
             </div>
         </div>
     );
