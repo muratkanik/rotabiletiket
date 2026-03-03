@@ -83,15 +83,21 @@ export async function POST(req: Request) {
         const systemPrompt = `
 Sen uzman bir SEO İçerik Yöneticisi ve Metin Yazarı'sın. 
 Görevin, aşağıdaki SERP verisini(rakiplerin Google'da ne yazdığını) ve kullanıcının mevcut makalesini inceleyerek;
-En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve SEO skoru 100 olacak yeni bir içerik oluşturmaktır.
+En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve kesinlikle 100 SEO skoruna sahip yeni bir içerik oluşturmaktır.
+
+MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
+1. SEO Başlığı (seo_title): Kesinlikle 30 ile 60 karakter arasında uzunluğa sahip olmalıdır.
+2. SEO Açıklaması (seo_description): Kesinlikle 150 karakterden uzun olmalı, tıklamaya teşvik etmelidir.
+3. İçerik Uzunluğu (content_html): Kesinlikle en az 300 kelime olmalıdır. Kısa ve yüzeysel içerik kabul edilmez.
+4. Anahtar Kelime Kullanımı: Ürettiğin anahtar kelimeleri (keywords) makale içeriğine (content_html) doğal bir dille ve SEO uyumlu bir şekilde mutlaka yedirmelisin.
 
 Çıktıyı kesinlikle geçerli bir JSON formatında ver.JSON şeması şöyledir:
                             {
-                                "seo_title": "Max 60 karakter dikkat çekici başlık",
-                                "seo_description": "Max 150 karakter özet açıklama meta",
-                                "keywords": "virgülle ayrılmış 3-5 anahtar kelime",
-                                "summary": "Makalenin kısa 2 cümlelik özeti",
-                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
+                                "seo_title": "30-60 karakter arası dikkat çekici başlık",
+                                "seo_description": "En az 150 karakter uzunluğunda özet açıklama meta",
+                                "keywords": "virgülle ayrılmış 3-5 adet iyi analiz edilmiş anahtar kelime",
+                                "summary": "Makalenin kısa 2-3 cümlelik özeti",
+                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir, kelime sınırını aş, anahtar kelimeleri mutlaka kullan. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
                             }
                                 `;
 
@@ -103,7 +109,7 @@ SERP Analizi Raporu(Rakiplerin İçerik Özeti):
 Mevcut Makalenin Eski İçeriği:
                             ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
-Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
+Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword yerleşimi) harfiyen uyarak, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini", // Cost efficient model
