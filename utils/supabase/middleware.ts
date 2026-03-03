@@ -36,7 +36,11 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // Protect /admin routes
-    if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
+    const isPublicAdminRoute = request.nextUrl.pathname.startsWith('/admin/login') ||
+        request.nextUrl.pathname.startsWith('/admin/forgot-password') ||
+        request.nextUrl.pathname.startsWith('/admin/update-password');
+
+    if (request.nextUrl.pathname.startsWith('/admin') && !isPublicAdminRoute) {
         if (!user) {
             return NextResponse.redirect(new URL('/admin/login', request.url))
         }
