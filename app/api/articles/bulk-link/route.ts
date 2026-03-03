@@ -78,73 +78,73 @@ export async function POST(req: Request) {
             let updatedHTML = article.content_html;
             let linksAddedInArticle = 0;
 
-            for (const { keyword, url } from dict) {
+            for (const { keyword, url } of dict) {
                 // Don't link if the keyword's url is the current article's URL itself!
                 if (url === `/bilgi-bankasi/${article.slug}`) continue;
 
-            // Splitting by HTML tags ensures text nodes are isolated
-            const parts = updatedHTML.split(/(<[^>]+>)/g);
-            let inAnchor = false;
+                // Splitting by HTML tags ensures text nodes are isolated
+                const parts = updatedHTML.split(/(<[^>]+>)/g);
+                let inAnchor = false;
 
-            // Escape regex special chars
-            const escapeRegex = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // Regex for word boundary that supports Turkish characters
-            const wordPattern = new RegExp(`(?<![\\wğüşıöçĞÜŞİÖÇ])(${escapeRegex(keyword)})(?![\\wğüşıöçĞÜŞİÖÇ])`, 'gi');
+                // Escape regex special chars
+                const escapeRegex = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // Regex for word boundary that supports Turkish characters
+                const wordPattern = new RegExp(`(?<![\\wğüşıöçĞÜŞİÖÇ])(${escapeRegex(keyword)})(?![\\wğüşıöçĞÜŞİÖÇ])`, 'gi');
 
-            for (let i = 0; i < parts.length; i++) {
-                const str = parts[i];
+                for (let i = 0; i < parts.length; i++) {
+                    const str = parts[i];
 
-                if (str.startsWith('<a ') || str.startsWith('<A ')) {
-                    inAnchor = true;
-                } else if (str.startsWith('</a>') || str.startsWith('</A>')) {
-                    inAnchor = false;
+                    if (str.startsWith('<a ') || str.startsWith('<A ')) {
+                        inAnchor = true;
+                    } else if (str.startsWith('</a>') || str.startsWith('</A>')) {
+                        inAnchor = false;
+                    }
+
+                    // IF it's not a tag AND we are not inside an <a> tag, it's safe to replace text
+                    if (!str.startsWith('<') && !inAnchor) {
+                        const originalStr = parts[i];
+                        parts[i] = parts[i].replace(wordPattern, (match: string) => {
+                            return `<a href="${url}" class="text-blue-600 font-medium hover:underline" title="${keyword}">${match}</a>`;
+                        });
+                        if (originalStr !== parts[i]) {
+                            linksAddedInArticle++;
+                            totalLinksCreated++;
+                        }
+                    }
                 }
+                updatedHTML = parts.join('');
+            }
 
-                // IF it's not a tag AND we are not inside an <a> tag, it's safe to replace text
-                if (!str.startsWith('<') && !inAnchor) {
-                    const originalStr = parts[i];
-                    parts[i] = parts[i].replace(wordPattern, (match) => {
-                        return `<a href="${url}" class="text-blue-600 font-medium hover:underline" title="${keyword}">${match}</a>`;
-                    });
-                    if (originalStr !== parts[i]) {
-                        linksAddedInArticle++;
-                        totalLinksCreated++;
+            if (linksAddedInArticle > 0) {
+                // Update DB
+                const { error: updateErr } = await supabase
+                    .from('article_translations')
+                    .update({ content_html: updatedHTML })
+                    .eq('id', article.id);
+
+                if (updateErr) {
+                    console.error("Error updating article", article.id, updateErr);
+                } else {
+                    articlesUpdated++;
+                    // Optional: We should also update the base `articles` table if this is the TR translation
+                    if (lang === 'tr') {
+                        await supabase.from('articles').update({ content_html: updatedHTML }).eq('id', article.article_id);
                     }
                 }
             }
-            updatedHTML = parts.join('');
         }
-
-        if (linksAddedInArticle > 0) {
-            // Update DB
-            const { error: updateErr } = await supabase
-                .from('article_translations')
-                .update({ content_html: updatedHTML })
-                .eq('id', article.id);
-
-            if (updateErr) {
-                console.error("Error updating article", article.id, updateErr);
-            } else {
-                articlesUpdated++;
-                // Optional: We should also update the base `articles` table if this is the TR translation
-                if (lang === 'tr') {
-                    await supabase.from('articles').update({ content_html: updatedHTML }).eq('id', article.article_id);
-                }
-            }
-        }
-    }
 
         return NextResponse.json({
-        success: true,
-        stats: {
-            totalKeywordsFound: Object.values(keywordDict).flat().length,
-            articlesUpdated,
-            totalLinksCreated
-        }
-    });
+            success: true,
+            stats: {
+                totalKeywordsFound: Object.values(keywordDict).flat().length,
+                articlesUpdated,
+                totalLinksCreated
+            }
+        });
 
-} catch (e: any) {
-    console.error("Bulk Link Error:", e);
-    return NextResponse.json({ error: e.message || "Bilinmeyen hata" }, { status: 500 });
-}
+    } catch (e: any) {
+        console.error("Bulk Link Error:", e);
+        return NextResponse.json({ error: e.message || "Bilinmeyen hata" }, { status: 500 });
+    }
 }
