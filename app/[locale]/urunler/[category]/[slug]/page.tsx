@@ -40,7 +40,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     if (!product) notFound();
 
     // Sort images (primary first)
-    const images = product.product_images?.sort((a: any, b: any) => (b.is_primary ? 1 : -1)) || [];
+    const images = product.images?.sort((a: any, b: any) => (b.is_primary ? 1 : -1)) || [];
     // Helper for image URLs
     const getImageUrl = (path: string) => {
         if (!path) return '/placeholder-product.jpg';

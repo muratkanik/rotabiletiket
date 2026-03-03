@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         // 2. Fetch all product translations
         const { data: products, error: productsErr } = await supabase
             .from('product_translations')
-            .select('id, product_id, language_code, title, slug, keywords');
+            .select('id, product_id, language_code, title, slug, keywords, description_html');
 
         if (productsErr) throw productsErr;
 
@@ -67,6 +67,7 @@ export async function POST(req: Request) {
         // 4. Perform the replacements and calculate stats
         let totalLinksCreated = 0;
         let articlesUpdated = 0;
+        let productsUpdated = 0;
 
         for (const article of articles) {
             if (!article.content_html) continue;
@@ -126,9 +127,69 @@ export async function POST(req: Request) {
                     console.error("Error updating article", article.id, updateErr);
                 } else {
                     articlesUpdated++;
-                    // Optional: We should also update the base `articles` table if this is the TR translation
                     if (lang === 'tr') {
                         await supabase.from('articles').update({ content_html: updatedHTML }).eq('id', article.article_id);
+                    }
+                }
+            }
+        }
+
+        // 5. Process Products
+        for (const product of products) {
+            if (!product.description_html) continue;
+
+            const lang = product.language_code || 'tr';
+            const dict = keywordDict[lang] || [];
+            if (dict.length === 0) continue;
+
+            let updatedHTML = product.description_html;
+            let linksAddedInProduct = 0;
+
+            for (const { keyword, url } of dict) {
+                // Don't link if the keyword's url is the current product's URL itself!
+                if (url === `/urunler/${product.slug}`) continue;
+
+                const parts = updatedHTML.split(/(<[^>]+>)/g);
+                let inAnchor = false;
+
+                const escapeRegex = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const wordPattern = new RegExp(`(?<![\\wğüşıöçĞÜŞİÖÇ])(${escapeRegex(keyword)})(?![\\wğüşıöçĞÜŞİÖÇ])`, 'gi');
+
+                for (let i = 0; i < parts.length; i++) {
+                    const str = parts[i];
+
+                    if (str.startsWith('<a ') || str.startsWith('<A ')) {
+                        inAnchor = true;
+                    } else if (str.startsWith('</a>') || str.startsWith('</A>')) {
+                        inAnchor = false;
+                    }
+
+                    if (!str.startsWith('<') && !inAnchor) {
+                        const originalStr = parts[i];
+                        parts[i] = parts[i].replace(wordPattern, (match: string) => {
+                            return `<a href="${url}" class="text-blue-600 font-medium hover:underline" title="${keyword}">${match}</a>`;
+                        });
+                        if (originalStr !== parts[i]) {
+                            linksAddedInProduct++;
+                            totalLinksCreated++;
+                        }
+                    }
+                }
+                updatedHTML = parts.join('');
+            }
+
+            if (linksAddedInProduct > 0) {
+                const { error: updateErr } = await supabase
+                    .from('product_translations')
+                    .update({ description_html: updatedHTML })
+                    .eq('id', product.id);
+
+                if (updateErr) {
+                    console.error("Error updating product", product.id, updateErr);
+                } else {
+                    productsUpdated++;
+                    if (lang === 'tr') {
+                        await supabase.from('products').update({ description_html: updatedHTML }).eq('id', product.product_id);
                     }
                 }
             }
@@ -139,6 +200,7 @@ export async function POST(req: Request) {
             stats: {
                 totalKeywordsFound: Object.values(keywordDict).flat().length,
                 articlesUpdated,
+                productsUpdated,
                 totalLinksCreated
             }
         });
