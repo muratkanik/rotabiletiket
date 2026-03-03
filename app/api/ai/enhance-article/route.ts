@@ -129,6 +129,7 @@ Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML fo
                 article_id: articleId,
                 language_code: 'tr',
                 title: generatedContent.seo_title || article.title,
+                slug: article.slug,
                 summary: generatedContent.summary,
                 content_html: generatedContent.content_html,
                 seo_description: generatedContent.seo_description,
@@ -157,7 +158,7 @@ Gelen Veri: ${generatedRaw}`;
                 const enContent = JSON.parse(enRaw);
                 await supabase.from('article_translations').upsert({
                     article_id: articleId, language_code: 'en',
-                    title: enContent.seo_title || enContent.title, summary: enContent.summary, content_html: enContent.content_html, seo_description: enContent.seo_description, keywords: enContent.keywords
+                    title: enContent.seo_title || enContent.title, slug: article.slug, summary: enContent.summary, content_html: enContent.content_html, seo_description: enContent.seo_description, keywords: enContent.keywords
                 }, { onConflict: 'article_id,language_code' });
             }
         } catch (translErr) {
