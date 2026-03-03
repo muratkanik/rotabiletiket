@@ -15,6 +15,10 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     const [logs, setLogs] = useState<string[]>([]);
     const [isHackerScreenOpen, setIsHackerScreenOpen] = useState(false);
 
+    // Bulk Enhance States
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isBulkEnhancing, setIsBulkEnhancing] = useState(false);
+
     // Bulk Linking States
     const [bulkLogs, setBulkLogs] = useState<string[]>([]);
     const [isBulkLinkScreenOpen, setIsBulkLinkScreenOpen] = useState(false);
@@ -143,6 +147,50 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
         }
     };
 
+    const handleBulkEnhance = async () => {
+        setIsHackerScreenOpen(true);
+        setIsBulkEnhancing(true);
+        setLogs([`> BAŞLATILIYOR: ${selectedIds.length} adet makale için toplu AI optimizasyonu...`]);
+
+        try {
+            for (let i = 0; i < selectedIds.length; i++) {
+                const articleId = selectedIds[i];
+                const article = articles.find(a => a.id === articleId);
+                const articleTitle = article?.title || "Bilinmeyen";
+
+                setEnhancingArticleId(articleId); // Görsel geri bildirim
+
+                setLogs(prev => [...prev, ``, `> --- [${i + 1}/${selectedIds.length}] ---`, `> Hedef Makale: "${articleTitle}" (ID: ${articleId}) işleniyor...`]);
+
+                const res = await fetch(`/api/ai/enhance-article`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ articleId })
+                });
+
+                if (!res.ok) {
+                    const errorResponse = await res.json().catch(() => ({}));
+                    setLogs(prev => [...prev, `> HATA: "${articleTitle}" optimize edilemedi (${res.status} - ${errorResponse.error || res.statusText}). Atlanıyor...`]);
+                    continue;
+                }
+
+                setLogs(prev => [...prev, `> BAŞARILI: "${articleTitle}" optimize edildi ve çevirileri yapıldı.`]);
+            }
+
+            setLogs(prev => [...prev, ``, `> İŞLEM BAŞARILI. Tüm seçili makaleler güncellendi! Yenileniyor...`]);
+            setSelectedIds([]);
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            window.location.reload();
+
+        } catch (error: any) {
+            setLogs(prev => [...prev, `> KRITIK HATA: Toplu işlem sonlandı - ${error.message}`]);
+        } finally {
+            setIsBulkEnhancing(false);
+            setEnhancingArticleId(null);
+        }
+    };
+
     return (
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
@@ -151,6 +199,16 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                     <p className="text-slate-500 mt-1">Makaleleri yönetin, SEO optimizasyonu ve AI destekli geliştirme yapın.</p>
                 </div>
                 <div className="flex items-center gap-3">
+                    {selectedIds.length > 0 && (
+                        <Button
+                            onClick={handleBulkEnhance}
+                            disabled={isBulkEnhancing || enhancingArticleId !== null}
+                            variant="outline"
+                            className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                        >
+                            <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
+                        </Button>
+                    )}
                     <Button
                         onClick={handleBulkLink}
                         disabled={isBulkLinking}
@@ -171,6 +229,20 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                 <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50 border-b">
                         <tr>
+                            <th className="p-4 font-semibold text-slate-700 w-12 text-center select-none">
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                    checked={sortedArticles.length > 0 && selectedIds.length === sortedArticles.length}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedIds(sortedArticles.map((a: any) => a.id));
+                                        } else {
+                                            setSelectedIds([]);
+                                        }
+                                    }}
+                                />
+                            </th>
                             <th className="p-4 font-semibold text-slate-700 w-20">Görsel</th>
                             <th className="p-4 font-semibold text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors select-none" onClick={() => requestSort('title')}>
                                 <div className="flex items-center gap-1">Başlık {sortConfig?.key === 'title' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : <ArrowUpDown className="h-3 w-3 text-slate-400" />}</div>
@@ -188,6 +260,20 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                         {sortedArticles && sortedArticles.length > 0 ? (
                             sortedArticles.map((article: any) => (
                                 <tr key={article.id} className="hover:bg-slate-50/50 transition-colors">
+                                    <td className="p-4 text-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            checked={selectedIds.includes(article.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedIds(prev => [...prev, article.id]);
+                                                } else {
+                                                    setSelectedIds(prev => prev.filter(id => id !== article.id));
+                                                }
+                                            }}
+                                        />
+                                    </td>
                                     <td className="p-4">
                                         <div className="relative h-12 w-16 bg-slate-100 rounded overflow-hidden">
                                             {article.image_url ? (
@@ -265,7 +351,7 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={5} className="p-8 text-center text-slate-500">
+                                <td colSpan={6} className="p-8 text-center text-slate-500">
                                     Henüz hiç makale eklenmemiş.
                                 </td>
                             </tr>
