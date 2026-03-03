@@ -91,7 +91,7 @@ En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve SEO 
                                 "seo_description": "Max 150 karakter özet açıklama meta",
                                 "keywords": "virgülle ayrılmış 3-5 anahtar kelime",
                                 "summary": "Makalenin kısa 2 cümlelik özeti",
-                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir)"
+                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
                             }
                                 `;
 
@@ -103,7 +103,7 @@ SERP Analizi Raporu(Rakiplerin İçerik Özeti):
 Mevcut Makalenin Eski İçeriği:
                             ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
-Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön).`;
+Yukarıdakileri sentezle ve bana yepyeni, SERP verisiyle zenginleşmiş, HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret(JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini", // Cost efficient model
