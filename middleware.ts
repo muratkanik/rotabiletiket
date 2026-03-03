@@ -6,25 +6,19 @@ import { routing } from './src/i18n/routing';
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-    // 1. Run Supabase middleware first (to handle auth/sessions)
-    // Note: updateSession usually returns a response. 
-    // We need to be careful not to return early if we want intl to run, 
-    // OR we act on the response returned by updateSession.
+    const isAdmin = request.nextUrl.pathname.startsWith('/admin');
 
-    // For now, let's prioritize intl routing for the structure, 
-    // but ensure session is updated if needed.
-    // A common pattern is to let intl handle the response, then update session on that response.
+    // 1. Admin Routes: Strictly handle authentication and session timeout logic.
+    // Do not run internationalization on the admin panel.
+    if (isAdmin) {
+        // updateSession returns a redirect response to /admin/login if the session is expired.
+        return await updateSession(request);
+    }
 
+    // 2. Public Routes: Handle internationalization
     const response = intlMiddleware(request);
 
-    // 2. Update Supabase session on the response object
-    // We verify if updateSession can accept a response object or just request.
-    // The default updateSession implementation typically creates a response.
-    // We might need to refactor updateSession to accept an existing response 
-    // or just run it side-by-side if it just sets cookies.
-
-    // Let's assume we run updateSession to ensure cookies are handled, 
-    // but we return the intl response which handles the redirects/rewrites.
+    // Ensure session cookies are refreshed in the background for public routes if needed
     await updateSession(request);
 
     return response;
@@ -41,7 +35,7 @@ export const config = {
 
         // Enable redirects that add missing locales
         // (e.g. `/about` -> `/en/about`)
-        '/((?!api|admin|_next|_vercel|.*\\..*).*)'
+        '/((?!api|_next|_vercel|.*\\..*).*)'
     ]
 };
 

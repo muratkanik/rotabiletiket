@@ -264,8 +264,8 @@ export default function ArticleFormPage() {
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
-                toast.error("Oturumunuzun süresi dolmuş. Lütfen sayfayı yenileyip tekrar giriş yapın (401 Unauthorized).");
-                setSaving(false);
+                toast.error("Oturum süreniz doldu. Giriş sayfasına yönlendiriliyorsunuz...");
+                window.location.href = '/admin/login';
                 return;
             }
 
