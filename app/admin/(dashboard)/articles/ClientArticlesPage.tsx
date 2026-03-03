@@ -41,15 +41,12 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
             setLogs(prev => [...prev, `> İŞLEM BAŞARILI. Veritabanı güncellendi! Yönlendiriliyorsunuz...`]);
             await new Promise((resolve) => setTimeout(resolve, 1500));
 
-            // Reload page or update state
-            window.location.reload();
+            // Reload page or update state after user closes manually (optional)
+            // window.location.reload();
 
         } catch (error: any) {
             setLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
-            setTimeout(() => {
-                setIsHackerScreenOpen(false);
-                setEnhancingArticleId(null);
-            }, 3000);
+            setEnhancingArticleId(null);
         }
     };
 
@@ -182,7 +179,11 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                 </table>
             </div>
 
-            <HackerScreenModal isOpen={isHackerScreenOpen} logs={logs} />
+            <HackerScreenModal
+                isOpen={isHackerScreenOpen}
+                logs={logs}
+                onClose={() => setIsHackerScreenOpen(false)}
+            />
         </div>
     );
 }

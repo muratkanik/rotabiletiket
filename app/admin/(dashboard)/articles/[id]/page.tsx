@@ -569,6 +569,7 @@ export default function ArticleFormPage() {
             <HackerScreenModal
                 isOpen={isHackerScreenOpen}
                 logs={logs}
+                onClose={() => setIsHackerScreenOpen(false)}
             />
         </div>
     );
