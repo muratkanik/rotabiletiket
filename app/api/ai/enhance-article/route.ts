@@ -103,18 +103,19 @@ Görevin, aşağıdaki Türkçe ve İngilizce SERP verilerini (dünya genelindek
 En kapsamlı, % 100 özgün(intihal içermeyen), okunabilirliği yüksek ve kesinlikle 100 SEO skoruna sahip yeni bir Türkçe içerik oluşturmaktır.
 
 MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
-1. SEO Başlığı (seo_title): Kesinlikle 30 ile 60 karakter arasında uzunluğa sahip olmalıdır.
-2. SEO Açıklaması (seo_description): Kesinlikle 150 karakterden uzun olmalı, tıklamaya teşvik etmelidir.
-3. İçerik Uzunluğu (content_html): Kesinlikle en az 300 kelime olmalıdır. Kısa ve yüzeysel içerik kabul edilmez. İngilizce SERP'ten aldığın değerli bilgileri Türkçe içeriğe kaynaştırarak kaliteyi artır.
-4. Anahtar Kelime Kullanımı: Ürettiğin anahtar kelimeleri (keywords) makale içeriğine (content_html) doğal bir dille ve SEO uyumlu bir şekilde mutlaka yedirmelisin.
+1. Anahtar Kelime (keywords): Virgülle ayrılmış 3 adet odak anahtar kelime belirle. İlk sıraya yazdığın kelime "Ana Anahtar Kelime" kabul edilecektir.
+2. SEO Başlığı (seo_title): Kesinlikle 40 ile 60 karakter arasında olmalıdır. İLK anahtar kelimeyi mutlaka içinde barındırmalıdır.
+3. SEO Açıklaması / Özet (summary ve seo_description): İkisi de aynı olabilir. Kesinlikle 130 ile 155 karakter arasında olmalıdır. İLK anahtar kelimeyi mutlaka içinde barındırmalıdır.
+4. İçerik Uzunluğu (content_html): Kesinlikle en az 600 kelime uzunluğunda, çok detaylı bir makale olmalıdır. İngilizce SERP'ten aldığın değerli bilgileri Türkçe içeriğe kaynaştırarak kaliteyi artır.
+5. İçerik İçi Kelime Dağılımı: İLK anahtar kelime, makale metninin içinde (content_html) doğal bir akışla en az 3-4 defa geçmelidir.
 
 Çıktıyı kesinlikle geçerli bir JSON formatında ver.JSON şeması şöyledir:
                             {
-                                "seo_title": "30-60 karakter arası dikkat çekici başlık",
-                                "seo_description": "En az 150 karakter uzunluğunda özet açıklama meta",
-                                "keywords": "virgülle ayrılmış 3-5 adet iyi analiz edilmiş anahtar kelime",
-                                "summary": "Makalenin kısa 2-3 cümlelik özeti",
-                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. Mevcut veriyi zenginleştir, kelime sınırını aş, anahtar kelimeleri mutlaka kullan. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
+                                "seo_title": "40-60 karakter arası dikkat çekici başlık (ilk kelimeyi içerir)",
+                                "seo_description": "130-155 karakter uzunluğunda özet açıklama meta (ilk kelimeyi içerir)",
+                                "keywords": "virgülle_kelime1, virgülle_kelime2, virgülle_kelime3",
+                                "summary": "130-155 karakter uzunluğunda özet (ilk kelimeyi içerir)",
+                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. 600 kelimeyi aş. İlk anahtar kelimeyi 3-4 kez kullan. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
                             }
                                 `;
 
