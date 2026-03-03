@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
                                         return acc;
                                     }, {}) || {}
                                 )
-                                    // @ts-ignore
+                                    // @ts-expect-error - ignore object type errors for sort
                                     .sort(([, a], [, b]) => b - a)
                                     .slice(0, 5)
                                     .map(([path, count]: any, i) => (
@@ -161,7 +161,7 @@ export default async function AdminDashboard() {
                                         return acc;
                                     }, {}) || {}
                                 )
-                                    // @ts-ignore
+                                    // @ts-expect-error - ignore object type errors for sort
                                     .sort(([, a], [, b]) => b - a)
                                     .slice(0, 5)
                                     .map(([domain, count]: any, i) => (

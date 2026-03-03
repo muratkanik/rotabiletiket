@@ -24,12 +24,11 @@ export async function GET(req: Request) {
         // For this example, let's assume there is a 'test' product since we are unsure of the schema.
         // In reality, this would query your exact products table.
         // Replace 'products' with your actual table name if different.
-        const { data: randomProduct, error: productError } = await supabase
+        const { data: randomProduct } = await supabase
             .from("products") // Update this table name if it differs!
             .select("title, price, image_url, id, description")
             .limit(1)
-            .single()
-            .catch((err) => ({ data: null, error: err }));
+            .single();
 
         // Mock fallback product if table is empty or doesn't exist yet
         const product = randomProduct || {

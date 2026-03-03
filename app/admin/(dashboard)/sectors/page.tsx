@@ -19,10 +19,6 @@ export default function AdminSectorsPage() {
     const [sortKey, setSortKey] = useState<'display_order' | 'title'>('display_order');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-    useEffect(() => {
-        fetchSectors();
-    }, []);
-
     const fetchSectors = async () => {
         setLoading(true);
         const { data, error } = await supabase
@@ -48,6 +44,10 @@ export default function AdminSectorsPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        fetchSectors();
+    }, []);
 
     const handleDelete = async (id: string) => {
         if (!confirm('Bu sektörü ve tüm çevirilerini silmek istediğinize emin misiniz?')) return;

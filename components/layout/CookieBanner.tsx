@@ -9,22 +9,20 @@ export default function CookieBanner({ locale }: { locale: string }) {
     const [consentText, setConsentText] = useState('');
 
     useEffect(() => {
+        const fetchConsentText = async () => {
+            const settings = await getSiteSettings('cookie_consent');
+            if (settings) {
+                setConsentText(settings[locale] || settings['tr'] || '');
+                setIsVisible(true);
+            }
+        };
+
         // Check local storage
         const accepted = localStorage.getItem('cookie_consent_accepted');
         if (!accepted) {
-            // Fetch settings client-side or assume passed?
-            // Since this is a client component inside Layout, we can fetch on mount.
             fetchConsentText();
         }
     }, [locale]);
-
-    const fetchConsentText = async () => {
-        const settings = await getSiteSettings('cookie_consent');
-        if (settings) {
-            setConsentText(settings[locale] || settings['tr'] || '');
-            setIsVisible(true);
-        }
-    };
 
     const handleAccept = () => {
         localStorage.setItem('cookie_consent_accepted', 'true');

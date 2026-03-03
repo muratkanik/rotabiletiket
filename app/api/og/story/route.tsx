@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
                                 textShadow: '0 4px 16px rgba(0,0,0,0.8)',
                             }}
                         >
-                            "{caption}"
+                            &quot;{caption}&quot;
                         </div>
 
                         {/* Product Title Box */}

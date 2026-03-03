@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Megaphone, TrendingUp } from "lucide-react";
+import { Megaphone, TrendingUp, Image as ImageIcon } from "lucide-react";
 
 export default function MetaAdsPage() {
     const [loading, setLoading] = useState(false);

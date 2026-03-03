@@ -91,7 +91,7 @@ export default function InstagramPage() {
                         ) : (
                             <div className="text-slate-400 text-center">
                                 <ImageIcon size={48} className="mx-auto mb-2 opacity-20" />
-                                <p className="text-sm">Bir resim URL'si girin</p>
+                                <p className="text-sm">Bir resim URL&apos;si girin</p>
                             </div>
                         )}
                     </div>
