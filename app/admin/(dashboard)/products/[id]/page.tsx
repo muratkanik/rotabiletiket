@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X, Plus } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, Plus, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
@@ -51,6 +51,10 @@ export default function ProductFormPage() {
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
     const [selectedLang, setSelectedLang] = useState('tr');
+
+    // AI Enhance Status
+    const [enhancing, setEnhancing] = useState(false);
+    const [logs, setLogs] = useState<string[]>([]);
 
     // Base Data (Shared across langs or specific to TR)
     const [categoryId, setCategoryId] = useState('');
@@ -214,6 +218,52 @@ export default function ProductFormPage() {
         }
     }, [formData.title, isNew, selectedLang]);
 
+    const handleEnhance = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isNew) {
+            toast.error("AI Enhance özelliğini kullanmak için ürünü önce kaydetmelisiniz!");
+            return;
+        }
+
+        setEnhancing(true);
+        setLogs([`> BAŞLATILIYOR: "${formData.title || 'İsimsiz'}" için E-Ticaret AI Enhance süreci...`]);
+
+        try {
+            // Fake progression log for dramatic effect while waiting for long polling
+            const logInterval = setInterval(() => {
+                setLogs(prev => [...prev, `> Sistem rakiplerin içeriklerini inceliyor... ${Math.floor(Math.random() * 100)}%`]);
+            }, 5000);
+
+            const res = await fetch(`/api/ai/enhance-product`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: id, mock: false })
+            });
+
+            clearInterval(logInterval);
+
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            setLogs(prev => [...prev, `> BAŞARILI: Veritabanına (4 dile birden) kaydedildi.`]);
+            toast.success("AI Enhance tamamlandı. Ekran güncelleniyor...");
+
+            setTimeout(() => {
+                setEnhancing(false);
+                setLogs([]);
+                // Reload the page to get the freshest data safely
+                window.location.reload();
+            }, 2000);
+
+        } catch (err: any) {
+            setLogs(prev => [...prev, `> HATA: ${err.message}`]);
+            toast.error("Hata: " + err.message);
+            setTimeout(() => {
+                setEnhancing(false);
+            }, 4000); // leave the error on screen for a bit
+        }
+    };
+
     async function handleSave() {
         setSaving(true);
         try {
@@ -321,7 +371,7 @@ export default function ProductFormPage() {
 
                 </div>
                 <div className="flex items-center gap-3">
-                    <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew}>
+                    <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew || enhancing}>
                         <SelectTrigger className="w-[180px] bg-white">
                             <SelectValue placeholder="Dil Seçiniz" />
                         </SelectTrigger>
@@ -331,11 +381,45 @@ export default function ProductFormPage() {
                             ))}
                         </SelectContent>
                     </Select>
-                    <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
+                    <Button onClick={handleSave} disabled={saving || enhancing} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
                         {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
                     </Button>
                 </div>
             </div>
+
+            {/* AI Hacker Screen Overlay */}
+            {(enhancing || logs.length > 0) && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-black border border-green-500/30 rounded-lg shadow-2xl w-full max-w-2xl h-[500px] flex flex-col overflow-hidden font-mono">
+                        <div className="flex items-center justify-between px-4 py-2 border-b border-green-500/30 bg-green-950/20">
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-green-500 animate-pulse" />
+                                <span className="text-green-500 text-sm font-semibold tracking-wider">SYSTEM.AI.ENHANCER.PRODUCT</span>
+                            </div>
+                            {!enhancing && (
+                                <button onClick={() => setLogs([])} className="text-green-500 hover:text-green-400">
+                                    <X size={18} />
+                                </button>
+                            )}
+                        </div>
+                        <div className="flex-1 p-4 overflow-y-auto flex flex-col">
+                            <div className="space-y-2 mt-auto">
+                                {logs.map((log, i) => (
+                                    <div key={i} className={`text-sm ${log.includes('HATA') ? 'text-red-500' : 'text-green-500'} opacity-0 animate-fade-in-up`} style={{ animationFillMode: 'forwards' }}>
+                                        {log}
+                                    </div>
+                                ))}
+                                {enhancing && (
+                                    <div className="text-green-500/50 text-sm animate-pulse flex items-center gap-2 mt-4">
+                                        <div className="h-1.5 w-1.5 bg-green-500 rounded-full" />
+                                        İşlem devam ediyor, lütfen bekleyin...
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
@@ -468,10 +552,17 @@ export default function ProductFormPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex justify-between items-center">
-                                <span>İçerik ({selectedLang.toUpperCase()})</span>
-                                <span className="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded">
-                                    {selectedLang === 'tr' ? 'Ana Tabloyu Düzenliyor' : 'Çeviri Tablosunu Düzenliyor'}
-                                </span>
+                                <div className="flex items-center gap-4">
+                                    <span>İçerik ({selectedLang.toUpperCase()})</span>
+                                    <span className="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                                        {selectedLang === 'tr' ? 'Ana Tabloyu Düzenliyor' : 'Çeviri Tablosunu Düzenliyor'}
+                                    </span>
+                                </div>
+                                {!isNew && selectedLang === 'tr' && (
+                                    <Button onClick={handleEnhance} disabled={enhancing || saving} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
+                                        {enhancing ? 'Yazılıyor...' : <><Sparkles className="mr-2 h-4 w-4" /> AI Enhance</>}
+                                    </Button>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
