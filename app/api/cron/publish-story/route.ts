@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 // export const maxDuration = 60; // Set max duration if running on Vercel Pro
 
 export async function GET(req: Request) {
@@ -26,9 +28,10 @@ export async function GET(req: Request) {
         let itemRef = { title: "", price: "", image: "", description: "" };
 
         if (isProduct) {
-            const { data: allIds } = await supabase.from("products").select("id");
-            if (allIds && allIds.length > 0) {
-                const randomId = allIds[Math.floor(Math.random() * allIds.length)].id;
+            const { data: allIds } = await supabase.from("products").select("id, product_images(id)");
+            const validProducts = allIds ? allIds.filter((p: any) => p.product_images && p.product_images.length > 0) : [];
+            if (validProducts.length > 0) {
+                const randomId = validProducts[Math.floor(Math.random() * validProducts.length)].id;
                 const { data: randomProduct } = await supabase
                     .from("products")
                     .select(`
@@ -62,7 +65,7 @@ export async function GET(req: Request) {
                 }
             }
         } else {
-            const { data: allIds } = await supabase.from("articles").select("id");
+            const { data: allIds } = await supabase.from("articles").select("id").not("image_url", "is", null);
             if (allIds && allIds.length > 0) {
                 const randomId = allIds[Math.floor(Math.random() * allIds.length)].id;
                 const { data: randomArticle } = await supabase
