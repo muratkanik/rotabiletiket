@@ -19,7 +19,8 @@ export default function MetaSettingsPage() {
         facebook_page_id: "",
         meta_ad_account_id: "",
         openai_api_key: "",
-        serper_api_key: ""
+        serper_api_key: "",
+        gemini_api_key: ""
     });
 
     useEffect(() => {
@@ -42,7 +43,8 @@ export default function MetaSettingsPage() {
                         facebook_page_id: data.facebook_page_id || "",
                         meta_ad_account_id: data.meta_ad_account_id || "",
                         openai_api_key: data.openai_api_key || "",
-                        serper_api_key: data.serper_api_key || ""
+                        serper_api_key: data.serper_api_key || "",
+                        gemini_api_key: data.gemini_api_key || ""
                     });
                 }
             } catch (err) {
@@ -142,6 +144,10 @@ export default function MetaSettingsPage() {
                     <div className="space-y-2 md:col-span-2 pt-4 border-t border-slate-100">
                         <label className="text-sm font-medium text-slate-700">OpenAI API Key (Yapay Zeka İçin)</label>
                         <input type="password" name="openai_api_key" value={settings.openai_api_key} onChange={handleChange} placeholder="sk-proj-..." className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all" />
+                    </div>
+                    <div className="space-y-2 md:col-span-2 pt-4 border-t border-slate-100">
+                        <label className="text-sm font-medium text-slate-700">Gemini API Key (OpenAI Alternatifi / Yapay Zeka İçin)</label>
+                        <input type="password" name="gemini_api_key" value={settings.gemini_api_key} onChange={handleChange} placeholder="AIzaSy..." className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all" />
                     </div>
                     <div className="space-y-2 md:col-span-2 pt-4 border-t border-slate-100">
                         <label className="text-sm font-medium text-slate-700">Serper.dev API Key (SERP Analizi İçin)</label>

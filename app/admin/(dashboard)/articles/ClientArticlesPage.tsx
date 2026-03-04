@@ -24,6 +24,11 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     const [isBulkLinkScreenOpen, setIsBulkLinkScreenOpen] = useState(false);
     const [isBulkLinking, setIsBulkLinking] = useState(false);
 
+    // Auto Article Generator States
+    const [isAutoGenerateModalOpen, setIsAutoGenerateModalOpen] = useState(false);
+    const [autoGenerateKeywords, setAutoGenerateKeywords] = useState("");
+    const [isAutoGenerating, setIsAutoGenerating] = useState(false);
+
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
     const processedArticles = useMemo(() => {
@@ -191,6 +196,42 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
         }
     };
 
+    const handleAutoGenerate = async () => {
+        if (!autoGenerateKeywords.trim()) return;
+
+        setIsAutoGenerateModalOpen(false);
+        setIsHackerScreenOpen(true);
+        setIsAutoGenerating(true);
+        setLogs([`> BAŞLATILIYOR: "${autoGenerateKeywords}" kelimeleri için sıfırdan makale üretim fabrikası...`]);
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            setLogs(prev => [...prev, `> SERP Rakip Analizi Yapılıyor... İlk 10 Sonuç Okunuyor...`]);
+
+            const res = await fetch(`/api/ai/generate-article-from-keyword`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ keywords: autoGenerateKeywords })
+            });
+
+            if (!res.ok) {
+                const errorResponse = await res.json().catch(() => ({}));
+                throw new Error(errorResponse.error || res.statusText);
+            }
+
+            setLogs(prev => [...prev, `> İŞLEM BAŞARILI! DALL-E görseli eklendi, çeviriler yapıldı ve veritabanına kaydedildi.`]);
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            window.location.reload();
+
+        } catch (error: any) {
+            setLogs(prev => [...prev, `> KRITIK HATA: ${error.message}`]);
+        } finally {
+            setIsAutoGenerating(false);
+            setAutoGenerateKeywords("");
+        }
+    };
+
     return (
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
@@ -209,6 +250,14 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                             <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
                         </Button>
                     )}
+                    <Button
+                        onClick={() => setIsAutoGenerateModalOpen(true)}
+                        disabled={isAutoGenerating}
+                        variant="outline"
+                        className="border-green-200 text-green-700 hover:bg-green-50 focus:ring-green-500"
+                    >
+                        <Sparkles className="mr-2 h-4 w-4" /> Yeni Makale Üret (AI)
+                    </Button>
                     <Button
                         onClick={handleBulkLink}
                         disabled={isBulkLinking}
@@ -379,6 +428,48 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                 }}
                 title="INTERNAL LINKING MATRIX BUILDER"
             />
+
+            {/* Auto Generate Modal */}
+            {isAutoGenerateModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+                        <div className="p-6">
+                            <h2 className="text-xl font-bold text-slate-900 mb-2">Otomatik Makale Fabrikası</h2>
+                            <p className="text-sm text-slate-500 mb-6">Hedeflemek istediğiniz anahtar kelimeleri aralarına virgül koyarak yazın. AI, rakipleri analiz edip 600+ kelimelik SEO uyumlu makale üretecektir.</p>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Anahtar Kelimeler</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Örn: termal etiket, baskılı etiket, barkod..."
+                                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all"
+                                        value={autoGenerateKeywords}
+                                        onChange={(e) => setAutoGenerateKeywords(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                handleAutoGenerate();
+                                            }
+                                        }}
+                                        autoFocus
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-slate-50 px-6 py-4 flex items-center justify-end gap-3 border-t">
+                            <Button variant="ghost" onClick={() => setIsAutoGenerateModalOpen(false)}>İptal</Button>
+                            <Button
+                                className="bg-green-600 hover:bg-green-700 font-medium"
+                                onClick={handleAutoGenerate}
+                                disabled={!autoGenerateKeywords.trim() || isAutoGenerating}
+                            >
+                                <Sparkles className="h-4 w-4 mr-2" /> Üretimi Başlat
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

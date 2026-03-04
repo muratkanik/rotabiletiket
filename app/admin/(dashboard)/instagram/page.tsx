@@ -19,9 +19,33 @@ export default function InstagramPage() {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const { data, error } = await supabase.from('products').select('id, title, price, image_url, description').order('created_at', { ascending: false }).limit(50);
+            const { data, error } = await supabase
+                .from('products')
+                .select(`
+                    id, 
+                    title, 
+                    description_html,
+                    images:product_images(storage_path)
+                `)
+                .order('created_at', { ascending: false })
+                .limit(50);
+
             if (!error && data) {
-                setProducts(data);
+                const formattedProducts = data.map((p: any) => {
+                    const primaryImage = p.images && p.images.length > 0 ? p.images[0].storage_path : null;
+                    const imageUrl = primaryImage
+                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/${primaryImage}`
+                        : "";
+
+                    return {
+                        id: p.id,
+                        title: p.title,
+                        price: null, // No price on the current schema
+                        description: p.description_html?.replace(/<[^>]*>?/gm, ''), // strip HTML for the AI prompt
+                        image_url: imageUrl
+                    };
+                });
+                setProducts(formattedProducts);
             }
         };
         fetchProducts();
@@ -125,7 +149,7 @@ export default function InstagramPage() {
                                     <Package size={18} />
                                 </div>
                                 <SearchableSelect
-                                    options={products.map((p) => ({ value: p.id, label: `${p.title} (${p.price ? p.price + " TL" : "Fiyatsız"})` }))}
+                                    options={products.map((p) => ({ value: p.id, label: p.title }))}
                                     value={selectedProductId}
                                     onChange={setSelectedProductId}
                                     placeholder="Ürün Ara ve Seç..."
