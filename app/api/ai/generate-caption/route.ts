@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: Request) {
     try {
@@ -12,15 +13,14 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Ürün adı gerekli." }, { status: 400 });
         }
 
-        const { data: settings } = await supabase.from("meta_settings").select("openai_api_key").single();
+        const { data: settings } = await supabase.from("meta_settings").select("openai_api_key, gemini_api_key").single();
 
-        if (!settings || !settings.openai_api_key) {
-            return NextResponse.json({ error: "OpenAI API anahtarı ayarlanmamış." }, { status: 400 });
+        const hasOpenAI = !!settings?.openai_api_key;
+        const hasGemini = !!settings?.gemini_api_key;
+
+        if (!hasOpenAI && !hasGemini) {
+            return NextResponse.json({ error: "OpenAI veya Gemini API anahtarı ayarlanmamış." }, { status: 400 });
         }
-
-        const openai = new OpenAI({
-            apiKey: settings.openai_api_key,
-        });
 
         const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki ürün için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, FOMO (fırsatı kaçırma korkusu) yaratan ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz. Çıktıda sadece metin olsun, tırnak işareti vb. olmasın.
 Ürün: ${productName}
@@ -28,14 +28,26 @@ Fiyat: ${productPrice ? productPrice + " TL" : "Belirtilmedi"}
 Özellikler: ${productFeatures || "Genel"}
 `;
 
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini", // Cost effective model
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-            max_tokens: 100,
-        });
+        let text = "";
 
-        const text = response.choices[0]?.message?.content?.trim();
+        if (hasOpenAI) {
+            const openai = new OpenAI({ apiKey: settings.openai_api_key });
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.7,
+                max_tokens: 100,
+            });
+            text = response.choices[0]?.message?.content?.trim() || "";
+        } else if (hasGemini) {
+            const genAI = new GoogleGenerativeAI(settings.gemini_api_key);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const result = await model.generateContent(prompt);
+            text = result.response.text()?.trim() || "";
+        }
+
+        // Clean up quotes if AI included them despite instruction
+        text = text.replace(/^["']|["']$/g, '').trim();
 
         return NextResponse.json({ text });
     } catch (error: any) {

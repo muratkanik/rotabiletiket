@@ -7,15 +7,35 @@ export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
 
-        // Get parameters
         const title = searchParams.get('title') || 'Rotabiletiket Ürünü';
         const price = searchParams.get('price') || '';
-        const _imageUrl = searchParams.get('image');
-        // Fallback placeholder image if none provided
-        const imageUrl = _imageUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60';
+        const rawImageUrl = searchParams.get('image');
         const caption = searchParams.get('caption') || 'Fırsatı Kaçırmayın! Hemen İnceleyin.';
 
-        // Instagram Story Size: 1080 x 1920
+        let imageBuffer: ArrayBuffer | null = null;
+        let imageMime = 'image/jpeg';
+
+        if (rawImageUrl) {
+            try {
+                const res = await fetch(rawImageUrl);
+                if (res.ok) {
+                    const contentType = res.headers.get('content-type');
+                    // Vercel OG only supports PNG and JPEG. If it's something else, we might have issues, but let's pass it anyway or fallback.
+                    if (contentType?.includes('image/webp')) {
+                        // Fallback if Vercel OG crashes on webp
+                        console.warn("Image is WebP, Vercel OG might fail. Passing as is.");
+                    }
+                    imageBuffer = await res.arrayBuffer();
+                    if (contentType) imageMime = contentType;
+                }
+            } catch (e) {
+                console.error("Failed to fetch image for OG:", e);
+            }
+        }
+
+        const b64Data = imageBuffer ? Buffer.from(imageBuffer).toString('base64') : null;
+        const finalImageSrc = b64Data ? `data:${imageMime};base64,${b64Data}` : null;
+
         return new ImageResponse(
             (
                 <div
@@ -24,26 +44,29 @@ export async function GET(req: NextRequest) {
                         flexDirection: 'column',
                         width: '100%',
                         height: '100%',
-                        backgroundColor: '#1e293b', // slate-800
+                        backgroundColor: '#1e293b',
                         color: 'white',
-                        fontFamily: '"Intar", sans-serif',
+                        fontFamily: 'sans-serif',
                         position: 'relative',
                         overflow: 'hidden',
                     }}
                 >
                     {/* Background Image with Overlay */}
-                    <img
-                        src={imageUrl}
-                        alt={title}
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                        }}
-                    />
+                    {finalImageSrc ? (
+                        <img
+                            src={finalImageSrc}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    ) : (
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#334155' }} />
+                    )}
                     {/* Dark Gradient Overlay */}
                     <div
                         style={{
@@ -108,7 +131,7 @@ export async function GET(req: NextRequest) {
                                 textShadow: '0 4px 16px rgba(0,0,0,0.8)',
                             }}
                         >
-                            &quot;{caption}&quot;
+                            "{caption}"
                         </div>
 
                         {/* Product Title Box */}
@@ -141,7 +164,7 @@ export async function GET(req: NextRequest) {
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    background: 'linear-gradient(90deg, #ea580c 0%, #c2410c 100%)', // Orange gradient
+                                    background: 'linear-gradient(90deg, #ea580c 0%, #c2410c 100%)',
                                     padding: '20px 60px',
                                     borderRadius: '100px',
                                     boxShadow: '0 12px 40px rgba(234, 88, 12, 0.4)',
@@ -163,7 +186,7 @@ export async function GET(req: NextRequest) {
             }
         );
     } catch (e: any) {
-        console.error(e.message);
+        console.error("OG Error:", e.message);
         return new Response(`Failed to generate the image`, {
             status: 500,
         });

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 60; // Allow 60 seconds execution for AI tasks on Vercel
 
@@ -30,14 +31,45 @@ export async function POST(req: Request) {
         // Fetch API Key from Settings
         const { data: settings } = await supabase
             .from('meta_settings')
-            .select('openai_api_key, serper_api_key')
+            .select('openai_api_key, serper_api_key, gemini_api_key')
             .single();
 
-        if (!settings?.openai_api_key) {
-            return NextResponse.json({ error: "Sistemde OpenAI API Key tanımlı değil. (Ayarlar > Entegrasyonlar)." }, { status: 400 });
+        const hasOpenAI = !!settings?.openai_api_key;
+        const hasGemini = !!settings?.gemini_api_key;
+
+        if (!hasOpenAI && !hasGemini) {
+            return NextResponse.json({ error: "Sistemde OpenAI veya Gemini API Key tanımlı değil. (Ayarlar > Entegrasyonlar)." }, { status: 400 });
         }
 
-        const openai = new OpenAI({ apiKey: settings.openai_api_key });
+        let openai: OpenAI | null = null;
+        if (hasOpenAI) openai = new OpenAI({ apiKey: settings.openai_api_key });
+
+        let genAI: GoogleGenerativeAI | null = null;
+        if (hasGemini) genAI = new GoogleGenerativeAI(settings.gemini_api_key);
+
+        const callAI = async (systemPrompt: string, userPrompt: string, asJson = false) => {
+            if (hasOpenAI && openai) {
+                const completion = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userPrompt }
+                    ],
+                    response_format: asJson ? { type: "json_object" } : undefined
+                });
+                return completion.choices[0]?.message.content;
+            } else if (hasGemini && genAI) {
+                const model = genAI.getGenerativeModel({
+                    model: "gemini-2.5-flash",
+                    generationConfig: { responseMimeType: asJson ? "application/json" : "text/plain" }
+                });
+                const result = await model.generateContent({
+                    contents: [{ role: 'user', parts: [{ text: `System Instructions: ${systemPrompt}\n\nTask: ${userPrompt}` }] }]
+                });
+                return result.response.text();
+            }
+            throw new Error("No AI available");
+        };
 
         let trSerpDataText = "GERÇEK ZAMANLI TÜRKÇE VERİ YOK.";
         let enSerpDataText = "GERÇEK ZAMANLI İNGİLİZCE VERİ YOK.";
@@ -49,14 +81,11 @@ export async function POST(req: Request) {
 
             try {
                 // 1. Translate Title to English for English SERP
-                const translateRes = await openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: "You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else." },
-                        { role: "user", content: article.title }
-                    ]
-                });
-                const englishTitle = translateRes.choices[0]?.message.content?.trim() || article.title;
+                const englishTitleRaw = await callAI(
+                    "You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else.",
+                    article.title
+                );
+                const englishTitle = englishTitleRaw?.trim() || article.title;
 
                 // 2. Fetch Helper Function
                 const fetchSerp = async (query: string, gl: string, hl: string) => {
@@ -133,16 +162,7 @@ ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
 Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword yerleşimi) harfiyen uyarak, hem Türkiye hem de Global verileri harmanlayıp HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret (JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini", // Cost efficient model
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt }
-            ],
-            response_format: { type: "json_object" }
-        });
-
-        const generatedRaw = completion.choices[0]?.message.content;
+        const generatedRaw = await callAI(systemPrompt, userPrompt, true);
 
         if (!generatedRaw) {
             return NextResponse.json({ error: "Yapay zeka yanıt oluşturamadı." }, { status: 500 });
@@ -198,16 +218,11 @@ Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword 
 Gelen Veri: ${generatedRaw}`;
 
             try {
-                const langCompletion = await openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.` },
-                        { role: "user", content: translatePrompt }
-                    ],
-                    response_format: { type: "json_object" }
-                });
-
-                const langRaw = langCompletion.choices[0]?.message.content;
+                const langRaw = await callAI(
+                    `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.`,
+                    translatePrompt,
+                    true
+                );
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
                     await supabase.from('article_translations').upsert({
