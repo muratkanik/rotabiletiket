@@ -31,27 +31,33 @@ export async function GET(req: Request) {
                 const randomId = allIds[Math.floor(Math.random() * allIds.length)].id;
                 const { data: randomProduct } = await supabase
                     .from("products")
-                    .select("title, price, storage_path, description")
+                    .select(`
+                        title, 
+                        price, 
+                        description_html,
+                        images:product_images(storage_path)
+                    `)
                     .eq("id", randomId)
                     .single();
 
                 if (randomProduct) {
+                    const primaryImage = randomProduct.images && randomProduct.images.length > 0 ? randomProduct.images[0].storage_path : null;
                     // Determine image url
                     let imgUrl = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=1000";
-                    if (randomProduct.storage_path) {
-                        if (randomProduct.storage_path.startsWith('http')) {
-                            imgUrl = randomProduct.storage_path;
-                        } else if (randomProduct.storage_path.startsWith('/')) {
-                            imgUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.rotabiletiket.com"}${randomProduct.storage_path}`;
+                    if (primaryImage) {
+                        if (primaryImage.startsWith('http')) {
+                            imgUrl = primaryImage;
+                        } else if (primaryImage.startsWith('/')) {
+                            imgUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.rotabiletiket.com"}${primaryImage}`;
                         } else {
-                            imgUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${randomProduct.storage_path}`;
+                            imgUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${primaryImage}`;
                         }
                     }
                     itemRef = {
                         title: randomProduct.title,
                         price: randomProduct.price ? String(randomProduct.price) : "",
                         image: imgUrl,
-                        description: randomProduct.description || ""
+                        description: randomProduct.description_html?.replace(/<[^>]*>?/gm, '') || ""
                     };
                 }
             }
