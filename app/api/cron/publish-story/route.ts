@@ -154,6 +154,27 @@ Detaylar: ${itemRef.description}`;
 
         const creationId = containerData.id;
 
+        // --- Wait for the Container to be ready (FINISHED) ---
+        let isReady = false;
+        let attempts = 0;
+        while (!isReady && attempts < 10) {
+            await new Promise(r => setTimeout(r, 3000)); // wait 3 seconds
+            const statusUrl = `https://graph.facebook.com/v21.0/${creationId}?fields=status_code&access_token=${system_user_access_token}`;
+            const statusRes = await fetch(statusUrl);
+            const statusData = await statusRes.json();
+            if (statusData && statusData.status_code === "FINISHED") {
+                isReady = true;
+            } else if (statusData && statusData.status_code === "ERROR") {
+                console.error("Meta Container Processing Error:", statusData);
+                return NextResponse.json({ error: "Meta rejected the image processing." }, { status: 500 });
+            }
+            attempts++;
+        }
+
+        if (!isReady) {
+            return NextResponse.json({ error: "Media processing timeout by Meta." }, { status: 504 });
+        }
+
         // Publish the Media Container
         const publishUrl = `https://graph.facebook.com/v21.0/${instagram_business_account_id}/media_publish`;
         const publishFormData = new URLSearchParams({
