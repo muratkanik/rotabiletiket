@@ -135,7 +135,7 @@ MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
 1. Anahtar Kelime (keywords): Virgülle ayrılmış 3 adet odak anahtar kelime belirle. İlk sıraya yazdığın kelime "Ana Anahtar Kelime" kabul edilecektir.
 2. SEO Başlığı (seo_title): Kesinlikle 40 ile 60 karakter arasında olmalıdır. İLK anahtar kelimeyi mutlaka içinde barındırmalıdır.
 3. SEO Açıklaması / Özet (summary ve seo_description): İkisi de aynı olabilir. Kesinlikle 130 ile 155 karakter arasında olmalıdır. İLK anahtar kelimeyi mutlaka içinde barındırmalıdır.
-4. İçerik Uzunluğu (content_html): Kesinlikle en az 600 kelime uzunluğunda, çok detaylı bir makale olmalıdır. İngilizce SERP'ten aldığın değerli bilgileri Türkçe içeriğe kaynaştırarak kaliteyi artır.
+4. İçerik Uzunluğu (content_html): Kesinlikle 500-600 kelime uzunluğunda, çok daha derin ve detaylı bir makale olmalıdır. Makalede en az 5-6 alt başlık bulunmalı ve her başlığın altına 2-3 uzun paragraf yazılmalıdır. İngilizce SERP'ten aldığın değerli bilgileri Türkçe içeriğe kaynaştırarak kaliteyi artır.
 5. İçerik İçi Kelime Dağılımı: İLK anahtar kelime, makale metninin içinde (content_html) doğal bir akışla en az 3-4 defa geçmelidir.
 
 Çıktıyı kesinlikle geçerli bir JSON formatında ver.JSON şeması şöyledir:
@@ -144,7 +144,7 @@ MUTLAKA UYMAN GEREKEN KATI SEO KURALLARI:
                                 "seo_description": "130-155 karakter uzunluğunda özet açıklama meta (ilk kelimeyi içerir)",
                                 "keywords": "virgülle_kelime1, virgülle_kelime2, virgülle_kelime3",
                                 "summary": "130-155 karakter uzunluğunda özet (ilk kelimeyi içerir)",
-                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. 600 kelimeyi aş. İlk anahtar kelimeyi 3-4 kez kullan. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
+                                "content_html": "Full HTML makale içeriği (h2, h3, p, ul kullanarak. 500-600 kelimeyi bulacak şekilde çok uzun paragraflar yaz. İlk anahtar kelimeyi 3-4 kez kullan. EN SONUNDA konuyla ilgili Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bir bölüm ekle.)"
                             }
                                 `;
 

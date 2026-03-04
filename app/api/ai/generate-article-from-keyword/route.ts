@@ -110,7 +110,7 @@ KURALLAR:
 1. seo_title: 40-60 karakter, anahtar kelimeyi içerir.
 2. seo_description & summary: 130-155 karakter, dikkat çekici, anahtar kelimeyi içerir.
 3. slug: URL'ye uygun, küçük harfli, boşluksuz, makale başlığına göre slug (örn: termal-etiket-nedir)
-4. content_html: Kesinlikle en az 600 kelime. Alt başlıklar (h2, h3), listeler (ul/li) kullan. Makalenin sonunda Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bölüm eklenecek. İçerikte anahtar kelimeleri 3-4 kez geçir.
+4. content_html: Ortalama 500-600 kelime uzunluğunda, çok daha uzun ve detaylı bir makale olmalıdır. Makalede en az 5-6 alt başlık (h2, h3) bulunmalı ve her başlığın altı 2-3 uzun paragrafla doldurulmalıdır. Listeler (ul/li) kullan. Makalenin sonunda Sıkça Sorulan Sorular (S.S.S) adlı 3-4 soruluk bölüm kesinlikle eklenecek. İçerikte anahtar kelimeleri doğal akışta geçirin.
 
 Lütfen çıktıyı sadece JSON formatında ver. Örnek JSON şeması:
 {
