@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,11 +27,23 @@ interface ProductListProps {
     initialProducts: Product[];
 }
 
-type SortKey = 'title' | 'category' | 'status';
+type SortKey = 'title' | 'category' | 'status' | 'seo_score';
 
 export function ProductList({ initialProducts }: ProductListProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
+
+    const processedProducts = useMemo(() => {
+        return initialProducts.map(product => {
+            const { score } = calculateSeoScore(
+                product.title,
+                product.seo_description,
+                product.description_html,
+                product.keywords?.split(',')[0]
+            );
+            return { ...product, _seoScore: score };
+        });
+    }, [initialProducts]);
 
     // Bulk Enhance States
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -48,7 +60,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
         setSortConfig({ key, direction });
     };
 
-    const sortedProducts = [...initialProducts].filter(product => {
+    const sortedProducts = [...processedProducts].filter(product => {
         const term = searchTerm.toLowerCase();
         return (
             product.title.toLowerCase().includes(term) ||
@@ -57,8 +69,8 @@ export function ProductList({ initialProducts }: ProductListProps) {
     }).sort((a, b) => {
         if (!sortConfig) return 0;
 
-        let aValue: string | boolean = '';
-        let bValue: string | boolean = '';
+        let aValue: string | boolean | number = '';
+        let bValue: string | boolean | number = '';
 
         if (sortConfig.key === 'title') {
             aValue = a.title.toLowerCase();
@@ -69,6 +81,9 @@ export function ProductList({ initialProducts }: ProductListProps) {
         } else if (sortConfig.key === 'status') {
             aValue = a.is_published ?? true; // Default to published if undefined/null for now
             bValue = b.is_published ?? true;
+        } else if (sortConfig.key === 'seo_score') {
+            aValue = a._seoScore;
+            bValue = b._seoScore;
         }
 
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -184,7 +199,11 @@ export function ProductList({ initialProducts }: ProductListProps) {
                                     Durum <ArrowUpDown size={14} />
                                 </div>
                             </th>
-                            <th className="px-6 py-4">SEO Skoru</th>
+                            <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('seo_score')}>
+                                <div className="flex items-center gap-2">
+                                    SEO Skoru <ArrowUpDown size={14} />
+                                </div>
+                            </th>
                             <th className="px-6 py-4 text-right">İşlemler</th>
                         </tr>
                     </thead>
@@ -221,31 +240,21 @@ export function ProductList({ initialProducts }: ProductListProps) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        {(() => {
-                                            const { score } = calculateSeoScore(
-                                                product.title,
-                                                product.seo_description, // Products use seo_description
-                                                product.description_html,
-                                                product.keywords?.split(',')[0]
-                                            );
-                                            return (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                                                        <div
-                                                            className={cn("h-full transition-all",
-                                                                score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
-                                                            )}
-                                                            style={{ width: `${score}%` }}
-                                                        />
-                                                    </div>
-                                                    <span className={cn("text-xs font-bold",
-                                                        score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
-                                                    )}>
-                                                        {score}
-                                                    </span>
-                                                </div>
-                                            );
-                                        })()}
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className={cn("h-full transition-all",
+                                                        product._seoScore >= 80 ? "bg-green-500" : product._seoScore >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                    )}
+                                                    style={{ width: `${product._seoScore}%` }}
+                                                />
+                                            </div>
+                                            <span className={cn("text-xs font-bold",
+                                                product._seoScore >= 80 ? "text-green-600" : product._seoScore >= 50 ? "text-orange-600" : "text-red-600"
+                                            )}>
+                                                {product._seoScore}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2">
