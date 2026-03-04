@@ -276,18 +276,22 @@ export default function ProductFormPage() {
                 specs: specs.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {})
             };
 
-            const contentData = {
+            const baseContentData = {
                 title: formData.title,
                 slug: formData.slug,
                 description_html: formData.description_html,
                 seo_title: formData.seo_title,
-                seo_description: formData.seo_description,
+                seo_description: formData.seo_description
+            };
+
+            const translationContentData = {
+                ...baseContentData,
                 keywords: formData.keywords
             };
 
             if (selectedLang === 'tr') {
                 // UPSERT BASE PRODUCT
-                const upsertData = { ...commonData, ...contentData };
+                const upsertData = { ...commonData, ...baseContentData };
 
                 if (isNew) {
                     const { data, error } = await supabase.from('products').insert(upsertData).select().single();
@@ -302,7 +306,7 @@ export default function ProductFormPage() {
                 const trTransData = {
                     product_id: productId,
                     language_code: 'tr',
-                    ...contentData
+                    ...translationContentData
                 };
                 await supabase.from('product_translations').upsert(trTransData, { onConflict: 'product_id, language_code' });
             } else {
@@ -316,7 +320,7 @@ export default function ProductFormPage() {
                 const translationData = {
                     product_id: productId,
                     language_code: selectedLang,
-                    ...contentData
+                    ...translationContentData
                 };
 
                 const { error } = await supabase.from('product_translations').upsert(translationData, { onConflict: 'product_id, language_code' });
