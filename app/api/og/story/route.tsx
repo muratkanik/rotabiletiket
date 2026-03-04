@@ -19,34 +19,6 @@ export async function GET(req: NextRequest) {
             rawImageUrl = rawImageUrl.replace(/products\/\/img/g, 'products/img');
         }
 
-        let imageBuffer: ArrayBuffer | null = null;
-        let imageMime = 'image/jpeg';
-
-        if (rawImageUrl) {
-            try {
-                const res = await fetch(rawImageUrl);
-                if (res.ok) {
-                    const contentType = res.headers.get('content-type');
-                    // Vercel OG only supports PNG and JPEG. If it's something else, we might have issues, but let's pass it anyway or fallback.
-                    if (contentType?.includes('image/webp')) {
-                        // Fallback if Vercel OG crashes on webp
-                        console.warn("Image is WebP, Vercel OG might fail. Passing as is.");
-                    }
-                    imageBuffer = await res.arrayBuffer();
-                    if (contentType) imageMime = contentType;
-                }
-            } catch (e) {
-                console.error("Failed to fetch image for OG:", e);
-            }
-        }
-
-        let finalImageSrc: string | undefined = undefined;
-
-        if (imageBuffer && imageBuffer.byteLength > 0) {
-            const base64String = Buffer.from(imageBuffer).toString('base64');
-            finalImageSrc = `data:${imageMime};base64,${base64String}`;
-        }
-
         return new ImageResponse(
             (
                 <div
@@ -63,22 +35,18 @@ export async function GET(req: NextRequest) {
                     }}
                 >
                     {/* Background Image with Overlay */}
-                    {finalImageSrc ? (
-                        <img
-                            src={finalImageSrc}
-                            alt="Background"
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                            }}
-                        />
-                    ) : (
-                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#334155' }} />
-                    )}
+                    <img
+                        src={rawImageUrl}
+                        alt="Background"
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                        }}
+                    />
                     {/* Dark Gradient Overlay */}
                     <div
                         style={{
