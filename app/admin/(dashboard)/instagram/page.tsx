@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Image as ImageIcon, Send, Sparkles, Package } from "lucide-react";
+import { Image as ImageIcon, Send, Sparkles, Package, RefreshCw } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 
@@ -9,6 +9,7 @@ export default function InstagramPage() {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [generating, setGenerating] = useState(false);
+    const [testingCron, setTestingCron] = useState(false);
 
     const [products, setProducts] = useState<any[]>([]);
     const [selectedProductId, setSelectedProductId] = useState("");
@@ -132,6 +133,22 @@ export default function InstagramPage() {
         setLoading(false);
     };
 
+    const handleTestCron = async () => {
+        setTestingCron(true);
+        try {
+            const res = await fetch("/api/cron/publish-story");
+            const data = await res.json();
+            if (data.success) {
+                alert(`Test Başarılı! \nResim: ${data.storyImageUrl}\nMesaj: ${data.message}`);
+            } else {
+                alert(`Hata: ${data.error}`);
+            }
+        } catch (e: any) {
+            alert(e.message);
+        }
+        setTestingCron(false);
+    };
+
     return (
         <div className="max-w-5xl">
             <div className="mb-8 flex justify-between items-end">
@@ -139,6 +156,14 @@ export default function InstagramPage() {
                     <h1 className="text-3xl font-bold text-slate-900 mb-2">Instagram Otomasyonu</h1>
                     <p className="text-slate-500">Hazırladığınız ürünlerden otomatik AI destekli Story şablonu oluşturun ve yayınlayın.</p>
                 </div>
+                <button
+                    onClick={handleTestCron}
+                    disabled={testingCron}
+                    className="px-4 py-2 bg-indigo-50 text-indigo-700 font-medium rounded-lg hover:bg-indigo-100 transition-all flex items-center gap-2"
+                >
+                    <RefreshCw size={18} className={testingCron ? "animate-spin" : ""} />
+                    {testingCron ? "Cron Tetikleniyor..." : "Manuel Cron Gönderisi Üret"}
+                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">

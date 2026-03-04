@@ -18,56 +18,114 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Meta settings not configured" }, { status: 400 });
         }
 
-        const { system_user_access_token, instagram_business_account_id, openai_api_key } = settings;
+        const { system_user_access_token, instagram_business_account_id, openai_api_key, gemini_api_key } = settings;
 
-        // 2. Query a random product or featured product to post
-        // For this example, let's assume there is a 'test' product since we are unsure of the schema.
-        // In reality, this would query your exact products table.
-        // Replace 'products' with your actual table name if different.
-        const { data: randomProduct } = await supabase
-            .from("products") // Update this table name if it differs!
-            .select("title, price, image_url, id, description")
-            .limit(1)
-            .single();
+        // 2. Query a random product or article
+        // First, let's flip a coin: 0 for product, 1 for article
+        const isProduct = Math.random() > 0.5;
+        let itemRef = { title: "", price: "", image: "", description: "" };
 
-        // Mock fallback product if table is empty or doesn't exist yet
-        const product = randomProduct || {
-            title: "Özel Fırsat Ürünü",
-            price: 299,
-            image_url: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=1000",
-            description: "Stoklarla sınırlı yüksek kaliteli ürün."
-        };
+        if (isProduct) {
+            const { data: allIds } = await supabase.from("products").select("id");
+            if (allIds && allIds.length > 0) {
+                const randomId = allIds[Math.floor(Math.random() * allIds.length)].id;
+                const { data: randomProduct } = await supabase
+                    .from("products")
+                    .select("title, price, storage_path, description")
+                    .eq("id", randomId)
+                    .single();
 
-        // 3. Generate AI Caption (Via internal API)
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.get("host")}` || "http://localhost:3000";
-
-        let caption = "Muhteşem bir ürün! Kaçırmak istemezsin.";
-        if (openai_api_key) {
-            try {
-                const aiResponse = await fetch(`${baseUrl}/api/ai/generate-caption`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        productName: product.title,
-                        productPrice: product.price,
-                        productFeatures: product.description
-                    })
-                });
-                const aiData = await aiResponse.json();
-                if (aiData.text) {
-                    caption = aiData.text;
+                if (randomProduct) {
+                    // Determine image url
+                    let imgUrl = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=1000";
+                    if (randomProduct.storage_path) {
+                        if (randomProduct.storage_path.startsWith('http')) {
+                            imgUrl = randomProduct.storage_path;
+                        } else if (randomProduct.storage_path.startsWith('/')) {
+                            imgUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.rotabiletiket.com"}${randomProduct.storage_path}`;
+                        } else {
+                            imgUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${randomProduct.storage_path}`;
+                        }
+                    }
+                    itemRef = {
+                        title: randomProduct.title,
+                        price: randomProduct.price ? String(randomProduct.price) : "",
+                        image: imgUrl,
+                        description: randomProduct.description || ""
+                    };
                 }
-            } catch (err) {
-                console.error("AI Generation failed inline, using fallback caption.", err);
+            }
+        } else {
+            const { data: allIds } = await supabase.from("articles").select("id");
+            if (allIds && allIds.length > 0) {
+                const randomId = allIds[Math.floor(Math.random() * allIds.length)].id;
+                const { data: randomArticle } = await supabase
+                    .from("articles")
+                    .select("title, image_url, content_tr")
+                    .eq("id", randomId)
+                    .single();
+
+                if (randomArticle) {
+                    let imgUrl = randomArticle.image_url || "https://images.unsplash.com/photo-1555421689-491a97ff2040?auto=format&fit=crop&q=80&w=1000";
+                    itemRef = {
+                        title: randomArticle.title,
+                        price: "",
+                        image: imgUrl,
+                        description: (randomArticle.content_tr || "").substring(0, 300)
+                    };
+                }
             }
         }
 
+        // Fallback if both fails
+        if (!itemRef.title) {
+            itemRef = {
+                title: "Özel Fırsat",
+                price: "",
+                image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=1000",
+                description: "Stoklarla sınırlı harika içerikler."
+            };
+        }
+
+        // 3. Generate AI Caption directly
+        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki içerik için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, FOMO (fırsatı kaçırma korkusu) yaratan ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz. Başında sonunda tırnak olmasın.
+İçerik Başlığı: ${itemRef.title}
+Fiyat: ${itemRef.price ? itemRef.price + " TL" : "Belirtilmedi"}
+Detaylar: ${itemRef.description}`;
+
+        let caption = "Muhteşem bir fırsat! Hemen tıkla, detayları incele.";
+        const hasOpenAI = !!openai_api_key;
+        const hasGemini = !!gemini_api_key;
+
+        try {
+            if (hasOpenAI) {
+                const { default: OpenAI } = await import("openai");
+                const openai = new OpenAI({ apiKey: openai_api_key });
+                const response = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.7,
+                    max_tokens: 100,
+                });
+                caption = response.choices[0]?.message?.content?.trim() || caption;
+            } else if (hasGemini) {
+                const { GoogleGenerativeAI } = await import("@google/generative-ai");
+                const genAI = new GoogleGenerativeAI(gemini_api_key);
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+                const result = await model.generateContent(prompt);
+                caption = result.response.text()?.trim() || caption;
+            }
+            caption = caption.replace(/^["']|["']$/g, '').trim();
+        } catch (err) {
+            console.error("AI Generation failed in cron, using fallback caption.", err);
+        }
+
         // 4. Generate the Vercel OG Image URL
-        // We encode parameters to pass them safely in the URL
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.get("host")}` || "https://www.rotabiletiket.com";
         const ogParams = new URLSearchParams({
-            title: product.title,
-            price: product.price ? String(product.price) : "",
-            image: product.image_url || "",
+            title: itemRef.title,
+            price: itemRef.price,
+            image: itemRef.image,
             caption: caption
         });
 
