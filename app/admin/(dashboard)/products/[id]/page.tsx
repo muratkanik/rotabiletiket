@@ -122,7 +122,9 @@ export default function ProductFormPage() {
                 setImages(product.product_images.map((img: any) => ({
                     existingId: img.id,
                     path: img.storage_path,
-                    preview: img.storage_path.startsWith('http') ? img.storage_path : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${img.storage_path}`
+                    preview: img.storage_path.startsWith('http') || img.storage_path.startsWith('/')
+                        ? img.storage_path
+                        : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${img.storage_path}`
                 })));
             }
 
