@@ -19,6 +19,18 @@ export async function GET(req: NextRequest) {
             rawImageUrl = rawImageUrl.replace(/products\/\/img/g, 'products/img');
         }
 
+        let imageBuffer: ArrayBuffer | null = null;
+        if (rawImageUrl) {
+            try {
+                const res = await fetch(rawImageUrl);
+                if (res.ok) {
+                    imageBuffer = await res.arrayBuffer();
+                }
+            } catch (e) {
+                console.error("Failed to fetch image for OG:", e);
+            }
+        }
+
         return new ImageResponse(
             (
                 <div
@@ -35,18 +47,22 @@ export async function GET(req: NextRequest) {
                     }}
                 >
                     {/* Background Image with Overlay */}
-                    <img
-                        src={rawImageUrl}
-                        alt="Background"
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                        }}
-                    />
+                    {imageBuffer ? (
+                        <img
+                            src={imageBuffer as any}
+                            alt="Background"
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    ) : (
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#475569' }} />
+                    )}
                     {/* Dark Gradient Overlay */}
                     <div
                         style={{
