@@ -9,8 +9,15 @@ export async function GET(req: NextRequest) {
 
         const title = searchParams.get('title') || 'Rotabiletiket Ürünü';
         const price = searchParams.get('price') || '';
-        const rawImageUrl = searchParams.get('image');
         const caption = searchParams.get('caption') || 'Fırsatı Kaçırmayın! Hemen İnceleyin.';
+
+        const _imageUrl = searchParams.get('image');
+        let rawImageUrl = _imageUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60';
+
+        // Fix Supabase storage double slashes issue which causes 400 Bad Request
+        if (rawImageUrl.includes('.supabase.co/storage')) {
+            rawImageUrl = rawImageUrl.replace(/products\/\/img/g, 'products/img');
+        }
 
         let imageBuffer: ArrayBuffer | null = null;
         let imageMime = 'image/jpeg';
@@ -33,8 +40,12 @@ export async function GET(req: NextRequest) {
             }
         }
 
-        const b64Data = imageBuffer ? Buffer.from(imageBuffer).toString('base64') : null;
-        const finalImageSrc = b64Data ? `data:${imageMime};base64,${b64Data}` : null;
+        let finalImageSrc: string | undefined = undefined;
+
+        if (imageBuffer && imageBuffer.byteLength > 0) {
+            const base64String = Buffer.from(imageBuffer).toString('base64');
+            finalImageSrc = `data:${imageMime};base64,${base64String}`;
+        }
 
         return new ImageResponse(
             (
@@ -55,6 +66,7 @@ export async function GET(req: NextRequest) {
                     {finalImageSrc ? (
                         <img
                             src={finalImageSrc}
+                            alt="Background"
                             style={{
                                 position: 'absolute',
                                 top: 0,
@@ -65,7 +77,7 @@ export async function GET(req: NextRequest) {
                             }}
                         />
                     ) : (
-                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#334155' }} />
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#334155' }} />
                     )}
                     {/* Dark Gradient Overlay */}
                     <div

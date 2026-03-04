@@ -33,9 +33,16 @@ export default function InstagramPage() {
             if (!error && data) {
                 const formattedProducts = data.map((p: any) => {
                     const primaryImage = p.images && p.images.length > 0 ? p.images[0].storage_path : null;
-                    const imageUrl = primaryImage
-                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/${primaryImage}`
-                        : "";
+                    let imageUrl = "";
+                    if (primaryImage) {
+                        if (primaryImage.startsWith('http')) {
+                            imageUrl = primaryImage;
+                        } else if (primaryImage.startsWith('/')) {
+                            imageUrl = `${window.location.origin}${primaryImage}`;
+                        } else {
+                            imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${primaryImage}`;
+                        }
+                    }
 
                     return {
                         id: p.id,
