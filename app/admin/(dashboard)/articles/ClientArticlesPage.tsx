@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Eye, Sparkles, ArrowUpDown, Link2 } from 'lucide-react';
 import { formatDate, cn } from '@/lib/utils';
 import { calculateSeoScore } from '@/utils/seo-helper';
-import { HackerScreenModal } from './HackerScreenModal';
+import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 
 export default function ClientArticlesPage({ initialArticles }: { initialArticles: any[] }) {
     const [articles, setArticles] = useState(initialArticles);

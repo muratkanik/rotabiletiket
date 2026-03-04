@@ -4,9 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Pencil, Trash2, Eye, ArrowUpDown, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, ArrowUpDown, Search, Sparkles } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
+import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 
 interface Product {
     id: string;
@@ -31,6 +32,13 @@ type SortKey = 'title' | 'category' | 'status';
 export function ProductList({ initialProducts }: ProductListProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
+
+    // Bulk Enhance States
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isBulkEnhancing, setIsBulkEnhancing] = useState(false);
+    const [isHackerScreenOpen, setIsHackerScreenOpen] = useState(false);
+    const [logs, setLogs] = useState<string[]>([]);
+    const [enhancingProductId, setEnhancingProductId] = useState<string | null>(null);
 
     const handleSort = (key: SortKey) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -68,6 +76,50 @@ export function ProductList({ initialProducts }: ProductListProps) {
         return 0;
     });
 
+    const handleBulkEnhance = async () => {
+        setIsHackerScreenOpen(true);
+        setIsBulkEnhancing(true);
+        setLogs([`> BAŞLATILIYOR: ${selectedIds.length} adet ürün için toplu E-Ticaret AI optimizasyonu...`]);
+
+        try {
+            for (let i = 0; i < selectedIds.length; i++) {
+                const productId = selectedIds[i];
+                const product = initialProducts.find(p => p.id === productId);
+                const productTitle = product?.title || "Bilinmeyen Ürün";
+
+                setEnhancingProductId(productId); // Visual feedback
+
+                setLogs(prev => [...prev, ``, `> --- [${i + 1}/${selectedIds.length}] ---`, `> Hedef Ürün: "${productTitle}" (ID: ${productId}) işleniyor...`]);
+
+                const res = await fetch(`/api/ai/enhance-product`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId })
+                });
+
+                if (!res.ok) {
+                    const errorResponse = await res.json().catch(() => ({}));
+                    setLogs(prev => [...prev, `> HATA: "${productTitle}" optimize edilemedi (${res.status} - ${errorResponse.error || res.statusText}). Atlanıyor...`]);
+                    continue;
+                }
+
+                setLogs(prev => [...prev, `> BAŞARILI: "${productTitle}" optimize edildi ve çoklu dile çevrildi.`]);
+            }
+
+            setLogs(prev => [...prev, ``, `> İŞLEM BAŞARILI. Tüm seçili ürünler güncellendi! Yenileniyor...`]);
+            setSelectedIds([]);
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            window.location.reload();
+
+        } catch (error: any) {
+            setLogs(prev => [...prev, `> KRITIK HATA: Toplu işlem sonlandı - ${error.message}`]);
+        } finally {
+            setIsBulkEnhancing(false);
+            setEnhancingProductId(null);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -77,20 +129,46 @@ export function ProductList({ initialProducts }: ProductListProps) {
                 </Button>
             </div>
 
-            <div className="flex items-center gap-2 max-w-sm bg-white p-1 rounded-lg border">
-                <Search className="h-4 w-4 text-slate-400 ml-2" />
-                <Input
-                    placeholder="Ara: Ürün, Kategori..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border-0 focus-visible:ring-0"
-                />
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex items-center gap-2 max-w-sm bg-white p-1 rounded-lg border w-full sm:w-auto">
+                    <Search className="h-4 w-4 text-slate-400 ml-2" />
+                    <Input
+                        placeholder="Ara: Ürün, Kategori..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border-0 focus-visible:ring-0"
+                    />
+                </div>
+                {selectedIds.length > 0 && (
+                    <Button
+                        onClick={handleBulkEnhance}
+                        disabled={isBulkEnhancing || enhancingProductId !== null}
+                        variant="outline"
+                        className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                    >
+                        <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
+                    </Button>
+                )}
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
                 <table className="w-full text-sm text-left">
                     <thead className="bg-slate-50 text-slate-500 font-medium border-b">
                         <tr>
+                            <th className="px-6 py-4 w-12 text-center select-none">
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                    checked={sortedProducts.length > 0 && selectedIds.length === sortedProducts.length}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedIds(sortedProducts.map((p) => p.id));
+                                        } else {
+                                            setSelectedIds([]);
+                                        }
+                                    }}
+                                />
+                            </th>
                             <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('title')}>
                                 <div className="flex items-center gap-2">
                                     Ürün Adı <ArrowUpDown size={14} />
@@ -114,6 +192,20 @@ export function ProductList({ initialProducts }: ProductListProps) {
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product) => (
                                 <tr key={product.id} className="hover:bg-slate-50/50 transition-colors">
+                                    <td className="px-6 py-4 text-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            checked={selectedIds.includes(product.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedIds(prev => [...prev, product.id]);
+                                                } else {
+                                                    setSelectedIds(prev => prev.filter(id => id !== product.id));
+                                                }
+                                            }}
+                                        />
+                                    </td>
                                     <td className="px-6 py-4 font-medium text-slate-900">
                                         {product.title}
                                     </td>
@@ -173,7 +265,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-slate-500">
+                                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
                                     {searchTerm ? 'Arama sonucu bulunamadı.' : 'Henüz hiç ürün eklenmemiş.'}
                                 </td>
                             </tr>
@@ -184,6 +276,14 @@ export function ProductList({ initialProducts }: ProductListProps) {
             <div className="text-xs text-slate-400 text-right">
                 Toplam {sortedProducts.length} ürün
             </div>
+
+            {/* AI Enhance Hacker Screen */}
+            <HackerScreenModal
+                isOpen={isHackerScreenOpen}
+                logs={logs}
+                onClose={() => setIsHackerScreenOpen(false)}
+                title="PRODUCT AI SERP ENHANCER"
+            />
         </div>
     );
 }

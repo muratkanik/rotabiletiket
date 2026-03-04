@@ -17,7 +17,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { SeoScore } from '@/components/admin/SeoScore';
-import { HackerScreenModal } from '../HackerScreenModal';
+import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 // import { Sparkles } from 'lucide-react'; // This was duplicated, removed.
 const Editor = dynamic(
     () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
