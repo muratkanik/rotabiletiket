@@ -70,7 +70,9 @@ export default async function ArticlePage({ params }: Props) {
         '@type': 'Article',
         headline: article.title,
         description: article.summary,
-        image: article.image_url ? [article.image_url] : [],
+        image: article.image_url
+            ? [article.image_url.startsWith('http') || article.image_url.startsWith('/') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`]
+            : [],
         datePublished: article.created_at,
         dateModified: article.updated_at || article.created_at,
         author: {
