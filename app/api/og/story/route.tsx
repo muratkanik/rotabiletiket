@@ -85,7 +85,6 @@ export async function GET(req: NextRequest) {
                             paddingTop: '80px',
                             paddingBottom: '20px',
                             position: 'relative',
-                            zIndex: 10,
                         }}
                     >
                         <div
@@ -112,7 +111,6 @@ export async function GET(req: NextRequest) {
                             flex: 1,
                             padding: '80px',
                             position: 'relative',
-                            zIndex: 10,
                             textAlign: 'center',
                         }}
                     >
@@ -127,7 +125,7 @@ export async function GET(req: NextRequest) {
                                 textShadow: '0 4px 16px rgba(0,0,0,0.8)',
                             }}
                         >
-                            "{caption}"
+                            {`"${caption}"`}
                         </div>
 
                         {/* Product Title Box */}
@@ -167,7 +165,7 @@ export async function GET(req: NextRequest) {
                                 }}
                             >
                                 <span style={{ fontSize: 72, fontWeight: 900, color: 'white' }}>
-                                    {price} TL
+                                    {`${price} TL`}
                                 </span>
                             </div>
                         )}
