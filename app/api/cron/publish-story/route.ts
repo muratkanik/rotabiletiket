@@ -97,7 +97,8 @@ export async function GET(req: Request) {
         }
 
         // 3. Generate AI Caption directly
-        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki içerik için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, FOMO (fırsatı kaçırma korkusu) yaratan ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz. Başında sonunda tırnak olmasın.
+        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki içerik için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz.
+ÖNEMLİ KURAL: Kesinlikle "hemen sipariş verin", "satın alın" gibi doğrudan satış ifadeleri KULLANMA. Bunun yerine "arayın bilgi verelim", "detaylar için bizimle iletişime geçin", "ücretsiz danışın" gibi kontak kurma (lead alma) odaklı ifadeler kullan. Başında sonunda tırnak olmasın.
 İçerik Başlığı: ${itemRef.title}
 Fiyat: ${itemRef.price ? itemRef.price + " TL" : "Belirtilmedi"}
 Detaylar: ${itemRef.description}`;
@@ -163,7 +164,7 @@ Detaylar: ${itemRef.description}`;
         });
 
         // Facebook Graph API strictly requires JPEG images. Our /jpeg route converts it.
-        const storyImageUrl = `${baseUrl}/api/og/story/jpeg?${ogParams.toString()}&ext=.jpg`;
+        const storyImageUrl = `${baseUrl}/api/og/story/jpeg/image.jpg?${ogParams.toString()}`;
 
         // 5. Publish to Meta as Instagram Story
         // Create Media Container for Story
