@@ -29,11 +29,37 @@ export async function POST(req: Request) {
 
     const { system_user_access_token, instagram_business_account_id } = settings;
 
-    // 2. Create Media Container on Meta
+    // 2. Prepare final static URL for Meta (Bypass Facebook URL validation)
+    let finalMetaImageUrl = imageUrl;
+    if (imageUrl.includes('/api/og/story')) {
+      try {
+        const ogRes = await fetch(imageUrl);
+        if (ogRes.ok) {
+          const buffer = await ogRes.arrayBuffer();
+          const fileName = `story_manual_${Date.now()}.jpg`;
+          const { error: uploadError } = await supabase.storage
+            .from('product-images')
+            .upload(`stories/${fileName}`, buffer, { contentType: 'image/jpeg', upsert: true });
+
+          if (!uploadError) {
+            finalMetaImageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/stories/${fileName}`;
+          } else {
+            console.error("Supabase manual story upload failed", uploadError);
+          }
+        } else {
+          console.error("Failed to fetch OG image for manual publish", ogRes.status);
+        }
+      } catch (e) {
+        console.error("Error processing manual publish image", e);
+      }
+    }
+
+    // 3. Create Media Container on Meta
     const containerUrl = `https://graph.facebook.com/v21.0/${instagram_business_account_id}/media`;
     const containerFormData = new URLSearchParams({
-      image_url: imageUrl,
+      image_url: finalMetaImageUrl,
       caption: caption || "",
+      media_type: "STORIES", // CRITICAL FOR STORIES (If we assume all manual publishes here are stories, otherwise omit or pass from UI)
       access_token: system_user_access_token,
     });
 

@@ -166,11 +166,34 @@ Detaylar: ${itemRef.description}`;
         // Facebook Graph API strictly requires JPEG images. Our /jpeg route converts it.
         const storyImageUrl = `${baseUrl}/api/og/story/jpeg/image.jpg?${ogParams.toString()}&ext=.jpg`;
 
-        // 5. Publish to Meta as Instagram Story
+        // 5. Upload to Supabase to get a clean, static URL for Meta
+        let finalMetaImageUrl = storyImageUrl;
+        try {
+            const ogRes = await fetch(storyImageUrl);
+            if (ogRes.ok) {
+                const buffer = await ogRes.arrayBuffer();
+                const fileName = `story_${Date.now()}.jpg`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('product-images')
+                    .upload(`stories/${fileName}`, buffer, { contentType: 'image/jpeg', upsert: true });
+
+                if (!uploadError) {
+                    finalMetaImageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/stories/${fileName}`;
+                } else {
+                    console.error("Supabase story upload failed, falling back to dynamic URL", uploadError);
+                }
+            } else {
+                console.error("Failed to fetch OG image", ogRes.status, ogRes.statusText);
+            }
+        } catch (e) {
+            console.error("Failed to fetch and upload OG image, using dynamic URL", e);
+        }
+
+        // 6. Publish to Meta as Instagram Story
         // Create Media Container for Story
         const containerUrl = `https://graph.facebook.com/v21.0/${instagram_business_account_id}/media`;
         const containerFormData = new URLSearchParams({
-            image_url: storyImageUrl,
+            image_url: finalMetaImageUrl,
             media_type: "STORIES", // CRITICAL FOR STORIES
             access_token: system_user_access_token,
         });
