@@ -117,15 +117,49 @@ export async function GET(req: NextRequest) {
                         {/* AI Caption / Viral Text */}
                         <div
                             style={{
-                                fontSize: 64,
-                                fontWeight: 700,
-                                color: '#fff',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                                padding: '40px 60px',
+                                borderRadius: '32px',
+                                border: '2px solid rgba(255, 255, 255, 0.1)',
+                                backdropFilter: 'blur(16px)',
                                 marginBottom: '40px',
-                                lineHeight: 1.2,
-                                textShadow: '0 4px 16px rgba(0,0,0,0.8)',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
                             }}
                         >
-                            {`"${caption}"`}
+                            {/* Viral Badge */}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    backgroundColor: '#ef4444',
+                                    color: 'white',
+                                    padding: '12px 24px',
+                                    borderRadius: '100px',
+                                    fontSize: 32,
+                                    fontWeight: 900,
+                                    letterSpacing: '0.15em',
+                                    textTransform: 'uppercase',
+                                    marginBottom: '32px',
+                                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
+                                }}
+                            >
+                                🔥 TREND
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: 64,
+                                    fontWeight: 800,
+                                    color: '#ffffff',
+                                    lineHeight: 1.3,
+                                    textAlign: 'center',
+                                    textShadow: '0 4px 16px rgba(0,0,0,0.8)',
+                                }}
+                            >
+                                {`"${caption}"`}
+                            </div>
                         </div>
 
                         {/* Product Title Box */}
@@ -135,17 +169,19 @@ export async function GET(req: NextRequest) {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                padding: '24px 48px',
+                                padding: '24px 56px',
                                 borderRadius: '24px',
-                                marginBottom: '20px',
-                                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                                marginBottom: '24px',
+                                boxShadow: '0 12px 32px rgba(0,0,0,0.4)',
                             }}
                         >
                             <span
                                 style={{
-                                    fontSize: 56,
-                                    fontWeight: 800,
+                                    fontSize: 52,
+                                    fontWeight: 900,
                                     color: '#0f172a',
+                                    textAlign: 'center',
+                                    letterSpacing: '-0.02em',
                                 }}
                             >
                                 {title}
@@ -158,10 +194,11 @@ export async function GET(req: NextRequest) {
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    background: 'linear-gradient(90deg, #ea580c 0%, #c2410c 100%)',
-                                    padding: '20px 60px',
+                                    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                                    padding: '24px 64px',
                                     borderRadius: '100px',
-                                    boxShadow: '0 12px 40px rgba(234, 88, 12, 0.4)',
+                                    boxShadow: '0 16px 48px rgba(234, 88, 12, 0.5)',
+                                    border: '4px solid rgba(255, 255, 255, 0.2)',
                                 }}
                             >
                                 <span style={{ fontSize: 72, fontWeight: 900, color: 'white' }}>

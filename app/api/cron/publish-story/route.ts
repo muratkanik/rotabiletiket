@@ -106,17 +106,41 @@ Detaylar: ${itemRef.description}`;
         const hasOpenAI = !!openai_api_key;
         const hasGemini = !!gemini_api_key;
 
+        let viralBackgroundImageUrl = itemRef.image; // Fallback to original image
+
         try {
             if (hasOpenAI) {
                 const { default: OpenAI } = await import("openai");
                 const openai = new OpenAI({ apiKey: openai_api_key });
-                const response = await openai.chat.completions.create({
+
+                // 1. Generate Caption (Parallel with Image)
+                const captionPromise = openai.chat.completions.create({
                     model: "gpt-4o-mini",
                     messages: [{ role: "user", content: prompt }],
                     temperature: 0.7,
                     max_tokens: 100,
+                }).then(res => res.choices[0]?.message?.content?.trim());
+
+                // 2. Generate Viral Background (DALL-E 3)
+                const imagePrompt = `A striking, viral, and modern Instagram story background related to: "${itemRef.title}". It should be highly aesthetic, professional, and captivating, with dramatic lighting. DO NOT include any text, letters, or words in the image. Just a clean, visually stunning background suitable for a tech, industrial or e-commerce story.`;
+                const imagePromise = openai.images.generate({
+                    model: "dall-e-3",
+                    prompt: imagePrompt,
+                    n: 1,
+                    size: "1024x1024", // DALL-E 3 supports 1024x1792 but it might be slower/more expensive or unsupported in some API versions, let's stick to 1024x1024 and let OG cover/crop it, or request 1024x1792 if possible. Standard is 1024x1024 or 1024x1792. Let's try 1024x1792.
+                }).catch(err => {
+                    console.error("DALL-E 3 Error:", err);
+                    return null;
                 });
-                caption = response.choices[0]?.message?.content?.trim() || caption;
+
+                // Await both
+                const [captionResult, imageResult] = await Promise.all([captionPromise, imagePromise]);
+
+                if (captionResult) caption = captionResult;
+                if (imageResult && imageResult.data && imageResult.data.length > 0) {
+                    viralBackgroundImageUrl = imageResult.data[0].url || itemRef.image;
+                }
+
             } else if (hasGemini) {
                 const { GoogleGenerativeAI } = await import("@google/generative-ai");
                 const genAI = new GoogleGenerativeAI(gemini_api_key);
@@ -126,7 +150,7 @@ Detaylar: ${itemRef.description}`;
             }
             caption = caption.replace(/^["']|["']$/g, '').trim();
         } catch (err) {
-            console.error("AI Generation failed in cron, using fallback caption.", err);
+            console.error("AI Generation failed in cron, using fallback caption/image.", err);
         }
 
         // 4. Generate the Vercel OG Image URL
@@ -134,7 +158,7 @@ Detaylar: ${itemRef.description}`;
         const ogParams = new URLSearchParams({
             title: itemRef.title,
             price: itemRef.price,
-            image: itemRef.image,
+            image: viralBackgroundImageUrl,
             caption: caption
         });
 
