@@ -162,8 +162,8 @@ Detaylar: ${itemRef.description}`;
             caption: caption
         });
 
-        // Facebook Graph API string-matches URLs for .jpg or .png
-        const storyImageUrl = `${baseUrl}/api/og/story?${ogParams.toString()}&format=.png`;
+        // Facebook Graph API strictly requires JPEG images. Our /jpeg route converts it.
+        const storyImageUrl = `${baseUrl}/api/og/story/jpeg?${ogParams.toString()}&ext=.jpg`;
 
         // 5. Publish to Meta as Instagram Story
         // Create Media Container for Story
