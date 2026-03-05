@@ -162,7 +162,8 @@ Detaylar: ${itemRef.description}`;
             caption: caption
         });
 
-        const storyImageUrl = `${baseUrl}/api/og/story?${ogParams.toString()}`;
+        // Facebook Graph API string-matches URLs for .jpg or .png
+        const storyImageUrl = `${baseUrl}/api/og/story?${ogParams.toString()}&format=.png`;
 
         // 5. Publish to Meta as Instagram Story
         // Create Media Container for Story
