@@ -98,7 +98,7 @@ export default function InstagramPage() {
                 caption: generatedCaption
             });
 
-            setImageUrl(`${baseUrl}/api/og/story/jpeg/image.jpg?${ogParams.toString()}`);
+            setImageUrl(`${baseUrl}/api/og/story/jpeg/image.jpg?${ogParams.toString()}&ext=.jpg`);
 
         } catch (error: any) {
             setResult({ error: error.message || "Yapay zeka içeriği oluşturulamadı. Lütfen Meta Ayarlarından OpenAI API anahtarınızı kontrol edin." });
