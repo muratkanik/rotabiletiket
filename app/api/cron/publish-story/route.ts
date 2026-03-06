@@ -102,6 +102,7 @@ export async function GET(req: Request) {
 1. Genel geçer ("özel fırsatlar" vb.) ifadeler YAZMA. Mutlaka ve özel olarak bağlamdaki üründen/konudan ("${itemRef.title}") ve temel değerinden bahset. (Örn: "Termal etiket ihtiyaçlarınızda firmanıza özel çözümler sunuyoruz" vb.)
 2. Kesinlikle "hemen sipariş verin", "satın alın" gibi doğrudan satış ifadeleri KULLANMA. 
 3. Bunun yerine "daha fazla bilgi için arayın", "detaylar için bizimle iletişime geçin", "uzmanlarımıza ücretsiz danışın" gibi sadece kontak kurma (lead alma) odaklı profesyonel bir çağrı yap. Tırnak içine alma.
+4. Metnin en sonuna ürünle ve sektörle (endüstriyel barkod, etiket vb.) doğrudan ilgili, erişimi ve etkileşimi artıracak (viral) 3 ila 5 adet popüler #hashtag ekle. Kaliteli ve niş etiketler seç.
 İçerik Başlığı: ${itemRef.title}
 Fiyat: ${itemRef.price ? itemRef.price + " TL" : "Belirtilmedi"}
 Detaylar: ${itemRef.description}`;

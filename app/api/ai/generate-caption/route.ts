@@ -27,6 +27,7 @@ export async function POST(req: Request) {
 1. Genel geçer ("özel fırsatlar" vb.) ifadeler YAZMA. Mutlaka ve özel olarak "${productName}" ürününden ve temel faydasından bahset. (Örn: "Termal etiket ihtiyaçlarınızda firmanıza özel çözümler sunuyoruz" vb.)
 2. Kesinlikle "hemen sipariş verin", "satın alın", "kampanyayı kaçırmayın" gibi aciliyete veya doğrudan satışa yönelik ifadeler KULLANMA. 
 3. Bunun yerine "arayın bilgi verelim", "detaylar için bizimle iletişime geçin", "ücretsiz danışın" gibi sadece kontak kurmaya (lead almaya) odaklı ifadeler kullan. Çıktıda tırnak işareti vb. olmasın.
+4. Metnin en sonuna ürünle ve uzmanlık alanıyla (etiket, barkod, sanayi vb.) doğrudan ilgili, keşfete düşürtecek (viral) 3 ila 5 adet popüler #hashtag ekle. Kaliteli etiketler seç.
 Ürün: ${productName}
 Fiyat: ${productPrice ? productPrice + " TL" : "Belirtilmedi"}
 Özellikler: ${productFeatures || "Genel"}
