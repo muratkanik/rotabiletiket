@@ -126,7 +126,7 @@ Detaylar: ${itemRef.description}`;
                 }).then(res => res.choices[0]?.message?.content?.trim());
 
                 // 2. Generate Viral Background (DALL-E 3)
-                const imagePrompt = `A striking, viral, and modern Instagram story background related to: "${itemRef.title}". It should be highly aesthetic, professional, and captivating, with dramatic lighting. DO NOT include any text, letters, or words in the image. Just a clean, visually stunning background suitable for a tech, industrial or e-commerce story.`;
+                const imagePrompt = `A striking, highly aesthetic, and photorealistic showcase image for an Instagram story. The primary focal point MUST exactly represent the product or topic: "${itemRef.title}". Produce a visually stunning, real-world representation of this specific item or concept, with professional studio lighting. DO NOT include any text, letters, or words in the image. The image must clearly and accurately correspond to the actual product category without being generic.`;
                 const imagePromise = openai.images.generate({
                     model: "dall-e-3",
                     prompt: imagePrompt,
