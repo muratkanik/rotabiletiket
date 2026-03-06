@@ -22,8 +22,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "OpenAI veya Gemini API anahtarı ayarlanmamış." }, { status: 400 });
         }
 
-        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki ürün için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz.
-ÖNEMLİ KURAL: Kesinlikle "hemen sipariş verin", "satın alın", "kampanyayı kaçırmayın" gibi aciliyete veya doğrudan satışa yönelik ifadeler KULLANMA. Bunun yerine "arayın bilgi verelim", "detaylar için bizimle iletişime geçin", "ücretsiz danışın" gibi sadece kontak kurmaya (lead almaya) odaklı ifadeler kullan. Çıktıda sadece metin olsun, tırnak işareti vb. olmasın.
+        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki ürün için Instagram Gönderisi ve Hikayesi olarak kullanılacak ÇOK KISA, dikkat çekici, ve merak uyandıran maks 2 cümlelik bir metin yaz.
+ÖNEMLİ KURALLAR:
+1. Genel geçer ("özel fırsatlar" vb.) ifadeler YAZMA. Mutlaka ve özel olarak "${productName}" ürününden ve temel faydasından bahset. (Örn: "Termal etiket ihtiyaçlarınızda firmanıza özel çözümler sunuyoruz" vb.)
+2. Kesinlikle "hemen sipariş verin", "satın alın", "kampanyayı kaçırmayın" gibi aciliyete veya doğrudan satışa yönelik ifadeler KULLANMA. 
+3. Bunun yerine "arayın bilgi verelim", "detaylar için bizimle iletişime geçin", "ücretsiz danışın" gibi sadece kontak kurmaya (lead almaya) odaklı ifadeler kullan. Çıktıda tırnak işareti vb. olmasın.
 Ürün: ${productName}
 Fiyat: ${productPrice ? productPrice + " TL" : "Belirtilmedi"}
 Özellikler: ${productFeatures || "Genel"}

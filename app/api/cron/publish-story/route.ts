@@ -97,8 +97,11 @@ export async function GET(req: Request) {
         }
 
         // 3. Generate AI Caption directly
-        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki içerik için Instagram Hikayesinde (Story) kullanılacak ÇOK KISA, dikkat çekici, ve viral potansiyeli yüksek 1 maksimum 2 cümlelik bir metin yaz.
-ÖNEMLİ KURAL: Kesinlikle "hemen sipariş verin", "satın alın" gibi doğrudan satış ifadeleri KULLANMA. Bunun yerine "arayın bilgi verelim", "detaylar için bizimle iletişime geçin", "ücretsiz danışın" gibi kontak kurma (lead alma) odaklı ifadeler kullan. Başında sonunda tırnak olmasın.
+        const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki içerik için Instagram Gönderisi ve Hikayesinde kullanılacak ÇOK KISA, dikkat çekici, ve merak uyandıran maks 2 cümlelik bir metin yaz.
+ÖNEMLİ KURALLAR:
+1. Genel geçer ("özel fırsatlar" vb.) ifadeler YAZMA. Mutlaka ve özel olarak bağlamdaki üründen/konudan ("${itemRef.title}") ve temel değerinden bahset. (Örn: "Termal etiket ihtiyaçlarınızda firmanıza özel çözümler sunuyoruz" vb.)
+2. Kesinlikle "hemen sipariş verin", "satın alın" gibi doğrudan satış ifadeleri KULLANMA. 
+3. Bunun yerine "daha fazla bilgi için arayın", "detaylar için bizimle iletişime geçin", "uzmanlarımıza ücretsiz danışın" gibi sadece kontak kurma (lead alma) odaklı profesyonel bir çağrı yap. Tırnak içine alma.
 İçerik Başlığı: ${itemRef.title}
 Fiyat: ${itemRef.price ? itemRef.price + " TL" : "Belirtilmedi"}
 Detaylar: ${itemRef.description}`;
