@@ -47,6 +47,7 @@ interface Product {
 
 interface ProductListProps {
     initialProducts: Product[];
+    categories: { id: string; title: string; slug: string }[];
 }
 
 type SortKey = 'title' | 'category' | 'status' | 'seo_score' | 'display_order';
@@ -146,7 +147,7 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
     );
 }
 
-export function ProductList({ initialProducts }: ProductListProps) {
+export function ProductList({ initialProducts, categories }: ProductListProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
@@ -169,17 +170,6 @@ export function ProductList({ initialProducts }: ProductListProps) {
             return { ...product, _seoScore: score };
         });
     }, [products]);
-
-    // Unique categories for the dropdown
-    const availableCategories = useMemo(() => {
-        const categoriesMap = new Map<string, string>();
-        initialProducts.forEach(p => {
-            if (p.categories) {
-                categoriesMap.set(p.categories.id, p.categories.title);
-            }
-        });
-        return Array.from(categoriesMap.entries()).map(([id, title]) => ({ id, title }));
-    }, [initialProducts]);
 
     // Bulk Enhance States
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -391,7 +381,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
                         className="h-10 px-3 py-2 bg-transparent w-full text-sm outline-none border-0 focus-visible:ring-0 text-slate-600"
                     >
                         <option value="ALL">Tüm Kategoriler</option>
-                        {availableCategories.map(cat => (
+                        {categories.map(cat => (
                             <option key={cat.id} value={cat.id}>{cat.title}</option>
                         ))}
                     </select>
