@@ -277,20 +277,27 @@ export function ProductList({ initialProducts }: ProductListProps) {
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
+            // Find old and new index in the currently sorted (visual) list
+            const oldIndex = sortedProducts.findIndex(i => i.id === active.id);
+            const newIndex = sortedProducts.findIndex(i => i.id === over.id);
+            
+            // Move item visually
+            const visuallyMoved = arrayMove(sortedProducts, oldIndex, newIndex);
+            
+            // Re-assign display_order based on this new visual order (1, 2, 3...)
+            // Then update the source 'products' array
             setProducts((items) => {
-                const oldIndex = items.findIndex(i => i.id === active.id);
-                const newIndex = items.findIndex(i => i.id === over.id);
-                
-                const newItems = arrayMove(items, oldIndex, newIndex);
-                
-                // Assign new display order numbers ascending based on the array sorted visually
-                // We'll base the numbers on their index * 10 so there's room, or just 1, 2, 3
-                return newItems.map((item, index) => ({
-                    ...item,
-                    display_order: index + 1
-                }));
+                return items.map(p => {
+                    const visualIndex = visuallyMoved.findIndex(v => v.id === p.id);
+                    if (visualIndex !== -1) {
+                        return { ...p, display_order: visualIndex + 1 };
+                    }
+                    return p;
+                });
             });
+            
             setHasUnsavedChanges(true);
+            // Snap back to order display to show the newly assigned manual order
             setSortConfig({ key: 'display_order', direction: 'asc' });
         }
     };
@@ -321,8 +328,8 @@ export function ProductList({ initialProducts }: ProductListProps) {
         }
     };
 
-    // Sorting by display_order is the only time dragging makes sense
-    const isDragEnabled = sortConfig?.key === 'display_order' && !searchTerm;
+    // Allow dragging as long as we aren't filtering out products via search
+    const isDragEnabled = !searchTerm;
 
     return (
         <div className="space-y-6">
@@ -454,11 +461,6 @@ export function ProductList({ initialProducts }: ProductListProps) {
                     </tbody>
                 </table>
             </div>
-            {!isDragEnabled && !searchTerm && (
-                <div className="text-xs text-orange-500 mt-2">
-                    * Sürükle bırak ile sıralama yapmak için "Sıra" sütununa tıklayarak sıralamayı o sütuna göre yapmalısınız.
-                </div>
-            )}
             <div className="text-xs text-slate-400 text-right">
                 Toplam {sortedProducts.length} ürün
             </div>
