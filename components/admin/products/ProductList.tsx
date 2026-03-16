@@ -289,16 +289,12 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
             // Move item visually
             const visuallyMoved = arrayMove(sortedProducts, oldIndex, newIndex);
             
-            // Re-assign display_order based on this new visual order
-            // But if we only want to change the display orders of the ITEMS VISIBLE, 
-            // we should pull all their existing display orders and re-distribute them to maintain bounds.
-            const availableDisplayOrders = sortedProducts.map(p => p.display_order ?? 0).sort((a,b) => a - b);
-            
+            // Re-assign display_order sequentially 1, 2, 3, 4... based on visual order
             setProducts((items) => {
                 return items.map(p => {
                     const visualIndex = visuallyMoved.findIndex(v => v.id === p.id);
                     if (visualIndex !== -1) {
-                        return { ...p, display_order: availableDisplayOrders[visualIndex] };
+                        return { ...p, display_order: visualIndex + 1 };
                     }
                     return p; // Keep original display_order for products not in the visual filter
                 });
