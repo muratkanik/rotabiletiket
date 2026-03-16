@@ -8,21 +8,15 @@ export async function updateProductsOrder(updates: { id: string; display_order: 
         const supabase = createAdminClient();
         if (!supabase) return { success: false, error: "Service Role Key missing" };
 
-        const { error } = await supabase.rpc('update_products_order', {
-            order_updates: updates
-        });
-
-        // If RPC isn't available, we can loop, since we are doing this from admin panel, 
-        // a simple Promise.all is also fine for a reasonable number of products.
-        if (error && error.code === '42883') {
-            console.log("RPC update_products_order not found. Falling back to individual updates.");
-            const promises = updates.map(update => 
-                supabase.from('products').update({ display_order: update.display_order }).eq('id', update.id)
-            );
-            await Promise.all(promises);
-        } else if (error) {
-           console.error('Error in bulk update:', error);
-           return { success: false, error: error.message };
+        const promises = updates.map(update => 
+            supabase.from('products').update({ display_order: update.display_order }).eq('id', update.id)
+        );
+        const results = await Promise.all(promises);
+        
+        const errors = results.filter(r => r.error).map(r => r.error);
+        if (errors.length > 0) {
+            console.error('Error in bulk update:', errors);
+            return { success: false, error: errors[0]?.message || 'Unknown error during bulk update' };
         }
 
         revalidatePath('/admin/products');
