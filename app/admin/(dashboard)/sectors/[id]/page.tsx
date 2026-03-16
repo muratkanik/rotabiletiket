@@ -4,9 +4,11 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { VideoUpload } from '@/components/admin/VideoUpload';
+import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
@@ -31,26 +33,49 @@ export default function AdminSectorFormPage() {
 
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
+    
+    // AI Enhancement State
+    const [enhancing, setEnhancing] = useState(false);
+    const [logs, setLogs] = useState<string[]>([]);
 
     // Main Sector Data
     const [imageUrl, setImageUrl] = useState<string>('');
+    const [videoUrl, setVideoUrl] = useState<string>('');
     const [slug, setSlug] = useState('');
     const [displayOrder, setDisplayOrder] = useState(0);
     const [isPublished, setIsPublished] = useState(true);
+
+    // Linked Products
+    const [allProducts, setAllProducts] = useState<{id: string, title: string}[]>([]);
+    const [linkedProducts, setLinkedProducts] = useState<string[]>([]);
 
     // Translations
     const [translations, setTranslations] = useState<Record<string, any>>({});
     const [activeLang, setActiveLang] = useState('tr');
 
     useEffect(() => {
-        if (!isNew) {
-            fetchSector();
-        } else {
-            // Init translations
-            const initialTrans: any = {};
-            LANGUAGES.forEach(l => initialTrans[l.code] = { title: '', description: '', content_html: '', seo_title: '', seo_description: '', keywords: '' });
-            setTranslations(initialTrans);
-        }
+        const fetchInitialData = async () => {
+            // Fetch All Products for the Linker
+            const { data: prodData } = await supabase.from('products').select('id, product_translations(title, language_code)').order('created_at', { ascending: false });
+            if (prodData) {
+                const mapped = prodData.map((p: any) => {
+                    const trTitle = p.product_translations?.find((t: any) => t.language_code === 'tr')?.title || 'İsimsiz Ürün';
+                    return { id: p.id, title: trTitle };
+                });
+                setAllProducts(mapped);
+            }
+
+            if (!isNew) {
+                await fetchSector();
+            } else {
+                // Init translations
+                const initialTrans: any = {};
+                LANGUAGES.forEach(l => initialTrans[l.code] = { title: '', description: '', content_html: '', seo_title: '', seo_description: '', keywords: '' });
+                setTranslations(initialTrans);
+            }
+        };
+
+        fetchInitialData();
     }, [id]);
 
     const fetchSector = async () => {
@@ -59,6 +84,7 @@ export default function AdminSectorFormPage() {
         if (error) { toast.error('Sektör bulunamadı'); return; }
 
         setImageUrl(sector.image_url || '');
+        setVideoUrl(sector.video_url || '');
         setSlug(sector.slug);
         setDisplayOrder(sector.display_order || 0);
         setIsPublished(sector.is_published);
@@ -74,7 +100,12 @@ export default function AdminSectorFormPage() {
                 transMap[t.language_code] = t;
             });
         }
-        setTranslations(transMap);
+        // Fetch Linked Products
+        const { data: linked } = await supabase.from('sector_products').select('product_id').eq('sector_id', id);
+        if (linked) {
+            setLinkedProducts(linked.map((l: any) => l.product_id));
+        }
+
         setLoading(false);
     };
 
@@ -89,6 +120,7 @@ export default function AdminSectorFormPage() {
     };
 
     const makeSlug = (text: string) => {
+        if (!text) return '';
         return text.toLowerCase()
             .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
             .replace(/[^a-z0-9-]/g, '-')
@@ -96,13 +128,70 @@ export default function AdminSectorFormPage() {
             .replace(/^-|-$/g, '');
     };
 
-    const handleSave = async () => {
+    const handleEnhance = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isNew) {
+            toast.error("AI Enhance özelliğini kullanmak için sektörü önce kaydetmelisiniz!");
+            return;
+        }
+
+        const currentTrans = translations[activeLang] || {};
+
+        setEnhancing(true);
+        setLogs([`> BAŞLATILIYOR: "${currentTrans.title || 'İsimsiz'}" için B2B Sektörel AI Enhance süreci...`]);
+
+        try {
+            const logInterval = setInterval(() => {
+                setLogs(prev => [...prev, `> Sistem rakiplerin kurumsal içeriklerini inceliyor... ${Math.floor(Math.random() * 100)}%`]);
+            }, 3000);
+
+            const res = await fetch(`/api/ai/enhance-sector`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sectorId: id, mock: false })
+            });
+
+            clearInterval(logInterval);
+
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            setLogs(prev => [...prev, `> BAŞARILI: Veritabanına (4 dile birden) kaydedildi.`]);
+            toast.success("AI Enhance tamamlandı. Ekran güncelleniyor...");
+            
+            setTimeout(async () => {
+                await fetchSector();
+                setEnhancing(false);
+                setLogs([]);
+            }, 1000);
+
+        } catch (err: any) {
+            setLogs(prev => [...prev, `> HATA: ${err.message}`]);
+            toast.error("Hata: " + err.message);
+            setTimeout(() => {
+                setEnhancing(false);
+            }, 4000);
+        }
+    };
+
+    async function handleSave() {
         setSaving(true);
         try {
             let sectorId = id;
+            
+            // SAFETY CHECK: Ensure TR has a title before proceeding.
+            if (!translations['tr']?.title?.trim()) {
+                toast.error("Kaydetmeden önce mutlaka **Türkçe** (Ana Dil) için bir Başlık girmelisiniz.");
+                setSaving(false);
+                return;
+            }
+
+            const safeSlug = slug || makeSlug(translations['tr'].title);
+
             const sectorData = {
                 image_url: imageUrl,
-                slug: slug || makeSlug(translations['tr']?.title || 'new-sector'),
+                video_url: videoUrl,
+                slug: safeSlug,
                 display_order: displayOrder,
                 is_published: isPublished
             };
@@ -116,23 +205,42 @@ export default function AdminSectorFormPage() {
                 if (error) throw error;
             }
 
-            // Upsert Translations
-            const transToUpsert = Object.entries(translations).map(([code, data]: [string, any]) => ({
-                sector_id: sectorId,
-                language_code: code,
-                title: data.title,
-                description: data.description,
-                content_html: data.content_html,
-                seo_title: data.seo_title,
-                seo_description: data.seo_description,
-                keywords: data.keywords
-            }));
+            // Upsert Translations filtering empty titles to avoid breaking the frontend
+            const transToUpsert = Object.entries(translations)
+                .filter(([_, data]: [string, any]) => data.title?.trim()) 
+                .map(([code, data]: [string, any]) => ({
+                    sector_id: sectorId,
+                    language_code: code,
+                    title: data.title,
+                    description: data.description,
+                    content_html: data.content_html,
+                    seo_title: data.seo_title,
+                    seo_description: data.seo_description,
+                    keywords: data.keywords
+                }));
 
-            const { error: transErr } = await supabase.from('sector_translations').upsert(transToUpsert, { onConflict: 'sector_id, language_code' });
-            if (transErr) throw transErr;
+            if (transToUpsert.length > 0) {
+                const { error: transErr } = await supabase.from('sector_translations').upsert(transToUpsert, { onConflict: 'sector_id, language_code' });
+                if (transErr) throw transErr;
+            }
+
+            // Sync Linked Products
+            await supabase.from('sector_products').delete().eq('sector_id', sectorId);
+            if (linkedProducts.length > 0) {
+                const linksToInsert = linkedProducts.map(productId => ({
+                    sector_id: sectorId,
+                    product_id: productId
+                }));
+                const { error: linksErr } = await supabase.from('sector_products').insert(linksToInsert);
+                if (linksErr) throw linksErr;
+            }
 
             toast.success('Kaydedildi');
-            router.push('/admin/sectors');
+            if (isNew) {
+                router.push(`/admin/sectors/${sectorId}`);
+            } else {
+                fetchSector(); 
+            }
 
         } catch (error: any) {
             console.error(error);
@@ -140,7 +248,7 @@ export default function AdminSectorFormPage() {
         } finally {
             setSaving(false);
         }
-    };
+    }
 
     if (loading) return <div className="p-8">Yükleniyor...</div>;
 
@@ -148,6 +256,7 @@ export default function AdminSectorFormPage() {
 
     return (
         <div className="max-w-4xl mx-auto pb-10 space-y-6">
+            <HackerScreenModal isOpen={enhancing} logs={logs} />
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" asChild>
@@ -155,9 +264,20 @@ export default function AdminSectorFormPage() {
                     </Button>
                     <h1 className="text-2xl font-bold text-slate-900">{isNew ? 'Yeni Sektör' : 'Sektörü Düzenle'}</h1>
                 </div>
-                <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
-                    {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
-                </Button>
+                <div className="flex items-center gap-2">
+                    {!isNew && (
+                        <Button
+                            onClick={handleEnhance}
+                            className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200"
+                        >
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            AI Enhance
+                        </Button>
+                    )}
+                    <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
+                        {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
+                    </Button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -173,6 +293,15 @@ export default function AdminSectorFormPage() {
                                 bucket="product-images"
                             />
                         </div>
+                        
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Sektör Videosu</label>
+                            <VideoUpload
+                                value={videoUrl}
+                                onChange={setVideoUrl}
+                                bucket="product-images"
+                            />
+                        </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Slug (URL)</label>
@@ -180,7 +309,7 @@ export default function AdminSectorFormPage() {
                                 className="w-full border rounded p-2 text-sm font-mono"
                                 value={slug}
                                 onChange={e => setSlug(e.target.value)}
-                                placeholder="Auto-generated if empty"
+                                placeholder="Otomatik oluşturulur"
                             />
                             <p className="text-xs text-slate-400">Boş bırakırsanız Türkçe başlıktan oluşturulur.</p>
                         </div>
@@ -225,6 +354,7 @@ export default function AdminSectorFormPage() {
                             <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
                                 <TabsTrigger value="content" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">Genel İçerik</TabsTrigger>
                                 <TabsTrigger value="seo" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">SEO Ayarları</TabsTrigger>
+                                <TabsTrigger value="products" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 py-2">Bağlı Ürünler</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="content" className="space-y-5 mt-4">
@@ -263,7 +393,7 @@ export default function AdminSectorFormPage() {
                             <TabsContent value="seo" className="space-y-5 mt-4">
                                 <SeoScore
                                     title={currentTrans.title || ''}
-                                    description={currentTrans.description || ''}
+                                    description={currentTrans.seo_description || currentTrans.description || ''}
                                     content={currentTrans.content_html || ''}
                                     keyword={currentTrans.keywords?.split(',')[0]}
                                 />
@@ -293,6 +423,28 @@ export default function AdminSectorFormPage() {
                                         value={currentTrans.keywords || ''}
                                         onChange={e => handleTransChange('keywords', e.target.value)}
                                     />
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="products" className="space-y-5 mt-4">
+                                <p className="text-sm text-slate-500 font-medium">Bu sektörde en çok kullanılan ürünleri seçerek eşleştirin.</p>
+                                <div className="max-h-[500px] overflow-y-auto border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-1">
+                                    {allProducts.length === 0 ? (
+                                        <p className="text-sm text-slate-400 p-4 text-center">Henüz eklenmiş bir ürün bulunamadı.</p>
+                                    ) : (
+                                        allProducts.map(product => (
+                                            <div key={product.id} className="flex items-center space-x-3 p-2.5 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-slate-200 hover:shadow-sm">
+                                                <Switch 
+                                                    checked={linkedProducts.includes(product.id)}
+                                                    onCheckedChange={(checked) => {
+                                                        if (checked) setLinkedProducts(prev => [...prev, product.id]);
+                                                        else setLinkedProducts(prev => prev.filter(id => id !== product.id));
+                                                    }}
+                                                />
+                                                <label className="text-sm font-medium text-slate-800 cursor-pointer flex-1">{product.title}</label>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </TabsContent>
                         </Tabs>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, Save, Upload, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { VideoUpload } from '@/components/admin/VideoUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -47,6 +48,7 @@ export default function CategoryFormPage() {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [videoUrl, setVideoUrl] = useState<string>('');
 
     // Localized Data
     const [formData, setFormData] = useState<CategoryData>({
@@ -98,6 +100,9 @@ export default function CategoryFormPage() {
             if (category.image_url) {
                 setImageUrl(category.image_url);
                 setImagePreview(category.image_url.startsWith('http') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`);
+            }
+            if (category.video_url) {
+                setVideoUrl(category.video_url);
             }
 
             // Always fetch translation for SEO fields (even for TR)
@@ -166,6 +171,7 @@ export default function CategoryFormPage() {
             // 1. Common Data
             const commonData = {
                 parent_id: parentId === 'null' || parentId === '' ? null : parentId,
+                video_url: videoUrl,
             };
 
             const contentData = {
@@ -341,6 +347,22 @@ export default function CategoryFormPage() {
                                                 }} disabled={selectedLang !== 'tr'} />
                                             </label>
                                         )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                        
+                        <div className="space-y-6 md:col-span-2">
+                            <Card>
+                                <CardHeader><CardTitle>Kategori Videosu</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        <VideoUpload
+                                            value={videoUrl}
+                                            onChange={setVideoUrl}
+                                            bucket="product-images"
+                                        />
+                                        {selectedLang !== 'tr' && <p className="text-xs text-amber-600 mt-1">Sadece ana dilde değiştirilebilir.</p>}
                                     </div>
                                 </CardContent>
                             </Card>
