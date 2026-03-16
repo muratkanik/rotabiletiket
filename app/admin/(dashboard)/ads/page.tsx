@@ -26,9 +26,21 @@ export default function MetaAdsPage() {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const { data, error } = await supabase.from('products').select('id, title, price, image_url, description, slug').order('created_at', { ascending: false }).limit(50);
+            const { data, error } = await supabase.from('products').select('id, title, description_html, slug, product_images(storage_path)').order('created_at', { ascending: false }).limit(50);
             if (!error && data) {
-                setProducts(data);
+                const formatted = data.map((p: any) => ({
+                    id: p.id,
+                    title: p.title,
+                    slug: p.slug,
+                    description: p.description_html?.replace(/<[^>]+>/g, '') || '',
+                    image_url: p.product_images?.[0]?.storage_path 
+                        ? (p.product_images[0].storage_path.startsWith('http') ? p.product_images[0].storage_path : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${p.product_images[0].storage_path}`)
+                        : null,
+                    price: '0'
+                }));
+                setProducts(formatted);
+            } else if (error) {
+                console.error("Ads product fetch error:", error);
             }
         };
         fetchProducts();
@@ -146,7 +158,7 @@ export default function MetaAdsPage() {
                                     <Package size={18} />
                                 </div>
                                 <SearchableSelect
-                                    options={products.map((p) => ({ value: p.id, label: `${p.title} (${p.price ? p.price + " TL" : "Fiyatsız"})` }))}
+                                    options={products.map((p) => ({ value: p.id, label: p.title }))}
                                     value={selectedProductId}
                                     onChange={setSelectedProductId}
                                     placeholder="Ürün Ara ve Seç..."

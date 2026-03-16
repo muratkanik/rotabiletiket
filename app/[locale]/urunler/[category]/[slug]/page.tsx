@@ -116,6 +116,20 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                                 ))}
                             </div>
                         )}
+
+                        {/* Product Video */}
+                        {product.video_url && (
+                            <div className="aspect-video rounded-2xl overflow-hidden shadow-lg bg-black border border-slate-200 mt-6">
+                                <video 
+                                    src={product.video_url} 
+                                    className="w-full h-full object-cover" 
+                                    controls 
+                                    autoPlay 
+                                    muted 
+                                    loop 
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Info */}

@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import dynamic from 'next/dynamic';
+import { VideoUpload } from '@/components/admin/VideoUpload';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -62,6 +63,7 @@ export default function ProductFormPage() {
     const [isPublished, setIsPublished] = useState(true);
     const [specs, setSpecs] = useState<{ key: string, value: string }[]>([]);
     const [images, setImages] = useState<any[]>([]);
+    const [videoUrl, setVideoUrl] = useState<string>('');
 
     // Localized Data (One set per language potentially, but practically we load/save on demand or keep all in state)
     // Simpler approach: Load data for selectedLang when it changes.
@@ -130,6 +132,10 @@ export default function ProductFormPage() {
                         ? img.storage_path
                         : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${img.storage_path}`
                 })));
+            }
+
+            if (product.video_url) {
+                setVideoUrl(product.video_url);
             }
 
             if (lang === 'tr') {
@@ -220,16 +226,57 @@ export default function ProductFormPage() {
 
     const handleEnhance = async (e: React.MouseEvent) => {
         e.preventDefault();
+        let targetId = id;
+
         if (isNew) {
-            toast.error("AI Enhance özelliğini kullanmak için ürünü önce kaydetmelisiniz!");
-            return;
+            if (!formData.title) {
+                toast.error("AI ile içerik üretmek için öncelikle bir Ürün Başlığı girmelisiniz!");
+                return;
+            }
+
+            setEnhancing(true);
+            setLogs([`> BAŞLATILIYOR: "${formData.title}" iskeleti oluşturuluyor...`]);
+
+            try {
+                const generatedSlug = formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                
+                const commonData = {
+                    category_id: categoryId || null,
+                    is_published: isPublished,
+                    video_url: videoUrl,
+                    specs: specs.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {})
+                };
+
+                const baseContentData = {
+                    title: formData.title,
+                    slug: generatedSlug,
+                };
+                
+                const { data, error } = await supabase.from('products').insert({ ...commonData, ...baseContentData }).select().single();
+                if (error) throw error;
+                
+                targetId = data.id;
+                
+                await supabase.from('product_translations').insert({
+                    product_id: targetId,
+                    language_code: 'tr',
+                    title: formData.title,
+                    slug: generatedSlug
+                });
+                
+                setLogs(prev => [...prev, `> Ürün iskeleti kaydedildi, AI modülüne geçiliyor...`]);
+                
+            } catch (err: any) {
+                toast.error("İskelet oluşturulamadı: " + err.message);
+                setEnhancing(false);
+                return;
+            }
+        } else {
+            setEnhancing(true);
+            setLogs([`> BAŞLATILIYOR: "${formData.title || 'İsimsiz'}" için E-Ticaret AI Enhance süreci...`]);
         }
 
-        setEnhancing(true);
-        setLogs([`> BAŞLATILIYOR: "${formData.title || 'İsimsiz'}" için E-Ticaret AI Enhance süreci...`]);
-
         try {
-            // Fake progression log for dramatic effect while waiting for long polling
             const logInterval = setInterval(() => {
                 setLogs(prev => [...prev, `> Sistem rakiplerin içeriklerini inceliyor... ${Math.floor(Math.random() * 100)}%`]);
             }, 5000);
@@ -237,7 +284,7 @@ export default function ProductFormPage() {
             const res = await fetch(`/api/ai/enhance-product`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: id, mock: false })
+                body: JSON.stringify({ productId: targetId, mock: false })
             });
 
             clearInterval(logInterval);
@@ -251,8 +298,11 @@ export default function ProductFormPage() {
             setTimeout(() => {
                 setEnhancing(false);
                 setLogs([]);
-                // Reload the page to get the freshest data safely
-                window.location.reload();
+                if (isNew) {
+                    router.push(`/admin/products/${targetId}`);
+                } else {
+                    window.location.reload();
+                }
             }, 2000);
 
         } catch (err: any) {
@@ -260,7 +310,7 @@ export default function ProductFormPage() {
             toast.error("Hata: " + err.message);
             setTimeout(() => {
                 setEnhancing(false);
-            }, 4000); // leave the error on screen for a bit
+            }, 4000);
         }
     };
 
@@ -273,6 +323,7 @@ export default function ProductFormPage() {
             const commonData = {
                 category_id: categoryId,
                 is_published: isPublished,
+                video_url: videoUrl,
                 specs: specs.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {})
             };
 
@@ -547,6 +598,20 @@ export default function ProductFormPage() {
                                     </div>
                                 </CardContent>
                             </Card>
+
+                            <Card>
+                                <CardHeader><CardTitle>Ürün Videosu</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        <VideoUpload
+                                            value={videoUrl}
+                                            onChange={setVideoUrl}
+                                            bucket="product-images"
+                                        />
+                                        {selectedLang !== 'tr' && <p className="text-xs text-amber-600 mt-1">Sadece ana dilde değiştirilebilir.</p>}
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </TabsContent>
@@ -562,7 +627,7 @@ export default function ProductFormPage() {
                                         {selectedLang === 'tr' ? 'Ana Tabloyu Düzenliyor' : 'Çeviri Tablosunu Düzenliyor'}
                                     </span>
                                 </div>
-                                {!isNew && selectedLang === 'tr' && (
+                                {selectedLang === 'tr' && (
                                     <Button onClick={handleEnhance} disabled={enhancing || saving} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
                                         {enhancing ? 'Yazılıyor...' : <><Sparkles className="mr-2 h-4 w-4" /> AI Enhance</>}
                                     </Button>
