@@ -33,9 +33,11 @@ interface Product {
     title: string;
     slug: string;
     categories: {
+        id: string;
         title: string;
         slug: string;
     } | null;
+    category_id?: string;
     is_published?: boolean;
     description_html?: string | null;
     seo_description?: string | null;
@@ -146,6 +148,7 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
 
 export function ProductList({ initialProducts }: ProductListProps) {
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
     const [products, setProducts] = useState(initialProducts);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -167,6 +170,17 @@ export function ProductList({ initialProducts }: ProductListProps) {
         });
     }, [products]);
 
+    // Unique categories for the dropdown
+    const availableCategories = useMemo(() => {
+        const categoriesMap = new Map<string, string>();
+        initialProducts.forEach(p => {
+            if (p.categories) {
+                categoriesMap.set(p.categories.id, p.categories.title);
+            }
+        });
+        return Array.from(categoriesMap.entries()).map(([id, title]) => ({ id, title }));
+    }, [initialProducts]);
+
     // Bulk Enhance States
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isBulkEnhancing, setIsBulkEnhancing] = useState(false);
@@ -185,10 +199,10 @@ export function ProductList({ initialProducts }: ProductListProps) {
     const sortedProducts = useMemo(() => {
         return [...processedProducts].filter(product => {
             const term = searchTerm.toLowerCase();
-            return (
-                product.title.toLowerCase().includes(term) ||
-                (product.categories?.title || '').toLowerCase().includes(term)
-            );
+            const matchesSearch = product.title.toLowerCase().includes(term) || (product.categories?.title || '').toLowerCase().includes(term);
+            const matchesCategory = selectedCategory === 'ALL' || product.categories?.id === selectedCategory;
+            
+            return matchesSearch && matchesCategory;
         }).sort((a, b) => {
             if (!sortConfig) return 0;
 
@@ -216,7 +230,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
             if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
         });
-    }, [processedProducts, searchTerm, sortConfig]);
+    }, [processedProducts, searchTerm, selectedCategory, sortConfig]);
 
     const handleBulkEnhance = async () => {
         setIsHackerScreenOpen(true);
@@ -277,27 +291,31 @@ export function ProductList({ initialProducts }: ProductListProps) {
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
-            // Find old and new index in the currently sorted (visual) list
+            // Because users want drag-n-drop to reflect specifically the active SORT view,
+            // we should base the numbers strictly off the visual array's display orders.
             const oldIndex = sortedProducts.findIndex(i => i.id === active.id);
             const newIndex = sortedProducts.findIndex(i => i.id === over.id);
             
             // Move item visually
             const visuallyMoved = arrayMove(sortedProducts, oldIndex, newIndex);
             
-            // Re-assign display_order based on this new visual order (1, 2, 3...)
-            // Then update the source 'products' array
+            // Re-assign display_order based on this new visual order
+            // But if we only want to change the display orders of the ITEMS VISIBLE, 
+            // we should pull all their existing display orders and re-distribute them to maintain bounds.
+            const availableDisplayOrders = sortedProducts.map(p => p.display_order ?? 0).sort((a,b) => a - b);
+            
             setProducts((items) => {
                 return items.map(p => {
                     const visualIndex = visuallyMoved.findIndex(v => v.id === p.id);
                     if (visualIndex !== -1) {
-                        return { ...p, display_order: visualIndex + 1 };
+                        return { ...p, display_order: availableDisplayOrders[visualIndex] };
                     }
-                    return p;
+                    return p; // Keep original display_order for products not in the visual filter
                 });
             });
             
             setHasUnsavedChanges(true);
-            // Snap back to order display to show the newly assigned manual order
+            // Snap back to order display to show the newly assigned manual order properly sequenced
             setSortConfig({ key: 'display_order', direction: 'asc' });
         }
     };
@@ -329,6 +347,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
     };
 
     // Allow dragging as long as we aren't filtering out products via search
+    // But allow dragging if we are filtering by category
     const isDragEnabled = !searchTerm;
 
     return (
@@ -363,6 +382,21 @@ export function ProductList({ initialProducts }: ProductListProps) {
                         className="border-0 focus-visible:ring-0"
                     />
                 </div>
+                
+                {/* Category Filter Dropdown */}
+                <div className="flex items-center gap-2 bg-white rounded-lg border w-full sm:w-auto overflow-hidden">
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="h-10 px-3 py-2 bg-transparent w-full text-sm outline-none border-0 focus-visible:ring-0 text-slate-600"
+                    >
+                        <option value="ALL">Tüm Kategoriler</option>
+                        {availableCategories.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.title}</option>
+                        ))}
+                    </select>
+                </div>
+
                 {selectedIds.length > 0 && (
                     <Button
                         onClick={handleBulkEnhance}
