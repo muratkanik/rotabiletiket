@@ -38,6 +38,7 @@ export default async function CategoryPage({ params }: { params: { category: str
         .from('products')
         .select('*, product_images(*)')
         .eq('category_id', category.id)
+        .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
 
     return (

@@ -90,6 +90,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             )
         `)
         .eq('category_id', category.id)
+        .order('display_order', { ascending: true })
         .order('title', { ascending: true });
 
     const products = rawProducts?.map((p: any) => {

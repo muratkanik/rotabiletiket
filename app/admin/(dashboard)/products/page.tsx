@@ -6,6 +6,7 @@ export default async function AdminProductsPage() {
     const { data: products } = await supabase
         .from('products')
         .select('*, categories(title, slug)')
+        .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
 
     return <ProductList initialProducts={products || []} />;
