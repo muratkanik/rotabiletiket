@@ -249,14 +249,27 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
                     continue;
                 }
 
+                const result = await res.json();
+                if (result.success && result.data) {
+                    setProducts(prev => prev.map(p => {
+                        if (p.id === productId) {
+                            return {
+                                ...p,
+                                title: result.data.seo_title || p.title,
+                                description_html: result.data.content_html,
+                                seo_description: result.data.seo_description,
+                                keywords: result.data.keywords
+                            };
+                        }
+                        return p;
+                    }));
+                }
+
                 setLogs(prev => [...prev, `> BAŞARILI: "${productTitle}" optimize edildi ve çoklu dile çevrildi.`]);
             }
 
-            setLogs(prev => [...prev, ``, `> İŞLEM BAŞARILI. Tüm seçili ürünler güncellendi! Yenileniyor...`]);
+            setLogs(prev => [...prev, ``, `> İŞLEM BAŞARILI. Tüm seçili ürünler güncellendi!`]);
             setSelectedIds([]);
-
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            window.location.reload();
 
         } catch (error: any) {
             setLogs(prev => [...prev, `> KRITIK HATA: Toplu işlem sonlandı - ${error.message}`]);
