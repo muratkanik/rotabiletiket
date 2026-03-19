@@ -15,7 +15,8 @@ import {
     BookOpen,
     Instagram,
     TrendingUp,
-    Settings2
+    Settings2,
+    X
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -36,7 +37,12 @@ const MENU_ITEMS = [
     { name: 'Meta Reklamları', href: '/admin/ads', icon: TrendingUp },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
     const supabase = createClient();
@@ -47,12 +53,21 @@ export function AdminSidebar() {
     };
 
     return (
-        <div className="w-64 bg-slate-900 min-h-screen text-slate-300 flex flex-col fixed left-0 top-0">
-            <div className="p-6 border-b border-slate-800">
+        <div className={cn(
+            "w-64 bg-slate-900 min-h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 ease-in-out lg:translate-x-0",
+            isOpen ? "translate-x-0" : "-translate-x-full"
+        )}>
+            <div className="p-6 border-b border-slate-800 flex justify-between items-center">
                 <h1 className="text-xl font-bold text-white tracking-wider">ROTABİL<span className="text-orange-500">ADMIN</span></h1>
+                <button 
+                    onClick={onClose}
+                    className="lg:hidden text-slate-400 hover:text-white focus:outline-none"
+                >
+                    <X size={24} />
+                </button>
             </div>
 
-            <nav className="flex-1 p-4 space-y-1">
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                 {MENU_ITEMS.map((item) => {
                     const Icon = item.icon;
                     const isActive = pathname.startsWith(item.href);

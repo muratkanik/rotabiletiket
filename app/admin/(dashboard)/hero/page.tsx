@@ -69,8 +69,8 @@ export default function AdminHeroPage() {
                 </Button>
             </div>
 
-            <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-                <table className="w-full text-left text-sm">
+            <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
+                <table className="w-full text-left text-sm min-w-[700px]">
                     <thead className="bg-slate-50 border-b">
                         <tr>
                             <th className="p-4 font-semibold text-slate-700 w-16">Sıra</th>
