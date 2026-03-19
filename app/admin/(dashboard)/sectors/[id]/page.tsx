@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
+import { WysiwygEditor } from '@/components/admin/WysiwygEditor';
 import { SeoScore } from '@/components/admin/SeoScore';
 
 const LANGUAGES = [
@@ -382,13 +382,12 @@ export default function AdminSectorFormPage() {
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-700">İçerik (HTML)</label>
-                                    <Textarea
-                                        className="w-full min-h-[300px] font-mono text-sm"
-                                        placeholder="<p>Detaylı içerik...</p>"
+                                    <WysiwygEditor
+                                        placeholder="Detaylı içerik..."
                                         value={currentTrans.content_html || ''}
-                                        onChange={(e: any) => handleTransChange('content_html', e.target.value)}
+                                        onChange={(val: string) => handleTransChange('content_html', val)}
                                     />
-                                    <p className="text-xs text-slate-400">HTML etiketleri kullanabilirsiniz. İleri düzey düzenleme için HTML yazın.</p>
+                                    <p className="text-xs text-slate-400">Editörü kullanarak tablo, liste ve başlıklar ekleyebilirsiniz.</p>
                                 </div>
                             </TabsContent>
 
