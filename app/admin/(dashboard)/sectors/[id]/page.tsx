@@ -100,6 +100,8 @@ export default function AdminSectorFormPage() {
                 transMap[t.language_code] = t;
             });
         }
+        
+        setTranslations(transMap);
         // Fetch Linked Products
         const { data: linked } = await supabase.from('sector_products').select('product_id').eq('sector_id', id);
         if (linked) {
