@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic';
 
-// Dynamically import react-quill to avoid SSR "document is not defined" issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+// Dynamically import react-quill-new to avoid SSR "document is not defined" issues
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 interface WysiwygEditorProps {
     value: string;
@@ -23,6 +23,7 @@ export function WysiwygEditor({ value, onChange, placeholder }: WysiwygEditorPro
 
     return (
         <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            {/* @ts-ignore - react-quill-new types may not exactly match legacy */}
             <ReactQuill
                 theme="snow"
                 value={value}
