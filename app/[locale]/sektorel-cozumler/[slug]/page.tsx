@@ -83,8 +83,6 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
 
     return (
         <main className="min-h-screen bg-white">
-            <Navbar />
-
             {/* Hero */}
             <div className="relative h-[40vh] md:h-[50vh] flex items-center justify-center">
                 <div className="absolute inset-0">
