@@ -86,7 +86,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
             <Navbar />
 
             {/* Hero */}
-            <div className="relative h-[50vh] flex items-center justify-center">
+            <div className="relative h-[40vh] md:h-[50vh] flex items-center justify-center">
                 <div className="absolute inset-0">
                     <Image
                         src={sector.image_url || '/placeholder-sector.jpg'}
@@ -97,12 +97,12 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                     <div className="absolute inset-0 bg-slate-900/60" />
                 </div>
                 <div className="relative z-10 text-center text-white px-4">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{displayTitle}</h1>
-                    <p className="text-xl text-slate-200">Endüstriyel Özel Çözümler</p>
+                    <h1 className="text-3xl md:text-6xl font-bold mb-4">{displayTitle}</h1>
+                    <p className="text-lg md:text-xl text-slate-200">Endüstriyel Özel Çözümler</p>
                 </div>
             </div>
 
-            <div className="container px-4 md:px-6 py-16">
+            <div className="container px-4 md:px-6 py-8 md:py-16">
                 <div className="max-w-4xl mx-auto">
                     
                     {/* Optional Video Section */}
@@ -119,7 +119,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                         </div>
                     )}
 
-                    <div className="prose prose-lg max-w-none text-slate-600 mb-16">
+                    <div className="prose prose-lg max-w-none text-slate-600 mb-12 md:mb-16 prose-img:w-full prose-img:h-auto break-words overflow-x-auto">
                         <div dangerouslySetInnerHTML={{
                             __html: displayContent
                                 .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
@@ -129,8 +129,8 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
 
                     {/* Linked Products */}
                     {sector.sector_products && sector.sector_products.length > 0 && (
-                        <div className="mb-16">
-                            <h2 className="text-3xl font-bold text-slate-900 mb-8 border-b pb-4">
+                        <div className="mb-12 md:mb-16">
+                            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8 border-b pb-4">
                                 {locale === 'en' ? 'Most Used Solutions in this Sector' : 'Bu Sektörde En Çok Kullanılan Çözümlerimiz'}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,8 +161,8 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                         </div>
                     )}
 
-                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-8 text-center">
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 md:p-8 text-center mt-8">
+                        <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4">
                             {locale === 'en' ? 'Looking for a Solution?' : 'Bu Sektör İçin Çözüm Mü Arıyorsunuz?'}
                         </h2>
                         <p className="text-slate-600 mb-8 max-w-2xl mx-auto">

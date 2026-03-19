@@ -29,8 +29,8 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
         <main className="min-h-screen bg-slate-50">
 
 
-            <div className="bg-slate-900 py-16 text-white text-center">
-                <h1 className="text-4xl font-bold mb-4">
+            <div className="bg-slate-900 py-10 md:py-16 px-4 text-white text-center">
+                <h1 className="text-3xl md:text-4xl font-bold mb-4">
                     {locale === 'en' ? 'Sectoral Solutions' :
                         locale === 'de' ? 'Branchenlösungen' :
                             locale === 'fr' ? 'Solutions Sectorielles' :
@@ -44,7 +44,7 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
                 </p>
             </div>
 
-            <div className="container px-4 md:px-6 py-12">
+            <div className="container px-4 md:px-6 py-8 md:py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {sectors?.map((sector: any) => {
                         const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
@@ -68,8 +68,8 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
 
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
 
-                                <div className="absolute bottom-0 left-0 p-8 w-full">
-                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
+                                <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full">
+                                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
                                         {title}
                                     </h3>
                                     {description && (
