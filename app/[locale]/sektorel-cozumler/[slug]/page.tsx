@@ -58,6 +58,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
             ),
             sector_products (
                 product_id,
+                display_order,
                 products (
                     id,
                     slug,
@@ -135,7 +136,9 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                                 {locale === 'en' ? 'Most Used Solutions in this Sector' : 'Bu Sektörde En Çok Kullanılan Çözümlerimiz'}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {sector.sector_products.map((sp: any) => {
+                                {sector.sector_products
+                                    .sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0))
+                                    .map((sp: any) => {
                                     const p = sp.products;
                                     if(!p) return null;
                                     const pTrans = p.product_translations?.find((t: any) => t.language_code === locale) || p.product_translations?.find((t: any) => t.language_code === 'tr') || {};

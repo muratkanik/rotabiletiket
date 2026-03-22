@@ -18,6 +18,7 @@ export async function SectorsSection({ locale }: { locale: string }) {
                 title
             )
         `)
+        .order('display_order', { ascending: true })
         .limit(4);
 
     const localizedSectors = sectors?.map((sec: any) => {
