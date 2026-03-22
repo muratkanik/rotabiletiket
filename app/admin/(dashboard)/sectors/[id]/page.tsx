@@ -383,6 +383,7 @@ export default function AdminSectorFormPage() {
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-700">İçerik (HTML)</label>
                                     <WysiwygEditor
+                                        key={activeLang}
                                         placeholder="Detaylı içerik..."
                                         value={currentTrans.content_html || ''}
                                         onChange={(val: string) => handleTransChange('content_html', val)}
