@@ -61,7 +61,10 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                 products (
                     id,
                     slug,
-                    image_url,
+                    product_images (
+                        storage_path,
+                        is_primary
+                    ),
                     product_translations (
                         title,
                         language_code
@@ -136,11 +139,16 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                                     const p = sp.products;
                                     if(!p) return null;
                                     const pTrans = p.product_translations?.find((t: any) => t.language_code === locale) || p.product_translations?.find((t: any) => t.language_code === 'tr') || {};
+                                    const mainImageObj = p.product_images?.find((img: any) => img.is_primary) || p.product_images?.[0];
+                                    const mainImageUrl = mainImageObj 
+                                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${mainImageObj.storage_path}`
+                                        : '/placeholder.png';
+
                                     return (
                                         <Link href={`/${locale}/urunler/${p.slug}`} key={p.id} className="group relative flex gap-4 bg-white border border-slate-100 p-4 rounded-2xl hover:shadow-xl hover:border-blue-100 transition-all">
                                             <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-slate-50 shrink-0">
                                                 <Image 
-                                                    src={p.image_url || '/placeholder.png'} 
+                                                    src={mainImageUrl} 
                                                     alt={pTrans.title || 'Ürün'} 
                                                     fill 
                                                     className="object-cover group-hover:scale-110 transition-transform duration-500" 
