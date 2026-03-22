@@ -9,6 +9,128 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Input } from '@/components/ui/input';
+import { GripVertical, Save } from 'lucide-react';
+
+function SortableSectorRow({ sector, isDragEnabled, onOrderChange, togglePublish, handleDelete }: any) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({ id: sector.id, disabled: !isDragEnabled });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 10 : 1,
+        position: isDragging ? 'relative' as const : undefined,
+    };
+
+    const trData = sector.sector_translations?.find((t: any) => t.language_code === 'tr');
+    
+    // SEO setup
+    const title = trData?.title || '';
+    const desc = trData?.seo_description || trData?.description || '';
+    const content = trData?.content_html || sector.content_html || '';
+    const keyword = trData?.keywords?.split(',')[0] || '';
+    const { score } = calculateSeoScore(title, desc, content, keyword);
+
+    return (
+                                    <tr ref={setNodeRef} style={style} className={cn("hover:bg-slate-50/50 transition-colors bg-white", isDragging && "shadow-lg border border-blue-500 rounded-lg")}>
+                                        <td className="px-4 py-4 w-10">
+                                            <div {...attributes} {...listeners} className={cn("cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600", !isDragEnabled && "hidden")}>
+                                                <GripVertical size={18} />
+                                            </div>
+                                        </td>
+                                        <td className="p-4 font-mono text-slate-500 text-center w-24">
+                                            <Input 
+                                                type="number" 
+                                                value={sector.display_order ?? 0}
+                                                onChange={(e) => onOrderChange(sector.id, parseInt(e.target.value) || 0)}
+                                                className="w-20 text-center h-8"
+                                            />
+                                        </td>
+                                        <td className="p-4 w-24">
+                                            <div className="relative h-12 w-12 bg-slate-100 rounded overflow-hidden border">
+                                                {sector.image_url ? (
+                                                    <Image
+                                                        src={sector.image_url}
+                                                        alt="sector"
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized
+                                                    />
+                                                ) : (
+                                                    <div className="flex items-center justify-center h-full text-xs text-slate-400">Yok</div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="p-4 font-medium text-slate-900">
+                                            {trData?.title || <span className="text-slate-400 italic">Çeviri Yok</span>}
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={cn("h-full transition-all",
+                                                            score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
+                                                        )}
+                                                        style={{ width: `${score}%` }}
+                                                    />
+                                                </div>
+                                                <span className={cn("text-xs font-bold",
+                                                    score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
+                                                )}>
+                                                    {score}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-slate-500 font-mono text-xs">
+                                            {sector.slug}
+                                        </td>
+                                        <td className="p-4">
+                                            <button
+                                                onClick={() => togglePublish(sector.id, sector.is_published)}
+                                                className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${sector.is_published ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                            >
+                                                {sector.is_published ? 'Yayında' : 'Taslak'}
+                                            </button>
+                                        </td>
+                                        <td className="p-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={`/admin/sectors/${sector.id}`}>
+                                                        <Pencil className="h-4 w-4 mr-1" /> Düzenle
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="ghost" size="sm" onClick={() => handleDelete(sector.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+    );
+}
 
 export default function AdminSectorsPage() {
     const supabase = createClient();
@@ -18,6 +140,9 @@ export default function AdminSectorsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortKey, setSortKey] = useState<'display_order' | 'title'>('display_order');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const fetchSectors = async () => {
         setLoading(true);
@@ -79,6 +204,60 @@ export default function AdminSectorsPage() {
         }
     };
 
+    const handleOrderChange = (id: string, newOrder: number) => {
+        setSectors(items => items.map(p => p.id === id ? { ...p, display_order: newOrder } : p));
+        setHasUnsavedChanges(true);
+    };
+
+    const saveOrder = async () => {
+        setIsSaving(true);
+        try {
+            const updates = sectors.map(p => ({
+                id: p.id,
+                display_order: p.display_order ?? 0
+            }));
+            
+            const { error } = await supabase.from('sectors').upsert(updates, { onConflict: 'id' });
+            
+            if (!error) {
+                toast.success('Sıralama başarıyla kaydedildi!');
+                setHasUnsavedChanges(false);
+            } else {
+                toast.error('Sıralama kaydedilemedi: ' + error.message);
+            }
+        } catch (e: any) {
+            toast.error('Sıralama kaydedilirken bir hata oluştu');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (over && active.id !== over.id) {
+            setSectors((items) => {
+                const oldIndex = items.findIndex(i => i.id === active.id);
+                const newIndex = items.findIndex(i => i.id === over.id);
+                const visuallyMoved = arrayMove(items, oldIndex, newIndex);
+                
+                return visuallyMoved.map((p, index) => ({
+                    ...p,
+                    display_order: index + 1
+                }));
+            });
+            setHasUnsavedChanges(true);
+            setSortKey('display_order');
+            setSortOrder('asc');
+        }
+    };
+
+    const isDragEnabled = !searchTerm && sortKey === 'display_order' && sortOrder === 'asc';
+
     const filteredAndSortedSectors = sectors
         .filter(sector => {
             const trData = sector.sector_translations?.find((t: any) => t.language_code === 'tr');
@@ -115,11 +294,24 @@ export default function AdminSectorsPage() {
                     <h1 className="text-3xl font-bold text-slate-900">Sektörel Çözümler</h1>
                     <p className="text-slate-500 mt-1">Sektör sayfalarını ve içeriklerini yönetin</p>
                 </div>
-                <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                    <Link href="/admin/sectors/new">
-                        <Plus className="mr-2 h-4 w-4" /> Yeni Sektör
-                    </Link>
-                </Button>
+                <div className="flex gap-2">
+                    {hasUnsavedChanges && (
+                        <Button 
+                            onClick={saveOrder} 
+                            disabled={isSaving}
+                            variant="default"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                        >
+                            <Save className="mr-2 h-4 w-4" /> 
+                            {isSaving ? 'Kaydediliyor...' : 'Sıralamayı Kaydet'}
+                        </Button>
+                    )}
+                    <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                        <Link href="/admin/sectors/new">
+                            <Plus className="mr-2 h-4 w-4" /> Yeni Sektör
+                        </Link>
+                    </Button>
+                </div>
             </div>
 
             {/* Search Bar */}
@@ -138,7 +330,8 @@ export default function AdminSectorsPage() {
                 <table className="w-full text-left text-sm min-w-[900px]">
                     <thead className="bg-slate-50 border-b">
                         <tr>
-                            <th className="p-4 font-semibold text-slate-700 w-16 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('display_order')}>
+                            <th className="px-4 py-4 w-10"></th>
+                            <th className="p-4 font-semibold text-slate-700 w-24 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('display_order')}>
                                 <div className="flex items-center gap-1">
                                     Sıra
                                     {sortKey === 'display_order' && <ArrowUpDown className="h-3 w-3" />}
@@ -159,83 +352,27 @@ export default function AdminSectorsPage() {
                     </thead>
                     <tbody className="divide-y">
                         {filteredAndSortedSectors.length > 0 ? (
-                            filteredAndSortedSectors.map((sector) => {
-                                const trData = sector.sector_translations?.find((t: any) => t.language_code === 'tr');
-                                return (
-                                    <tr key={sector.id} className="hover:bg-slate-50/50 transition-colors">
-                                        <td className="p-4 font-mono text-slate-500 text-center">{sector.display_order}</td>
-                                        <td className="p-4">
-                                            <div className="relative h-12 w-12 bg-slate-100 rounded overflow-hidden border">
-                                                {sector.image_url ? (
-                                                    <Image
-                                                        src={sector.image_url}
-                                                        alt="sector"
-                                                        fill
-                                                        className="object-cover"
-                                                        unoptimized // allowing external urls without config
-                                                    />
-                                                ) : (
-                                                    <div className="flex items-center justify-center h-full text-xs text-slate-400">Yok</div>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="p-4 font-medium text-slate-900">
-                                            {trData?.title || <span className="text-slate-400 italic">Çeviri Yok</span>}
-                                        </td>
-                                        <td className="p-4">
-                                            {(() => {
-                                                const title = trData?.title || '';
-                                                const desc = trData?.seo_description || trData?.description || '';
-                                                const content = trData?.content_html || sector.content_html || '';
-                                                const keyword = trData?.keywords?.split(',')[0] || '';
-
-                                                const { score } = calculateSeoScore(title, desc, content, keyword);
-
-                                                return (
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                                                            <div
-                                                                className={cn("h-full transition-all",
-                                                                    score >= 80 ? "bg-green-500" : score >= 50 ? "bg-orange-500" : "bg-red-500"
-                                                                )}
-                                                                style={{ width: `${score}%` }}
-                                                            />
-                                                        </div>
-                                                        <span className={cn("text-xs font-bold",
-                                                            score >= 80 ? "text-green-600" : score >= 50 ? "text-orange-600" : "text-red-600"
-                                                        )}>
-                                                            {score}
-                                                        </span>
-                                                    </div>
-                                                );
-                                            })()}
-                                        </td>
-                                        <td className="p-4 text-slate-500 font-mono text-xs">
-                                            {sector.slug}
-                                        </td>
-                                        <td className="p-4">
-                                            <button
-                                                onClick={() => togglePublish(sector.id, sector.is_published)}
-                                                className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${sector.is_published ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-                                            >
-                                                {sector.is_published ? 'Yayında' : 'Taslak'}
-                                            </button>
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <Link href={`/admin/sectors/${sector.id}`}>
-                                                        <Pencil className="h-4 w-4 mr-1" /> Düzenle
-                                                    </Link>
-                                                </Button>
-                                                <Button variant="ghost" size="sm" onClick={() => handleDelete(sector.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })
+                            <DndContext 
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SortableContext 
+                                    items={filteredAndSortedSectors.map(s => s.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {filteredAndSortedSectors.map((sector) => (
+                                        <SortableSectorRow 
+                                            key={sector.id} 
+                                            sector={sector} 
+                                            isDragEnabled={isDragEnabled}
+                                            onOrderChange={handleOrderChange}
+                                            togglePublish={togglePublish}
+                                            handleDelete={handleDelete}
+                                        />
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
                         ) : (
                             <tr>
                                 <td colSpan={6} className="p-8 text-center text-slate-500">
