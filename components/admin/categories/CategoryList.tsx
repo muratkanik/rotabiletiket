@@ -47,13 +47,13 @@ function DropzoneRow({ id, categoryId, position }: { id: string, categoryId: str
     });
     
     return (
-        <tr className="group cursor-row-resize h-0">
-            <td colSpan={8} className="p-0 border-0 relative h-0">
+        <tr className="group">
+            <td colSpan={8} className="p-0 border-0 bg-transparent">
                 <div 
                     ref={setNodeRef}
                     className={cn(
-                        "absolute left-0 right-0 z-10 w-full transition-all flex items-center justify-center -translate-y-1/2", 
-                        isOver ? "bg-blue-600 h-[8px] shadow-sm shadow-blue-500/50" : "bg-transparent h-[10px] hover:bg-blue-400 opacity-0 hover:opacity-100"
+                        "w-full transition-all flex items-center justify-center cursor-row-resize my-[1px]", 
+                        isOver ? "bg-blue-600 h-[8px] shadow-sm rounded-sm" : "bg-transparent h-[8px] hover:bg-blue-100 rounded-sm"
                     )}
                 />
             </td>
