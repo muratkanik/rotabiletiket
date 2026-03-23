@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { ProductList } from '@/components/admin/products/ProductList';
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({ searchParams }: { searchParams: { categoryId?: string } }) {
+    const categoryId = searchParams?.categoryId;
     const supabase = await createClient();
     
     // Fetch products and their translations to get the keywords for the primary language
@@ -10,7 +11,8 @@ export default async function AdminProductsPage() {
         .select(`
             *, 
             categories(id, title, slug),
-            product_translations(language_code, keywords)
+            product_translations(language_code, keywords),
+            product_images(storage_path, is_primary)
         `)
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
@@ -29,5 +31,5 @@ export default async function AdminProductsPage() {
         };
     });
 
-    return <ProductList initialProducts={products} categories={categories || []} />;
+    return <ProductList initialProducts={products} categories={categories || []} initialCategory={categoryId} />;
 }

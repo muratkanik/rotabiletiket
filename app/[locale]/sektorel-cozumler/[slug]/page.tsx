@@ -109,10 +109,10 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                     
                     {/* Optional Video Section */}
                     {sector.video_url && (
-                        <div className="mb-12 aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border border-slate-200">
+                        <div className="mb-12 rounded-3xl overflow-hidden shadow-2xl bg-black border border-slate-200 flex justify-center items-center h-[500px] md:h-[700px]">
                             <video 
                                 src={sector.video_url} 
-                                className="w-full h-full object-cover" 
+                                className="w-full h-full object-contain" 
                                 controls 
                                 autoPlay 
                                 muted 

@@ -5,7 +5,11 @@ export default async function AdminCategoriesPage() {
     const supabase = await createClient();
     const { data: categories } = await supabase
         .from('categories')
-        .select('*, parent:parent_id(title)')
+        .select(`
+            *,
+            parent:parent_id(title),
+            products(count)
+        `)
         .order('title', { ascending: true });
 
     return <CategoryList initialCategories={categories || []} />;

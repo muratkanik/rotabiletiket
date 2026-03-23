@@ -8,7 +8,7 @@ import { Plus, Pencil, Eye, ArrowUpDown, Search, Sparkles, GripVertical, Save } 
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { updateProductsOrder } from '@/app/admin/(dashboard)/products/actions';
+import { updateProductsOrder, bulkUpdateProductsCategory } from '@/app/admin/(dashboard)/products/actions';
 import { toast } from 'sonner';
 import {
     DndContext,
@@ -43,11 +43,13 @@ interface Product {
     seo_description?: string | null;
     keywords?: string | null;
     display_order?: number;
+    product_images?: { storage_path: string, is_primary: boolean }[];
 }
 
 interface ProductListProps {
     initialProducts: Product[];
     categories: { id: string; title: string; slug: string }[];
+    initialCategory?: string;
 }
 
 type SortKey = 'title' | 'category' | 'status' | 'seo_score' | 'display_order';
@@ -98,6 +100,19 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
                     className="w-20 text-center h-8"
                 />
             </td>
+            <td className="px-4 py-4 w-16">
+                <div className="w-12 h-12 rounded overflow-hidden shadow-sm border border-slate-200 bg-slate-50 relative flex items-center justify-center">
+                    {(product.product_images && product.product_images.length > 0) ? (
+                        <img 
+                            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${product.product_images.find(img => img.is_primary)?.storage_path || product.product_images[0].storage_path}`} 
+                            alt={product.title} 
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <span className="text-[10px] text-slate-400">Görsel Yok</span>
+                    )}
+                </div>
+            </td>
             <td className="px-6 py-4 font-medium text-slate-900">
                 {product.title}
             </td>
@@ -147,13 +162,15 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
     );
 }
 
-export function ProductList({ initialProducts, categories }: ProductListProps) {
+export function ProductList({ initialProducts, categories, initialCategory }: ProductListProps) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+    const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'ALL');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
     const [products, setProducts] = useState(initialProducts);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [bulkCategoryId, setBulkCategoryId] = useState<string>('');
+    const [isBulkingCategory, setIsBulkingCategory] = useState(false);
 
     useEffect(() => {
         setProducts(initialProducts);
@@ -279,6 +296,40 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
         }
     };
 
+    const handleBulkCategoryChange = async () => {
+        if (!bulkCategoryId || selectedIds.length === 0) return;
+        setIsBulkingCategory(true);
+        toast.info('Kategoriler güncelleniyor...');
+
+        try {
+            const res = await bulkUpdateProductsCategory(selectedIds, bulkCategoryId);
+            if (res.success) {
+                toast.success(`${selectedIds.length} ürünün kategorisi başarıyla taşındı.`);
+                
+                // Update local state to reflect UI changes immediately
+                const selectedCatObj = categories.find(c => c.id === bulkCategoryId);
+                setProducts(prev => prev.map(p => {
+                    if (selectedIds.includes(p.id)) {
+                        return { 
+                            ...p, 
+                            category_id: bulkCategoryId, 
+                            categories: selectedCatObj ? { id: selectedCatObj.id, title: selectedCatObj.title, slug: selectedCatObj.slug } : p.categories 
+                        };
+                    }
+                    return p;
+                }));
+                setSelectedIds([]);
+                setBulkCategoryId('');
+            } else {
+                toast.error('Kategoriler güncellenemedi: ' + res.error);
+            }
+        } catch (e: any) {
+            toast.error('Bir hata oluştu: ' + e.message);
+        } finally {
+            setIsBulkingCategory(false);
+        }
+    };
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -397,14 +448,39 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
                 </div>
 
                 {selectedIds.length > 0 && (
-                    <Button
-                        onClick={handleBulkEnhance}
-                        disabled={isBulkEnhancing || enhancingProductId !== null}
-                        variant="outline"
-                        className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                    >
-                        <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
-                    </Button>
+                    <div className="flex gap-2 items-center w-full sm:w-auto overflow-x-auto whitespace-nowrap p-1">
+                        <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-lg border">
+                            <select
+                                value={bulkCategoryId}
+                                onChange={(e) => setBulkCategoryId(e.target.value)}
+                                className="h-8 px-2 py-1 bg-white rounded border text-sm w-40 text-slate-700"
+                            >
+                                <option value="" disabled>Kategori Seç...</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={cat.id}>{cat.title}</option>
+                                ))}
+                            </select>
+                            <Button
+                                onClick={handleBulkCategoryChange}
+                                disabled={isBulkingCategory || !bulkCategoryId}
+                                size="sm"
+                                variant="default"
+                                className="h-8"
+                            >
+                                {isBulkingCategory ? 'Taşınıyor...' : 'Buraya Taşı'}
+                            </Button>
+                        </div>
+                        
+                        <Button
+                            onClick={handleBulkEnhance}
+                            disabled={isBulkEnhancing || enhancingProductId !== null}
+                            variant="outline"
+                            className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 shrink-0"
+                            size="sm"
+                        >
+                            <Sparkles className="mr-2 h-4 w-4" /> AI Optimize Et ({selectedIds.length})
+                        </Button>
+                    </div>
                 )}
             </div>
 
@@ -431,6 +507,9 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
                                 <div className="flex items-center justify-center gap-2">
                                     Sıra <ArrowUpDown size={14} />
                                 </div>
+                            </th>
+                            <th className="px-4 py-4 w-16 text-center text-slate-400">
+                                Görsel
                             </th>
                             <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('title')}>
                                 <div className="flex items-center gap-2">

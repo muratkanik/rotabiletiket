@@ -28,3 +28,27 @@ export async function updateProductsOrder(updates: { id: string; display_order: 
         return { success: false, error: error.message };
     }
 }
+
+export async function bulkUpdateProductsCategory(productIds: string[], categoryId: string) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { error } = await supabase
+            .from('products')
+            .update({ category_id: categoryId })
+            .in('id', productIds);
+
+        if (error) {
+            console.error('Error in bulk category update:', error);
+            return { success: false, error: error.message };
+        }
+
+        revalidatePath('/admin/products');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error bulk updating categories:', error);
+        return { success: false, error: error.message };
+    }
+}
