@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
+import { Button } from '@/components/ui/button';
 
 export async function SectorsSection({ locale }: { locale: string }) {
     const supabase = await createClient();
@@ -43,9 +44,6 @@ export async function SectorsSection({ locale }: { locale: string }) {
                                             'Her Sektör İçin Özel Üretim'}
                         </h2>
                     </div>
-                    <Link href="/sektorel-cozumler" className="hidden md:flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                        {common('readMore')} <ArrowRight className="ml-2 w-4 h-4" />
-                    </Link>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -71,19 +69,17 @@ export async function SectorsSection({ locale }: { locale: string }) {
                                 <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
                                     {sector.title}
                                 </h3>
-                                <div className="h-0 group-hover:h-auto overflow-hidden transition-all duration-300">
-                                    <span className="text-white/80 text-sm inline-flex items-center">
-                                        {common('readMore')} <ArrowRight className="ml-2 w-3 h-3" />
-                                    </span>
-                                </div>
                             </div>
                         </Link>
                     ))}
                 </div>
-                <div className="mt-8 text-center md:hidden">
-                    <Link href="/sektorel-cozumler" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                        {common('readMore')} <ArrowRight className="ml-2 w-4 h-4" />
-                    </Link>
+                
+                <div className="mt-16 text-center">
+                    <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 shadow-lg shadow-blue-200">
+                        <Link href="/sektorel-cozumler" className="flex items-center">
+                            {common('seeAllSectors') || 'Tüm Sektörel Çözümleri Gör'} <ArrowRight className="ml-2 w-5 h-5" />
+                        </Link>
+                    </Button>
                 </div>
             </div>
         </section>
