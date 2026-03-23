@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -167,6 +168,7 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, isDeletin
 }
 
 export function CategoryList({ initialCategories }: CategoryListProps) {
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
 
@@ -317,7 +319,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
         } finally {
             setIsBulkEnhancing(false);
             setEnhancingId(null);
-            // In a real app we would call a router.refresh() here to pull new SEO scores.
+            router.refresh();
         }
     };
 
