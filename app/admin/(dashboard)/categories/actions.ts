@@ -162,6 +162,40 @@ export async function updateCategoryParent(id: string, parentId: string | null) 
 }
 
 /**
+ * Quickly creates a basic category and returns its ID
+ */
+export async function quickCreateCategory(title: string) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const tempSlug = title
+            .toLowerCase()
+            .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+            .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        const { data, error } = await supabase
+            .from('categories')
+            .insert({ title: title, slug: tempSlug + '-' + Math.floor(Math.random() * 1000) })
+            .select('id, title, slug')
+            .single();
+
+        if (error || !data) {
+            console.error('Error creating quick category:', error);
+            return { success: false, error: "Kategori oluşturulurken hata oluştu." };
+        }
+
+        revalidatePath('/admin/categories');
+        return { success: true, category: data };
+    } catch (error: any) {
+        console.error('Unexpected error creating quick category:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
  * Updates multiple categories' parent (for bulk drag and drop hierarchy)
  */
 export async function bulkUpdateCategoryParent(ids: string[], parentId: string | null) {

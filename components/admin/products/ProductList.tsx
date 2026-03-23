@@ -9,6 +9,7 @@ import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 import { updateProductsOrder, bulkUpdateProductsCategory } from '@/app/admin/(dashboard)/products/actions';
+import { quickCreateCategory } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
     DndContext,
@@ -167,9 +168,11 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'ALL');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
     const [products, setProducts] = useState(initialProducts);
+    const [categoriesState, setCategoriesState] = useState(categories);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [bulkCategoryId, setBulkCategoryId] = useState<string>('');
+    const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const [isBulkingCategory, setIsBulkingCategory] = useState(false);
 
     useEffect(() => {
@@ -301,21 +304,57 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
 
     const handleBulkCategoryChange = async () => {
         if (!bulkCategoryId || selectedIds.length === 0) return;
-        setIsBulkingCategory(true);
-        toast.info('Kategoriler güncelleniyor...');
+
+        let targetCategoryId = bulkCategoryId;
+        let createdCategoryObj: { id: string; title: string; slug: string } | null = null;
+
+        if (bulkCategoryId === 'NEW_CATEGORY') {
+            if (!newCategoryTitle.trim()) {
+                toast.error("Lütfen yeni bir kategori adı girin.");
+                return;
+            }
+            setIsBulkingCategory(true);
+            toast.info("Yeni kategori oluşturuluyor...");
+            const createResult = await quickCreateCategory(newCategoryTitle.trim());
+            if (!createResult.success || !createResult.category) {
+                toast.error("Kategori oluşturulamadı: " + createResult.error);
+                setIsBulkingCategory(false);
+                return;
+            }
+            targetCategoryId = createResult.category.id;
+            createdCategoryObj = createResult.category;
+            
+            // Add to local state to update UI
+            if (createdCategoryObj) {
+                setCategoriesState(prev => [...prev, createdCategoryObj!]);
+            }
+            
+            // Trigger AI enhancement for the new category in the background
+            toast.info("Kategori oluşturuldu. Yapay Zeka içerikleri hazırlanıyor...", { duration: 5000 });
+            fetch(`/api/ai/enhance-category`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ categoryId: targetCategoryId })
+            }).then(r => r.json()).then(res => {
+                if (res.success) toast.success("Yeni Kategorinin AI içerikleri başarıyla üretildi!");
+            }).catch(() => {});
+        } else {
+            setIsBulkingCategory(true);
+            toast.info('Kategoriler güncelleniyor...');
+        }
 
         try {
-            const res = await bulkUpdateProductsCategory(selectedIds, bulkCategoryId);
+            const res = await bulkUpdateProductsCategory(selectedIds, targetCategoryId);
             if (res.success) {
                 toast.success(`${selectedIds.length} ürünün kategorisi başarıyla taşındı.`);
                 
                 // Update local state to reflect UI changes immediately
-                const selectedCatObj = bulkCategoryId === 'UNCATEGORIZED' ? null : categories.find(c => c.id === bulkCategoryId);
+                const selectedCatObj = targetCategoryId === 'UNCATEGORIZED' ? null : categoriesState.find(c => c.id === targetCategoryId) || createdCategoryObj;
                 setProducts(prev => prev.map(p => {
                     if (selectedIds.includes(p.id)) {
                         return { 
                             ...p, 
-                            category_id: bulkCategoryId === 'UNCATEGORIZED' ? undefined : bulkCategoryId, 
+                            category_id: targetCategoryId === 'UNCATEGORIZED' ? undefined : targetCategoryId, 
                             categories: selectedCatObj ? { id: selectedCatObj.id, title: selectedCatObj.title, slug: selectedCatObj.slug } : null 
                         };
                     }
@@ -323,6 +362,7 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                 }));
                 setSelectedIds([]);
                 setBulkCategoryId('');
+                setNewCategoryTitle('');
             } else {
                 toast.error('Kategoriler güncellenemedi: ' + res.error);
             }
@@ -445,7 +485,7 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                     >
                         <option value="ALL">Tüm Kategoriler</option>
                         <option value="UNCATEGORIZED">Kategori Atanmamış</option>
-                        {categories.map(cat => (
+                        {categoriesState.map(cat => (
                             <option key={cat.id} value={cat.id}>{cat.title}</option>
                         ))}
                     </select>
@@ -461,10 +501,22 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                             >
                                 <option value="" disabled>Kategori Seç...</option>
                                 <option value="UNCATEGORIZED">Kategori Atanmamış (Kaldır)</option>
-                                {categories.map(cat => (
-                                    <option key={cat.id} value={cat.id}>{cat.title}</option>
-                                ))}
+                                <option value="NEW_CATEGORY">+ Yeni Kategori Oluştur</option>
+                                <optgroup label="Mevcut Kategoriler">
+                                    {categoriesState.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.title}</option>
+                                    ))}
+                                </optgroup>
                             </select>
+                            {bulkCategoryId === 'NEW_CATEGORY' && (
+                                <Input
+                                    type="text"
+                                    placeholder="Yeni kategori adı yazın..."
+                                    value={newCategoryTitle}
+                                    onChange={(e) => setNewCategoryTitle(e.target.value)}
+                                    className="h-8 text-sm w-48"
+                                />
+                            )}
                             <Button
                                 onClick={handleBulkCategoryChange}
                                 disabled={isBulkingCategory || !bulkCategoryId}
