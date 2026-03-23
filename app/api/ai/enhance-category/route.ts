@@ -216,7 +216,7 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
             keywords: generatedContent.keywords
         }).eq('id', categoryId);
 
-        // Translate to other languages in parallel to avoid Vercel 60s timeout
+        // Translate sequentially to avoid triggering AI 429 Rate Limits from concurrent spikes
         const targetLanguages = [
             { code: 'en', instruction: 'Translate to English' },
             { code: 'de', instruction: 'Translate to German (Deutsch)' },
@@ -224,7 +224,7 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
             { code: 'ar', instruction: 'Translate to Arabic (العربية)' }
         ];
 
-        await Promise.all(targetLanguages.map(async (lang) => {
+        for (const lang of targetLanguages) {
             const translatePrompt = `Aşağıdaki JSON verisindeki tüm metin değerlerini çevir. HTML yapılarını, JSON anahtarlarını (keys) ve etiketlerini hiçbir şekilde bozma. Sadece içeriği çevir.
 Gelen Veri: ${generatedRaw} `;
 
@@ -251,7 +251,7 @@ Gelen Veri: ${generatedRaw} `;
             } catch (translErr) {
                 console.error(`Translation failed for ${lang.code}`, translErr);
             }
-        }));
+        }
 
         // Bust caching so the public Mega Menu instantly sees the localized data
         try { revalidatePath('/', 'layout'); } catch (e) { }
