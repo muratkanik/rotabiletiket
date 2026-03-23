@@ -162,6 +162,33 @@ export async function updateCategoryParent(id: string, parentId: string | null) 
 }
 
 /**
+ * Updates a category's display_order
+ */
+export async function updateCategoryOrder(id: string, newOrder: number) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { error } = await supabase
+            .from('categories')
+            .update({ display_order: newOrder })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error updating category order:', error);
+            return { success: false, error: "Sıralama güncellenirken hata oluştu." };
+        }
+
+        revalidatePath('/admin/categories');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error updating category order:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
  * Quickly creates a basic category and returns its ID
  */
 export async function quickCreateCategory(title: string) {

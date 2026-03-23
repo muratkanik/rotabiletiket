@@ -10,8 +10,8 @@ import { Plus, ArrowUpDown, Search, Pencil, Trash2 } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { Sparkles, GripVertical, X } from 'lucide-react';
-import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent } from '@/app/admin/(dashboard)/categories/actions';
+import { Sparkles, GripVertical, X, CornerUpLeft } from 'lucide-react';
+import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
     DndContext,
@@ -23,6 +23,7 @@ interface Category {
     slug: string;
     image_url: string | null;
     parent_id?: string | null;
+    display_order?: number | null;
     parent: {
         title: string;
     } | null;
@@ -37,17 +38,19 @@ interface CategoryListProps {
     initialCategories: Category[];
 }
 
-type SortKey = 'title' | 'parent';
+type SortKey = 'title' | 'parent' | 'display_order';
 
 interface CategoryRowProps {
     category: Category & { level: number };
     isSelected: boolean;
     onToggleSelect: (id: string, isSelected: boolean) => void;
     onDelete: (id: string, title: string) => void;
+    onUpdateOrder: (id: string, newOrder: number) => void;
+    onMakeRoot: (id: string) => void;
     isDeleting: boolean;
 }
 
-function CategoryRow({ category, isSelected, onToggleSelect, onDelete, isDeleting }: CategoryRowProps) {
+function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateOrder, onMakeRoot, isDeleting }: CategoryRowProps) {
     const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
         id: category.id,
         data: { type: 'category', category }
@@ -87,6 +90,19 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, isDeletin
                     onChange={(e) => onToggleSelect(category.id, e.target.checked)}
                 />
             </td>
+            <td className="px-3 py-4 text-center">
+                <Input
+                    type="number"
+                    defaultValue={category.display_order || 0}
+                    className="w-16 h-8 py-1 px-2 text-center"
+                    onBlur={(e) => onUpdateOrder(category.id, parseInt(e.target.value) || 0)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.currentTarget.blur();
+                        }
+                    }}
+                />
+            </td>
             <td className="px-6 py-4">
                 <div className="relative w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border">
                     {category.image_url ? (
@@ -111,6 +127,17 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, isDeletin
                         <div className="w-4 h-4 border-b-2 border-l-2 border-slate-300 rounded-bl-sm opacity-50 -mt-2 inline-block"></div>
                     )}
                     {category.title}
+                    {category.level > 0 && (
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-6 w-6 ml-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+                            title="Ana Kategori Yap (Sola Al)"
+                            onClick={() => onMakeRoot(category.id)}
+                        >
+                            <CornerUpLeft size={14} />
+                        </Button>
+                    )}
                 </div>
             </td>
             <td className="px-6 py-4">
@@ -170,7 +197,7 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, isDeletin
 export function CategoryList({ initialCategories }: CategoryListProps) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
 
     const handleSort = (key: SortKey) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -189,6 +216,28 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUpdatingParent, setIsUpdatingParent] = useState(false);
     const [activeDragCategory, setActiveDragCategory] = useState<Category | null>(null);
+
+    const handleUpdateOrder = async (id: string, newOrder: number) => {
+        const result = await updateCategoryOrder(id, newOrder);
+        if (result.success) {
+            toast.success("Sıralama güncellendi");
+            router.refresh();
+        } else {
+            toast.error(result.error || "Sıralama güncellenirken hata oluştu");
+        }
+    };
+
+    const handleMakeRoot = async (id: string) => {
+        setIsUpdatingParent(true);
+        const result = await updateCategoryParent(id, null);
+        setIsUpdatingParent(false);
+        if (result.success) {
+            toast.success("Kategori ana kategori seviyesine taşındı.");
+            router.refresh();
+        } else {
+            toast.error(result.error);
+        }
+    };
 
     const handleDragStart = (event: any) => {
         const { active } = event;
@@ -332,11 +381,19 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
         );
     });
 
-    // Helper to sort
     const sortFn = (a: Category, b: Category) => {
         if (!sortConfig) return 0;
-        let aValue = sortConfig.key === 'title' ? a.title.toLowerCase() : (a.parent?.title || '').toLowerCase();
-        let bValue = sortConfig.key === 'title' ? b.title.toLowerCase() : (b.parent?.title || '').toLowerCase();
+        let aValue: any = a.display_order || 0;
+        let bValue: any = b.display_order || 0;
+        
+        if (sortConfig.key === 'title') {
+            aValue = a.title.toLowerCase();
+            bValue = b.title.toLowerCase();
+        } else if (sortConfig.key === 'parent') {
+            aValue = (a.parent?.title || '').toLowerCase();
+            bValue = (b.parent?.title || '').toLowerCase();
+        }
+        
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
         if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
@@ -453,8 +510,14 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                     }}
                                 />
                             </th>
-                            <th className="px-6 py-4">Görsel</th>
-                            <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('title')}>
+                            <th className="px-3 py-4 w-16 text-center cursor-pointer select-none hover:bg-slate-100 transition-colors" onClick={() => handleSort('display_order')}>
+                                <div className="flex items-center justify-center gap-1">
+                                    Sıra
+                                    <ArrowUpDown size={14} className={sortConfig?.key === 'display_order' ? 'text-blue-600' : 'text-slate-400'} />
+                                </div>
+                            </th>
+                            <th className="px-6 py-4 w-24">Görsel</th>
+                            <th className="px-6 py-4 cursor-pointer select-none hover:bg-slate-100 transition-colors" onClick={() => handleSort('title')}>
                                 <div className="flex items-center gap-2">
                                     Kategori Adı <ArrowUpDown size={14} />
                                 </div>
@@ -471,17 +534,18 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                     key={category.id}
                                     category={category}
                                     isSelected={selectedIds.includes(category.id)}
-                                    onToggleSelect={(id, checked) => {
-                                        if (checked) setSelectedIds(prev => [...prev, id]);
-                                        else setSelectedIds(prev => prev.filter(sId => sId !== id));
+                                    onToggleSelect={(id, isSelected) => {
+                                        setSelectedIds(prev => isSelected ? [...prev, id] : prev.filter(selectedId => selectedId !== id));
                                     }}
                                     onDelete={handleDelete}
+                                    onUpdateOrder={handleUpdateOrder}
+                                    onMakeRoot={handleMakeRoot}
                                     isDeleting={isDeleting}
                                 />
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                                <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
                                     {searchTerm ? 'Arama sonucu bulunamadı.' : 'Henüz hiç kategori eklenmemiş.'}
                                 </td>
                             </tr>
