@@ -5,6 +5,16 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 60; // Allow 60 seconds execution for AI tasks on Vercel
 
+function generateSlug(str: string) {
+    if (!str) return '';
+    return str
+        .toLowerCase()
+        .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+        .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -177,12 +187,14 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
         const generatedContent = JSON.parse(generatedRaw);
 
         // Update the current language (Assuming TR is default/primary for this system)
+        const trTitle = generatedContent.seo_title || trTranslation.title;
         const { error: trUpdateError } = await supabase
             .from('category_translations')
             .upsert({
                 category_id: categoryId,
                 language_code: 'tr',
-                title: generatedContent.seo_title || trTranslation.title,
+                title: trTitle,
+                slug: generateSlug(trTitle),
                 description: generatedContent.description,
                 seo_title: generatedContent.seo_title || trTranslation.title,
                 seo_description: generatedContent.seo_description,
@@ -196,8 +208,9 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
 
         // Also update the description in the main categories table to ensure consistency if app relies on it
         await supabase.from('categories').update({
+            slug: generateSlug(trTitle),
             description: generatedContent.description,
-            seo_title: generatedContent.seo_title || trTranslation.title,
+            seo_title: trTitle,
             seo_description: generatedContent.seo_description,
             keywords: generatedContent.keywords
         }).eq('id', categoryId);
@@ -222,10 +235,12 @@ Gelen Veri: ${generatedRaw} `;
                 );
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
+                    const langTitle = langContent.seo_title || langContent.title || generatedContent.seo_title;
                     await supabase.from('category_translations').upsert({
                         category_id: categoryId, 
                         language_code: lang.code,
-                        title: langContent.seo_title || langContent.title || generatedContent.seo_title,
+                        title: langTitle,
+                        slug: generateSlug(langTitle),
                         description: langContent.description,
                         seo_title: langContent.seo_title || langContent.title || generatedContent.seo_title,
                         seo_description: langContent.seo_description,
