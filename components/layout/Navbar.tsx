@@ -19,6 +19,7 @@ export async function Navbar() {
     const { data: categories } = await supabase
         .from('categories')
         .select('id, title, slug')
+        .order('display_order', { ascending: true })
         .order('title', { ascending: true });
 
     const { data: products } = await supabase
