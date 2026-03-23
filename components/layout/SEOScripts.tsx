@@ -8,6 +8,33 @@ export async function SEOScripts() {
 
     return (
         <>
+            {/* Google Consent Mode v2 (Default Based on Prior Consent) */}
+            <script
+                dangerouslySetInnerHTML={{
+                    __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        
+                        if (!localStorage.getItem('cookie_consent_accepted')) {
+                            gtag('consent', 'default', {
+                                'ad_storage': 'denied',
+                                'ad_user_data': 'denied',
+                                'ad_personalization': 'denied',
+                                'analytics_storage': 'denied',
+                                'wait_for_update': 500
+                            });
+                        } else {
+                            gtag('consent', 'default', {
+                                'ad_storage': 'granted',
+                                'ad_user_data': 'granted',
+                                'ad_personalization': 'granted',
+                                'analytics_storage': 'granted'
+                            });
+                        }
+                    `
+                }}
+            />
+
             {/* Google Search Console Verification Meta */}
             {settings.google_search_console_verification && (
                 <meta name="google-site-verification" content={settings.google_search_console_verification} />

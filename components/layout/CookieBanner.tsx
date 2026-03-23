@@ -27,6 +27,16 @@ export default function CookieBanner({ locale }: { locale: string }) {
     const handleAccept = () => {
         localStorage.setItem('cookie_consent_accepted', 'true');
         setIsVisible(false);
+
+        // Update Google Consent Mode v2
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+            (window as any).gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'analytics_storage': 'granted'
+            });
+        }
     };
 
     if (!isVisible) return null;
