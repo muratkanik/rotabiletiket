@@ -103,13 +103,19 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
             </td>
             <td className="px-4 py-4 w-16">
                 <div className="w-12 h-12 rounded overflow-hidden shadow-sm border border-slate-200 bg-slate-50 relative flex items-center justify-center">
-                    {(product.product_images && product.product_images.length > 0) ? (
-                        <img 
-                            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${product.product_images.find(img => img.is_primary)?.storage_path || product.product_images[0].storage_path}`} 
-                            alt={product.title} 
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
+                    {(product.product_images && product.product_images.length > 0) ? (() => {
+                        const imgPath = product.product_images.find(img => img.is_primary)?.storage_path || product.product_images[0].storage_path;
+                        const src = (imgPath.startsWith('http') || imgPath.startsWith('/')) 
+                            ? imgPath 
+                            : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${imgPath}`;
+                        return (
+                            <img 
+                                src={src} 
+                                alt={product.title} 
+                                className="w-full h-full object-cover"
+                            />
+                        );
+                    })() : (
                         <span className="text-[10px] text-slate-400">Görsel Yok</span>
                     )}
                 </div>
