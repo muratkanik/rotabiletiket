@@ -1,40 +1,41 @@
 {
-    "Navigation": {
-        "home": "Home",
-        "products": "Products",
-        "about": "About Us",
-        "contact": "Contact",
-        "blog": "Knowledge Base",
-        "sectoral": "Sectoral Solutions",
-        "labels": "Labels",
-        "ribbons": "Ribbons",
-        "printers": "Barcode Printers",
-        "printheads": "Printheads",
-        "labelsDesc": "Industrial label types",
-        "ribbonsDesc": "Thermal transfer ribbons",
-        "printersDesc": "Desktop and industrial",
-        "printheadsDesc": "Original spare parts"
-    },
-    "Common": {
-        "readMore": "Read More",
-        "contactUs": "Contact Us",
-        "getQuote": "Get Quote",
-        "loading": "Loading..."
-    },
-    "Hero": {
-        "badge": "Industrial Label & Barcode Solutions",
-        "ctaPrimary": "View Products",
-        "ctaSecondary": "Contact Us"
-    },
-    "KnowledgeBase": {
-        "backToKB": "Back to Knowledge Base",
-        "relatedCategories": "Related Categories",
-        "labels": "Labels",
-        "ribbons": "Ribbons",
-        "printers": "Barcode Printers",
-        "title": "Knowledge Base",
-        "headerSubtitle": "Sectoral Guide and Technical Insights",
-        "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
-        "readMore": "Read More"
-    }
+  "Navigation": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About Us",
+    "contact": "Contact",
+    "blog": "Knowledge Base",
+    "sectoral": "Sectoral Solutions",
+    "labels": "Labels",
+    "ribbons": "Ribbons",
+    "printers": "Barcode Printers",
+    "printheads": "Printheads",
+    "labelsDesc": "Industrial label types",
+    "ribbonsDesc": "Thermal transfer ribbons",
+    "printersDesc": "Desktop and industrial",
+    "printheadsDesc": "Original spare parts"
+  },
+  "Common": {
+    "readMore": "Read More",
+    "contactUs": "Contact Us",
+    "getQuote": "Get Quote",
+    "loading": "Loading...",
+    "seeAllCategories": "See All Categories"
+  },
+  "Hero": {
+    "badge": "Industrial Label & Barcode Solutions",
+    "ctaPrimary": "View Products",
+    "ctaSecondary": "Contact Us"
+  },
+  "KnowledgeBase": {
+    "backToKB": "Back to Knowledge Base",
+    "relatedCategories": "Related Categories",
+    "labels": "Labels",
+    "ribbons": "Ribbons",
+    "printers": "Barcode Printers",
+    "title": "Knowledge Base",
+    "headerSubtitle": "Sectoral Guide and Technical Insights",
+    "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
+    "readMore": "Read More"
+  }
 }

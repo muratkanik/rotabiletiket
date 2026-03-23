@@ -1,40 +1,41 @@
 {
-    "Navigation": {
-        "home": "Startseite",
-        "products": "Produkte",
-        "about": "Über uns",
-        "contact": "Kontakt",
-        "blog": "Wissensdatenbank",
-        "sectoral": "Branchenlösungen",
-        "labels": "Etiketten",
-        "ribbons": "Farbbänder",
-        "printers": "Barcode-Drucker",
-        "printheads": "Druckköpfe",
-        "labelsDesc": "Industrielle Etikettentypen",
-        "ribbonsDesc": "Thermotransfer-Farbbänder",
-        "printersDesc": "Desktop und Industrie",
-        "printheadsDesc": "Original-Ersatzteile"
-    },
-    "Common": {
-        "readMore": "Weiterlesen",
-        "contactUs": "Kontaktieren Sie uns",
-        "getQuote": "Angebot einholen",
-        "loading": "Wird geladen..."
-    },
-    "Hero": {
-        "badge": "Industrielle Etiketten- und Barcodelösungen",
-        "ctaPrimary": "Produkte ansehen",
-        "ctaSecondary": "Kontaktieren Sie uns"
-    },
-    "KnowledgeBase": {
-        "backToKB": "Zurück zur Wissensdatenbank",
-        "relatedCategories": "Verwandte Kategorien",
-        "labels": "Etiketten",
-        "ribbons": "Farbbänder",
-        "printers": "Barcode-Drucker",
-        "title": "Wissensdatenbank",
-        "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
-        "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
-        "readMore": "Weiterlesen"
-    }
+  "Navigation": {
+    "home": "Startseite",
+    "products": "Produkte",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "blog": "Wissensdatenbank",
+    "sectoral": "Branchenlösungen",
+    "labels": "Etiketten",
+    "ribbons": "Farbbänder",
+    "printers": "Barcode-Drucker",
+    "printheads": "Druckköpfe",
+    "labelsDesc": "Industrielle Etikettentypen",
+    "ribbonsDesc": "Thermotransfer-Farbbänder",
+    "printersDesc": "Desktop und Industrie",
+    "printheadsDesc": "Original-Ersatzteile"
+  },
+  "Common": {
+    "readMore": "Weiterlesen",
+    "contactUs": "Kontaktieren Sie uns",
+    "getQuote": "Angebot einholen",
+    "loading": "Wird geladen...",
+    "seeAllCategories": "Alle Kategorien anzeigen"
+  },
+  "Hero": {
+    "badge": "Industrielle Etiketten- und Barcodelösungen",
+    "ctaPrimary": "Produkte ansehen",
+    "ctaSecondary": "Kontaktieren Sie uns"
+  },
+  "KnowledgeBase": {
+    "backToKB": "Zurück zur Wissensdatenbank",
+    "relatedCategories": "Verwandte Kategorien",
+    "labels": "Etiketten",
+    "ribbons": "Farbbänder",
+    "printers": "Barcode-Drucker",
+    "title": "Wissensdatenbank",
+    "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
+    "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
+    "readMore": "Weiterlesen"
+  }
 }

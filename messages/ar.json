@@ -1,40 +1,41 @@
 {
-    "Navigation": {
-        "home": "الرئيسية",
-        "products": "المنتجات",
-        "about": "معلومات عنا",
-        "contact": "اتصل بنا",
-        "blog": "قاعدة المعرفة",
-        "sectoral": "الحلول القطاعية",
-        "labels": "ملصقات",
-        "ribbons": "شرائط",
-        "printers": "طابعات الباركود",
-        "printheads": "رؤوس الطباعة",
-        "labelsDesc": "أنواع الملصقات الصناعية",
-        "ribbonsDesc": "شرائط النقل الحراري",
-        "printersDesc": "سطح المكتب والصناعية",
-        "printheadsDesc": "قطع غيار أصلية"
-    },
-    "Common": {
-        "readMore": "اقرأ المزيد",
-        "contactUs": "اتصل بنا",
-        "getQuote": "احصل على عرض أسعار",
-        "loading": "جار التحميل..."
-    },
-    "Hero": {
-        "badge": "حلول الملصقات والباركود الصناعية",
-        "ctaPrimary": "عرض المنتجات",
-        "ctaSecondary": "اتصل بنا"
-    },
-    "KnowledgeBase": {
-        "backToKB": "عودة إلى قاعدة المعرفة",
-        "relatedCategories": "فئات ذات صلة",
-        "labels": "ملصقات",
-        "ribbons": "شرائط",
-        "printers": "طابعات الباركود",
-        "title": "قاعدة المعرفة",
-        "headerSubtitle": "الدليل القطاعي والرؤى الفنية",
-        "headerDescription": "مقالات شاملة وأدلة ومعلومات فنية حول وضع العلامات الصناعية وأنظمة الباركود والحلول القطاعية.",
-        "readMore": "اقرأ المزيد"
-    }
+  "Navigation": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "about": "معلومات عنا",
+    "contact": "اتصل بنا",
+    "blog": "قاعدة المعرفة",
+    "sectoral": "الحلول القطاعية",
+    "labels": "ملصقات",
+    "ribbons": "شرائط",
+    "printers": "طابعات الباركود",
+    "printheads": "رؤوس الطباعة",
+    "labelsDesc": "أنواع الملصقات الصناعية",
+    "ribbonsDesc": "شرائط النقل الحراري",
+    "printersDesc": "سطح المكتب والصناعية",
+    "printheadsDesc": "قطع غيار أصلية"
+  },
+  "Common": {
+    "readMore": "اقرأ المزيد",
+    "contactUs": "اتصل بنا",
+    "getQuote": "احصل على عرض أسعار",
+    "loading": "جار التحميل...",
+    "seeAllCategories": "عرض جميع الفئات"
+  },
+  "Hero": {
+    "badge": "حلول الملصقات والباركود الصناعية",
+    "ctaPrimary": "عرض المنتجات",
+    "ctaSecondary": "اتصل بنا"
+  },
+  "KnowledgeBase": {
+    "backToKB": "عودة إلى قاعدة المعرفة",
+    "relatedCategories": "فئات ذات صلة",
+    "labels": "ملصقات",
+    "ribbons": "شرائط",
+    "printers": "طابعات الباركود",
+    "title": "قاعدة المعرفة",
+    "headerSubtitle": "الدليل القطاعي والرؤى الفنية",
+    "headerDescription": "مقالات شاملة وأدلة ومعلومات فنية حول وضع العلامات الصناعية وأنظمة الباركود والحلول القطاعية.",
+    "readMore": "اقرأ المزيد"
+  }
 }

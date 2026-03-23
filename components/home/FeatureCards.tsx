@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { ArrowRight, Tag, Printer, ScrollText } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { Button } from '@/components/ui/button';
 
 const ICONS: Record<string, any> = {
     'Etiketler': Tag,
@@ -39,8 +40,10 @@ export async function FeatureCards({ locale }: { locale: string }) {
                 description
             )
         `)
+        .is('parent_id', null)
+        .order('display_order', { ascending: true })
         .order('created_at', { ascending: true })
-        .limit(3);
+        .limit(6);
 
     const localizedCategories = categories?.map((cat: any) => {
         const trans = cat.category_translations?.find((t: any) => t.language_code === locale)
@@ -98,6 +101,14 @@ export async function FeatureCards({ locale }: { locale: string }) {
                             </Link>
                         )
                     })}
+                </div>
+                
+                <div className="mt-16 text-center">
+                    <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 shadow-lg shadow-blue-200">
+                        <Link href="/urunler" className="flex items-center">
+                            {t('seeAllCategories') || 'Tüm Kategorileri Gör'} <ArrowRight className="ml-2 w-5 h-5" />
+                        </Link>
+                    </Button>
                 </div>
             </div>
         </section>

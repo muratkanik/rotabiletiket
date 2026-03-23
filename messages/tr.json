@@ -1,40 +1,41 @@
 {
-    "Navigation": {
-        "home": "Anasayfa",
-        "products": "Ürünler",
-        "about": "Hakkımızda",
-        "contact": "İletişim",
-        "blog": "Bilgi Bankası",
-        "sectoral": "Sektörel Çözümler",
-        "labels": "Etiketler",
-        "ribbons": "Ribonlar",
-        "printers": "Barkod Yazıcılar",
-        "printheads": "Yazıcı Kafaları",
-        "labelsDesc": "Endüstriyel etiket çeşitleri",
-        "ribbonsDesc": "Termal transfer ribonlar",
-        "printersDesc": "Masaüstü ve endüstriyel",
-        "printheadsDesc": "Orijinal yedek parçalar"
-    },
-    "Common": {
-        "readMore": "Devamını Oku",
-        "contactUs": "Bize Ulaşın",
-        "getQuote": "Teklif Al",
-        "loading": "Yükleniyor..."
-    },
-    "Hero": {
-        "badge": "Endüstriyel Etiket & Barkod Çözümleri",
-        "ctaPrimary": "Ürünleri İncele",
-        "ctaSecondary": "Bize Ulaşın"
-    },
-    "KnowledgeBase": {
-        "backToKB": "Bilgi Bankasına Dön",
-        "relatedCategories": "İlgili Ürün Kategorileri",
-        "labels": "Etiketler",
-        "ribbons": "Ribonlar",
-        "printers": "Barkod Yazıcılar",
-        "title": "Bilgi Bankası",
-        "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
-        "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
-        "readMore": "Devamını Oku"
-    }
+  "Navigation": {
+    "home": "Anasayfa",
+    "products": "Ürünler",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "blog": "Bilgi Bankası",
+    "sectoral": "Sektörel Çözümler",
+    "labels": "Etiketler",
+    "ribbons": "Ribonlar",
+    "printers": "Barkod Yazıcılar",
+    "printheads": "Yazıcı Kafaları",
+    "labelsDesc": "Endüstriyel etiket çeşitleri",
+    "ribbonsDesc": "Termal transfer ribonlar",
+    "printersDesc": "Masaüstü ve endüstriyel",
+    "printheadsDesc": "Orijinal yedek parçalar"
+  },
+  "Common": {
+    "readMore": "Devamını Oku",
+    "contactUs": "Bize Ulaşın",
+    "getQuote": "Teklif Al",
+    "loading": "Yükleniyor...",
+    "seeAllCategories": "Tüm Kategorileri Gör"
+  },
+  "Hero": {
+    "badge": "Endüstriyel Etiket & Barkod Çözümleri",
+    "ctaPrimary": "Ürünleri İncele",
+    "ctaSecondary": "Bize Ulaşın"
+  },
+  "KnowledgeBase": {
+    "backToKB": "Bilgi Bankasına Dön",
+    "relatedCategories": "İlgili Ürün Kategorileri",
+    "labels": "Etiketler",
+    "ribbons": "Ribonlar",
+    "printers": "Barkod Yazıcılar",
+    "title": "Bilgi Bankası",
+    "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
+    "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
+    "readMore": "Devamını Oku"
+  }
 }
