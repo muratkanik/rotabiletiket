@@ -10,6 +10,8 @@ interface Category {
     id: string;
     title: string;
     slug: string;
+    parent_id?: string | null;
+    display_order?: number | null;
 }
 
 interface Product {
@@ -27,7 +29,31 @@ interface ProductsMegaMenuProps {
 
 export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps) {
     const t = useTranslations('Navigation');
-    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(categories.length > 0 ? categories[0].id : null);
+    
+    // Build identical visual hierarchy as the Admin Panel D&D system
+    const sortedCategories = (() => {
+        const sortFn = (a: Category, b: Category) => {
+            const aVal = a.display_order || 0;
+            const bVal = b.display_order || 0;
+            if (aVal < bVal) return -1;
+            if (aVal > bVal) return 1;
+            return 0;
+        };
+
+        const buildHierarchy = (items: Category[], parentId: string | null = null, level: number = 0): (Category & { level: number })[] => {
+            return items
+                .filter(item => (item.parent_id || null) === parentId)
+                .sort(sortFn)
+                .flatMap(item => [
+                    { ...item, level },
+                    ...buildHierarchy(items, item.id, level + 1)
+                ]);
+        };
+
+        return buildHierarchy(categories);
+    })();
+
+    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(sortedCategories.length > 0 ? sortedCategories[0].id : null);
 
     // Filter products for the active category (limit to top 8)
     const activeProducts = activeCategoryId 
@@ -62,7 +88,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                         Kategoriler
                     </h3>
                     <ul className="space-y-1">
-                        {categories.map(category => (
+                        {sortedCategories.map(category => (
                             <li key={category.id}>
                                 <Link 
                                     href={`/urunler/${category.slug}`}
@@ -72,8 +98,14 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                                             ? 'bg-blue-600 text-white shadow-md font-medium' 
                                             : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900 font-medium'
                                     }`}
+                                    style={{ paddingLeft: category.level > 0 ? `${(category.level * 1.5) + 0.75}rem` : '0.75rem' }}
                                 >
-                                    {category.title}
+                                    <div className="flex items-center gap-2">
+                                        {category.level > 0 && (
+                                            <div className="w-2 h-2 border-b border-l border-slate-400 opacity-50 -mt-1"></div>
+                                        )}
+                                        {category.title}
+                                    </div>
                                     {activeCategoryId === category.id && <ChevronRight className="w-4 h-4 opacity-80" />}
                                 </Link>
                             </li>

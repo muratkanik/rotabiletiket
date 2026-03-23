@@ -18,7 +18,7 @@ export async function Navbar() {
     // Fetch categories and products for Mega Menu
     const { data: categories } = await supabase
         .from('categories')
-        .select('id, title, slug')
+        .select('id, title, slug, parent_id, display_order')
         .order('display_order', { ascending: true })
         .order('title', { ascending: true });
 
