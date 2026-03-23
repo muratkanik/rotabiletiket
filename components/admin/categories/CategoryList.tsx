@@ -9,8 +9,8 @@ import { Plus, ArrowUpDown, Search, Pencil, Trash2 } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { Sparkles, GripVertical } from 'lucide-react';
-import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent } from '@/app/admin/(dashboard)/categories/actions';
+import { Sparkles, GripVertical, X } from 'lucide-react';
+import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
     DndContext,
@@ -200,15 +200,34 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
         if (over && active.id !== over.id) {
             const newParentId = over.id === 'root-dropzone' ? null : String(over.id);
             
-            // Basic cyclical dependency check
-            if (String(active.id) === newParentId) return;
+            // Determine ids to move: 
+            // If the dragged item is part of the selection, move all selected items.
+            // Otherwise, only move the dragged item.
+            let idsToMove = [String(active.id)];
+            if (selectedIds.includes(String(active.id))) {
+                idsToMove = [...selectedIds];
+            }
+
+            // Cyclical dependency check
+            if (newParentId && idsToMove.includes(newParentId)) {
+                toast.error("Bir kategoriyi kendi altına taşıyamazsınız.");
+                return;
+            }
 
             setIsUpdatingParent(true);
-            const result = await updateCategoryParent(String(active.id), newParentId);
+            
+            let result;
+            if (idsToMove.length > 1) {
+                result = await bulkUpdateCategoryParent(idsToMove, newParentId);
+                if (result.success) setSelectedIds([]);
+            } else {
+                result = await updateCategoryParent(String(active.id), newParentId);
+            }
+            
             setIsUpdatingParent(false);
 
             if (result.success) {
-                toast.success("Kategori hiyerarşisi başarıyla güncellendi.");
+                toast.success(idsToMove.length > 1 ? `${idsToMove.length} kategori başarıyla taşındı.` : "Kategori hiyerarşisi güncellendi.");
             } else {
                 toast.error(result.error || "Hiyerarşi güncellenirken hata oluştu.");
             }
@@ -374,14 +393,22 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex items-center gap-2 max-w-sm bg-white p-1 rounded-lg border w-full sm:w-auto">
+                <div className="flex items-center gap-2 max-w-sm bg-white p-1 rounded-lg border w-full sm:w-auto relative">
                     <Search className="h-4 w-4 text-slate-400 ml-2" />
                     <Input
                         placeholder="Ara: Kategori, Üst Kategori..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border-0 focus-visible:ring-0"
+                        className="border-0 focus-visible:ring-0 pr-8"
                     />
+                    {searchTerm && (
+                        <button 
+                            onClick={() => setSearchTerm('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 outline-none"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
                 </div>
                 
                 {selectedIds.length > 0 && (

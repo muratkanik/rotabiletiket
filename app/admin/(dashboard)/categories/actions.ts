@@ -160,3 +160,36 @@ export async function updateCategoryParent(id: string, parentId: string | null) 
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Updates multiple categories' parent (for bulk drag and drop hierarchy)
+ */
+export async function bulkUpdateCategoryParent(ids: string[], parentId: string | null) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        if (!ids || ids.length === 0) return { success: true };
+
+        if (parentId && ids.includes(parentId)) {
+            return { success: false, error: "Seçili kategorileri kendi altına ekleyemezsiniz." };
+        }
+
+        const { error } = await supabase
+            .from('categories')
+            .update({ parent_id: parentId })
+            .in('id', ids);
+
+        if (error) {
+            console.error('Error bulk updating category parent:', error);
+            return { success: false, error: "Hiyerarşi güncellenirken hata oluştu." };
+        }
+
+        revalidatePath('/admin/categories');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error bulk updating category parent:', error);
+        return { success: false, error: error.message };
+    }
+}
