@@ -189,6 +189,84 @@ export async function updateCategoryOrder(id: string, newOrder: number) {
 }
 
 /**
+ * Splices a category before another target category, updating all sibling orders
+ */
+export async function reorderCategory(activeId: string, overId: string, position: 'before' | 'after') {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { data: overCategory } = await supabase.from('categories').select('parent_id').eq('id', overId).single();
+        if (!overCategory) return { success: false, error: 'Target category not found' };
+
+        const parentId = overCategory.parent_id;
+
+        let query = supabase.from('categories').select('id, display_order').order('display_order', { ascending: true }).order('created_at', { ascending: true });
+        if (parentId) {
+            query = query.eq('parent_id', parentId);
+        } else {
+            query = query.is('parent_id', null);
+        }
+        
+        const { data: siblings } = await query;
+        if (!siblings) return { success: false, error: 'Failed to fetch siblings' };
+
+        let newSequence = siblings.filter((c: any) => c.id !== activeId);
+        const overIndex = newSequence.findIndex((c: any) => c.id === overId);
+        
+        if (overIndex === -1) {
+            newSequence.push({ id: activeId, display_order: 0 });
+        } else {
+            const insertIndex = position === 'before' ? overIndex : overIndex + 1;
+            newSequence.splice(insertIndex, 0, { id: activeId, display_order: 0 });
+        }
+
+        // Bulk update sequences
+        for (let i = 0; i < newSequence.length; i++) {
+            await supabase.from('categories')
+                .update({ display_order: i + 1, parent_id: parentId })
+                .eq('id', newSequence[i].id);
+        }
+
+        revalidatePath('/admin/categories');
+        revalidatePath('/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+/**
+ * Appends a category to the absolute end of the root list
+ */
+export async function reorderCategoryToLastRoot(activeId: string) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { data: rootCats } = await supabase.from('categories')
+            .select('id, display_order')
+            .is('parent_id', null)
+            .order('display_order', { ascending: true })
+            .order('created_at', { ascending: true });
+            
+        let newSequence = (rootCats || []).filter((c: any) => c.id !== activeId);
+        newSequence.push({ id: activeId, display_order: 0 });
+        
+        for (let i = 0; i < newSequence.length; i++) {
+            await supabase.from('categories')
+                .update({ display_order: i + 1, parent_id: null })
+                .eq('id', newSequence[i].id);
+        }
+        revalidatePath('/admin/categories');
+        revalidatePath('/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+/**
  * Quickly creates a basic category and returns its ID
  */
 export async function quickCreateCategory(title: string) {

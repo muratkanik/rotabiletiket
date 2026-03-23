@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,7 +11,7 @@ import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
 import { Sparkles, GripVertical, X, CornerUpLeft } from 'lucide-react';
-import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder } from '@/app/admin/(dashboard)/categories/actions';
+import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder, reorderCategory, reorderCategoryToLastRoot } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
     DndContext,
@@ -39,6 +39,26 @@ interface CategoryListProps {
 }
 
 type SortKey = 'title' | 'parent' | 'display_order';
+
+function DropzoneRow({ id, categoryId, position }: { id: string, categoryId: string | null, position: 'before' | 'last' }) {
+    const { setNodeRef, isOver } = useDroppable({
+        id: id,
+        data: { type: 'sort-dropzone', categoryId, position }
+    });
+    
+    return (
+        <tr ref={setNodeRef} className="group cursor-row-resize h-0">
+            <td colSpan={8} className="p-0 border-0 relative h-0">
+                <div 
+                    className={cn(
+                        "absolute left-0 right-0 z-10 w-full transition-all -translate-y-[2px]", 
+                        isOver ? "bg-blue-600 h-1" : "bg-transparent h-2 group-hover:bg-blue-200"
+                    )}
+                />
+            </td>
+        </tr>
+    );
+}
 
 interface CategoryRowProps {
     category: Category & { level: number };
@@ -249,6 +269,30 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
+            const overType = over.data.current?.type;
+            
+            if (overType === 'sort-dropzone') {
+                const targetCategoryId = over.data.current?.categoryId;
+                
+                setIsUpdatingParent(true);
+                let result;
+                if (targetCategoryId) {
+                    result = await reorderCategory(String(active.id), targetCategoryId, 'before');
+                } else {
+                    result = await reorderCategoryToLastRoot(String(active.id));
+                }
+                
+                setIsUpdatingParent(false);
+                if (result?.success) {
+                    toast.success("Sıralama güncellendi.");
+                    router.refresh();
+                } else {
+                    toast.error(result?.error || "Hata oluştu.");
+                }
+                return;
+            }
+
+            // Existing logic to Make Child (if dropped on CategoryRow or RootDropzone)
             const newParentId = over.id === 'root-dropzone' ? null : String(over.id);
             
             // Determine ids to move: 
@@ -527,21 +571,26 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                             <th className="px-6 py-4 text-right">İşlemler</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y border-t bg-white">
                         {displayCategories.length > 0 ? (
-                            displayCategories.map((category) => (
-                                <CategoryRow 
-                                    key={category.id}
-                                    category={category}
-                                    isSelected={selectedIds.includes(category.id)}
-                                    onToggleSelect={(id, isSelected) => {
-                                        setSelectedIds(prev => isSelected ? [...prev, id] : prev.filter(selectedId => selectedId !== id));
-                                    }}
-                                    onDelete={handleDelete}
-                                    onUpdateOrder={handleUpdateOrder}
-                                    onMakeRoot={handleMakeRoot}
-                                    isDeleting={isDeleting}
-                                />
+                            displayCategories.map((category, index) => (
+                                <React.Fragment key={category.id}>
+                                    <DropzoneRow id={`before-${category.id}`} categoryId={category.id} position="before" />
+                                    <CategoryRow
+                                        category={category}
+                                        isSelected={selectedIds.includes(category.id)}
+                                        onToggleSelect={(id, isSelected) => {
+                                            setSelectedIds(prev => isSelected ? [...prev, id] : prev.filter(selectedId => selectedId !== id));
+                                        }}
+                                        onDelete={handleDelete}
+                                        onUpdateOrder={handleUpdateOrder}
+                                        onMakeRoot={handleMakeRoot}
+                                        isDeleting={isDeleting}
+                                    />
+                                    {index === displayCategories.length - 1 && (
+                                        <DropzoneRow id="after-last" categoryId={null} position="last" />
+                                    )}
+                                </React.Fragment>
                             ))
                         ) : (
                             <tr>
