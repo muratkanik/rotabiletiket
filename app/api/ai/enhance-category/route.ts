@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -251,6 +252,9 @@ Gelen Veri: ${generatedRaw} `;
                 console.error(`Translation failed for ${lang.code}`, translErr);
             }
         }));
+
+        // Bust caching so the public Mega Menu instantly sees the localized data
+        try { revalidatePath('/', 'layout'); } catch (e) { }
 
         return NextResponse.json({
             success: true,
