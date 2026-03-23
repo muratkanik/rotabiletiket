@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { VideoUpload } from '@/components/admin/VideoUpload';
@@ -39,6 +39,7 @@ export default function CategoryFormPage() {
 
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
+    const [enhancing, setEnhancing] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
     const [selectedLang, setSelectedLang] = useState('tr');
 
@@ -115,9 +116,9 @@ export default function CategoryFormPage() {
 
             if (lang === 'tr') {
                 setFormData({
-                    title: category.title || '',
-                    slug: category.slug || '',
-                    description: category.description || '',
+                    title: trans?.title || category.title || '',
+                    slug: trans?.slug || category.slug || '',
+                    description: trans?.description || category.description || '',
                     // SEO from translation table if exists
                     seo_title: trans?.seo_title || '',
                     seo_description: trans?.seo_description || '',
@@ -156,14 +157,48 @@ export default function CategoryFormPage() {
 
     // Auto-slug
     useEffect(() => {
-        if (isNew && selectedLang === 'tr' && formData.title) {
-            const newSlug = formData.title.toLowerCase().replace(/PRODUCT_LIST_ITEM/g, '-').replace(/[^a-z0-9-]/g, '');
-            setFormData(prev => ({ ...prev, slug: newSlug }));
+        if (selectedLang === 'tr' && formData.title) {
+            const generateSlug = (str: string) => {
+                return str
+                    .toLowerCase()
+                    .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+                    .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            };
+            setFormData(prev => ({ ...prev, slug: generateSlug(formData.title) }));
         }
-    }, [formData.title, isNew, selectedLang]);
+    }, [formData.title, selectedLang]);
 
 
-    async function handleSave() {
+    async function handleEnhance() {
+        if (isNew) {
+            toast.error("Önce kategoriyi kaydedin.");
+            return;
+        }
+        setEnhancing(true);
+        const toastId = toast.loading("Yapay zeka içerik üretiyor...");
+        try {
+            const res = await fetch(`/api/ai/enhance-category`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ categoryId: id })
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || res.statusText);
+            }
+            toast.success("AI İçerik başarıyla üretildi ve kaydedildi.", { id: toastId });
+            // re-fetch the data automatically
+            fetchCategoryData(selectedLang);
+        } catch (error: any) {
+            toast.error("Hata: " + error.message, { id: toastId });
+        } finally {
+            setEnhancing(false);
+        }
+    }
+
+    async function handleSave(shouldClose: boolean = false) {
         setSaving(true);
         try {
             let categoryId = id;
@@ -247,7 +282,9 @@ export default function CategoryFormPage() {
             }
 
             toast.success('Kaydedildi');
-            if (isNew) {
+            if (shouldClose) {
+                router.push('/admin/categories');
+            } else if (isNew) {
                 router.push(`/admin/categories/${categoryId}`);
             } else {
                 router.refresh();
@@ -285,9 +322,25 @@ export default function CategoryFormPage() {
                             ))}
                         </SelectContent>
                     </Select>
-                    <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 min-w-[140px]">
-                        {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        {!isNew && selectedLang === 'tr' && (
+                            <Button
+                                onClick={handleEnhance}
+                                disabled={enhancing || saving}
+                                variant="outline"
+                                className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white"
+                            >
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                {enhancing ? 'Geliştiriliyor...' : 'AI ile İçerik Üret'}
+                            </Button>
+                        )}
+                        <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="bg-green-600 hover:bg-green-700">
+                            {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
+                        </Button>
+                        <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary" className="border-green-600 text-green-700 hover:bg-green-50">
+                            Kaydet ve Kapat
+                        </Button>
+                    </div>
                 </div>
             </div>
 

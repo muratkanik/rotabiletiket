@@ -36,7 +36,7 @@ export async function bulkUpdateProductsCategory(productIds: string[], categoryI
 
         const { error } = await supabase
             .from('products')
-            .update({ category_id: categoryId })
+            .update({ category_id: categoryId === 'UNCATEGORIZED' ? null : categoryId })
             .in('id', productIds);
 
         if (error) {

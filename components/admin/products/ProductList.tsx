@@ -207,7 +207,10 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
         return [...processedProducts].filter(product => {
             const term = searchTerm.toLowerCase();
             const matchesSearch = product.title.toLowerCase().includes(term) || (product.categories?.title || '').toLowerCase().includes(term);
-            const matchesCategory = selectedCategory === 'ALL' || product.categories?.id === selectedCategory;
+            const matchesCategory = 
+                selectedCategory === 'ALL' || 
+                (selectedCategory === 'UNCATEGORIZED' && !product.categories?.id) ||
+                product.categories?.id === selectedCategory;
             
             return matchesSearch && matchesCategory;
         }).sort((a, b) => {
@@ -307,13 +310,13 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                 toast.success(`${selectedIds.length} ürünün kategorisi başarıyla taşındı.`);
                 
                 // Update local state to reflect UI changes immediately
-                const selectedCatObj = categories.find(c => c.id === bulkCategoryId);
+                const selectedCatObj = bulkCategoryId === 'UNCATEGORIZED' ? null : categories.find(c => c.id === bulkCategoryId);
                 setProducts(prev => prev.map(p => {
                     if (selectedIds.includes(p.id)) {
                         return { 
                             ...p, 
-                            category_id: bulkCategoryId, 
-                            categories: selectedCatObj ? { id: selectedCatObj.id, title: selectedCatObj.title, slug: selectedCatObj.slug } : p.categories 
+                            category_id: bulkCategoryId === 'UNCATEGORIZED' ? undefined : bulkCategoryId, 
+                            categories: selectedCatObj ? { id: selectedCatObj.id, title: selectedCatObj.title, slug: selectedCatObj.slug } : null 
                         };
                     }
                     return p;
@@ -441,6 +444,7 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                         className="h-10 px-3 py-2 bg-transparent w-full text-sm outline-none border-0 focus-visible:ring-0 text-slate-600"
                     >
                         <option value="ALL">Tüm Kategoriler</option>
+                        <option value="UNCATEGORIZED">Kategori Atanmamış</option>
                         {categories.map(cat => (
                             <option key={cat.id} value={cat.id}>{cat.title}</option>
                         ))}
@@ -456,6 +460,7 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                                 className="h-8 px-2 py-1 bg-white rounded border text-sm w-40 text-slate-700"
                             >
                                 <option value="" disabled>Kategori Seç...</option>
+                                <option value="UNCATEGORIZED">Kategori Atanmamış (Kaldır)</option>
                                 {categories.map(cat => (
                                     <option key={cat.id} value={cat.id}>{cat.title}</option>
                                 ))}
