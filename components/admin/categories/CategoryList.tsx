@@ -10,7 +10,7 @@ import { Plus, ArrowUpDown, Search, Pencil, Trash2 } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { Sparkles, GripVertical, X, CornerUpLeft } from 'lucide-react';
+import { Sparkles, GripVertical, X, CornerUpLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder, reorderCategory, reorderCategoryToLastRoot } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
@@ -62,16 +62,18 @@ function DropzoneRow({ id, categoryId, position }: { id: string, categoryId: str
 }
 
 interface CategoryRowProps {
-    category: Category & { level: number };
+    category: Category & { level: number, hasChildren: boolean };
     isSelected: boolean;
     onToggleSelect: (id: string, isSelected: boolean) => void;
     onDelete: (id: string, title: string) => void;
     onUpdateOrder: (id: string, newOrder: number) => void;
     onMakeRoot: (id: string) => void;
+    isExpanded: boolean;
+    onToggleExpand: (id: string) => void;
     isDeleting: boolean;
 }
 
-function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateOrder, onMakeRoot, isDeleting }: CategoryRowProps) {
+function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateOrder, onMakeRoot, isExpanded, onToggleExpand, isDeleting }: CategoryRowProps) {
     const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
         id: category.id,
         data: { type: 'category', category }
@@ -147,6 +149,14 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateO
                     {category.level > 0 && (
                         <div className="w-4 h-4 border-b-2 border-l-2 border-slate-300 rounded-bl-sm opacity-50 -mt-2 inline-block"></div>
                     )}
+                    {category.hasChildren && (
+                        <button
+                            onClick={() => onToggleExpand(category.id)}
+                            className="mr-1 text-slate-400 hover:text-slate-600 focus:outline-none"
+                        >
+                            {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                        </button>
+                    )}
                     {category.title}
                     {category.level > 0 && (
                         <Button 
@@ -219,6 +229,22 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>({ key: 'display_order', direction: 'asc' });
+    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+    // Initialize all root categories as expanded by default
+    useEffect(() => {
+        const rootWithChildren = initialCategories.filter(c => !c.parent_id && initialCategories.some(sub => sub.parent_id === c.id));
+        setExpandedIds(new Set(rootWithChildren.map(c => c.id)));
+    }, [initialCategories]);
+
+    const toggleExpand = (id: string) => {
+        setExpandedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
 
     const handleSort = (key: SortKey) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -445,26 +471,33 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
     };
 
     // Build flat tree view
-    const displayCategories: (Category & { level: number })[] = [];
+    const displayCategories: (Category & { level: number, hasChildren: boolean })[] = [];
     const categoryMap = new Map(filteredCategories.map(c => [c.id, c]));
     
     // Find all effective roots (nodes whose parent is absent in the filtered list)
     const effectiveRoots = filteredCategories.filter(c => !c.parent_id || !categoryMap.has(c.parent_id));
     effectiveRoots.sort(sortFn);
 
-    const appendChildren = (parentId: string, level: number) => {
-        const children = filteredCategories.filter(c => c.parent_id === parentId);
-        children.sort(sortFn);
-        children.forEach(child => {
-            displayCategories.push({ ...child, level });
-            appendChildren(child.id, level + 1);
-        });
+    const buildHierarchy = (items: Category[], parentId: string | null = null, level: number = 0): (Category & { level: number, hasChildren: boolean })[] => {
+        return items
+            .filter(item => (item.parent_id || null) === parentId)
+            .sort(sortFn)
+            .flatMap(item => {
+                const children = items.filter(sub => sub.parent_id === item.id);
+                const isExpanded = expandedIds.has(item.id);
+                const itemWithLevel = { ...item, level, hasChildren: children.length > 0 };
+                
+                if (isExpanded) {
+                    return [
+                        itemWithLevel,
+                        ...buildHierarchy(items, item.id, level + 1)
+                    ];
+                }
+                return [itemWithLevel];
+            });
     };
 
-    effectiveRoots.forEach(root => {
-        displayCategories.push({ ...root, level: 0 });
-        appendChildren(root.id, 1);
-    });
+    displayCategories.push(...buildHierarchy(filteredCategories));
 
     const { setNodeRef: setRootDropzoneRef, isOver: isRootOver } = useDroppable({
         id: 'root-dropzone'
@@ -586,6 +619,8 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                         onDelete={handleDelete}
                                         onUpdateOrder={handleUpdateOrder}
                                         onMakeRoot={handleMakeRoot}
+                                        isExpanded={expandedIds.has(category.id)}
+                                        onToggleExpand={toggleExpand}
                                         isDeleting={isDeleting}
                                     />
                                     {index === displayCategories.length - 1 && (
