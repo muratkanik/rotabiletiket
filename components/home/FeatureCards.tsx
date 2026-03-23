@@ -89,9 +89,8 @@ export async function FeatureCards({ locale }: { locale: string }) {
                                         {category.title}
                                     </h3>
 
-                                    <p className="text-slate-600 mb-6 leading-relaxed">
-                                        {/* Fallback description logic or just simple text */}
-                                        {category.title}
+                                    <p className="text-slate-600 mb-6 leading-relaxed line-clamp-2">
+                                        {category.description || ''}
                                     </p>
 
                                     <div className="flex items-center text-sm font-semibold text-blue-600 group-hover:text-orange-600 transition-colors">

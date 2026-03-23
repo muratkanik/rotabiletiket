@@ -114,8 +114,11 @@ export async function Footer({ locale }: { locale: string }) {
                         </a>
                     </p>
                     <div className="flex gap-6 text-sm text-slate-500">
-                        <Link href="/gizlilik" className="hover:text-white">
-                            {locale === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'}
+                        <Link href="/gizlilik" className="hover:text-white transition-colors">
+                            {locale === 'en' ? 'Privacy Policy' :
+                             locale === 'de' ? 'Datenschutzrichtlinie' :
+                             locale === 'fr' ? 'Politique de confidentialité' :
+                             locale === 'ar' ? 'سياسة الخصوصية' : 'Gizlilik Politikası'}
                         </Link>
                         <Link href="/kvkk" className="hover:text-white">KVKK</Link>
                     </div>
