@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Cookie } from 'lucide-react';
 import { getSiteSettings } from '@/lib/settings';
 
 export default function CookieBanner({ locale }: { locale: string }) {
@@ -17,7 +17,6 @@ export default function CookieBanner({ locale }: { locale: string }) {
             }
         };
 
-        // Check local storage
         const accepted = localStorage.getItem('cookie_consent_accepted');
         if (!accepted) {
             fetchConsentText();
@@ -28,7 +27,6 @@ export default function CookieBanner({ locale }: { locale: string }) {
         localStorage.setItem('cookie_consent_accepted', 'true');
         setIsVisible(false);
 
-        // Update Google Consent Mode v2
         if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
             (window as any).gtag('consent', 'update', {
                 'ad_storage': 'granted',
@@ -42,28 +40,45 @@ export default function CookieBanner({ locale }: { locale: string }) {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 md:p-6 animate-in slide-in-from-bottom duration-500">
-            <div className="container max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="text-sm text-slate-600 flex-1">
-                    <p>{consentText}</p>
+        <div className="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto z-[100] md:max-w-[420px] bg-white rounded-2xl border border-slate-100 shadow-2xl p-5 md:p-6 animate-in slide-in-from-bottom duration-500 fade-in">
+            <div className="flex items-start justify-between gap-4 mb-3">
+                <div className="flex items-center gap-3 text-slate-900">
+                    <div className="p-2 bg-orange-100 rounded-full text-orange-600">
+                        <Cookie size={20} />
+                    </div>
+                    <h3 className="font-semibold text-lg">Çerez Politikası</h3>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                    <button
-                        onClick={handleAccept}
-                        className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                    >
-                        {locale === 'tr' ? 'Kabul Et' :
-                            locale === 'de' ? 'Akzeptieren' :
-                                locale === 'fr' ? 'Accepter' :
-                                    locale === 'ar' ? 'قبول' : 'Accept'}
-                    </button>
-                    <button
-                        onClick={() => setIsVisible(false)} // Close without explicit accept? Or maybe just X
-                        className="p-2 text-slate-400 hover:text-slate-600 md:hidden"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
+                <button
+                    onClick={() => setIsVisible(false)}
+                    className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                >
+                    <X size={18} />
+                </button>
+            </div>
+            
+            <div className="text-sm text-slate-600 leading-relaxed mb-6">
+                <p>{consentText}</p>
+            </div>
+            
+            <div className="flex items-center gap-3 w-full">
+                <button
+                    onClick={handleAccept}
+                    className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:shadow-lg active:scale-[0.98]"
+                >
+                    {locale === 'tr' ? 'Tümünü Kabul Et' :
+                        locale === 'de' ? 'Alle Akzeptieren' :
+                            locale === 'fr' ? 'Tout Accepter' :
+                                locale === 'ar' ? 'قبول الكل' : 'Accept All'}
+                </button>
+                <button
+                    onClick={() => setIsVisible(false)}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                >
+                    {locale === 'tr' ? 'Reddet' :
+                        locale === 'de' ? 'Ablehnen' :
+                            locale === 'fr' ? 'Refuser' :
+                                locale === 'ar' ? 'رفض' : 'Decline'}
+                </button>
             </div>
         </div>
     );
