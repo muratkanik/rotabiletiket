@@ -230,12 +230,13 @@ Gelen Veri: ${generatedRaw} `;
 
             try {
                 const langRaw = await callAI(
-                    `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.`,
+                    `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. DO NOT TRANSLATE THE JSON KEYS (e.g. keep "seo_title", "description", etc. exactly as they are). Do not add markdown blocks like \`\`\`json.`,
                     translatePrompt,
                     true
                 );
                 if (langRaw) {
-                    const langContent = JSON.parse(langRaw);
+                    const cleanRaw = langRaw.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    const langContent = JSON.parse(cleanRaw);
                     const langTitle = langContent.seo_title || langContent.title || generatedContent.seo_title;
                     await supabase.from('category_translations').upsert({
                         category_id: categoryId, 
