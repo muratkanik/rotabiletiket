@@ -1,8 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { ProductList } from '@/components/admin/products/ProductList';
 
-export default async function AdminProductsPage({ searchParams }: { searchParams: { categoryId?: string } }) {
-    const categoryId = searchParams?.categoryId;
+export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ categoryId?: string }> }) {
+    const { categoryId } = await searchParams;
     const supabase = await createClient();
     
     // Fetch products and their translations to get the keywords for the primary language
