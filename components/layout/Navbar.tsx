@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { getSiteSettings } from '@/lib/settings';
 import { MobileMenu } from './MobileMenu';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/utils/supabase/server';
 import { ProductsMegaMenu } from './ProductsMegaMenu';
 
 export async function Navbar() {
+    const locale = await getLocale();
     const t = await getTranslations('Navigation');
     const tCommon = await getTranslations('Common');
     const contactInfo = await getSiteSettings('contact_info');
@@ -18,7 +19,10 @@ export async function Navbar() {
     // Fetch categories and products for Mega Menu
     const { data: categories } = await supabase
         .from('categories')
-        .select('id, title, slug, parent_id, display_order')
+        .select(`
+            id, title, slug, parent_id, display_order,
+            category_translations(language_code, title, slug)
+        `)
         .order('display_order', { ascending: true })
         .order('title', { ascending: true });
 
@@ -26,11 +30,30 @@ export async function Navbar() {
         .from('products')
         .select(`
             id, title, slug, category_id,
-            product_images(storage_path, is_primary)
+            product_images(storage_path, is_primary),
+            product_translations(language_code, title, slug)
         `)
         .eq('is_published', true)
         .not('category_id', 'is', null)
         .order('display_order', { ascending: true });
+
+    const localizedCategories = categories?.map(cat => {
+        const tr: any = cat.category_translations?.find((t: any) => t.language_code === locale) || {};
+        return {
+            ...cat,
+            title: tr.title || cat.title,
+            slug: tr.slug || cat.slug
+        };
+    }) || [];
+
+    const localizedProducts = products?.map(prod => {
+        const tr: any = prod.product_translations?.find((t: any) => t.language_code === locale) || {};
+        return {
+            ...prod,
+            title: tr.title || prod.title,
+            slug: tr.slug || prod.slug
+        };
+    }) || [];
 
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -52,7 +75,7 @@ export async function Navbar() {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
-                    <ProductsMegaMenu categories={categories || []} products={products || []} />
+                    <ProductsMegaMenu categories={localizedCategories} products={localizedProducts} />
 
                     <Link href="/sektorel-cozumler" className="hover:text-blue-700 transition-colors">{t('sectoral')}</Link>
                     <Link href="/bilgi-bankasi" className="hover:text-blue-700 transition-colors">{t('blog')}</Link>
@@ -69,7 +92,7 @@ export async function Navbar() {
 
                 <div className="md:hidden flex items-center gap-2">
                     <LanguageSwitcher />
-                    <MobileMenu contactInfo={contactInfo} categories={categories || []} />
+                    <MobileMenu contactInfo={contactInfo} categories={localizedCategories} />
                 </div>
             </div>
         </nav>
