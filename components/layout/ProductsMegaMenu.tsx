@@ -46,7 +46,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
     return (
         <div className="relative group h-24 flex items-center">
             {/* Nav Link Trigger */}
-            <Link href="/sektorel-cozumler/urunler" className="hover:text-blue-700 transition-colors flex items-center gap-1 py-4 font-medium text-slate-700 hover:bg-slate-50 px-3 rounded-md">
+            <Link href="/urunler" className="hover:text-blue-700 transition-colors flex items-center gap-1 py-4 font-medium text-slate-700 hover:bg-slate-50 px-3 rounded-md">
                 {t('products')}
                 <svg className="w-4 h-4 group-hover:rotate-180 transition-transform text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -65,7 +65,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                         {categories.map(category => (
                             <li key={category.id}>
                                 <Link 
-                                    href={`/sektorel-cozumler/urunler/${category.slug}`}
+                                    href={`/urunler/${category.slug}`}
                                     onMouseEnter={() => setActiveCategoryId(category.id)}
                                     className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors text-sm ${
                                         activeCategoryId === category.id 
@@ -90,7 +90,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                                 <p className="text-sm text-slate-500 mt-1">Öne Çıkan Ürünler</p>
                             </div>
                             <Link 
-                                href={`/sektorel-cozumler/urunler/${activeCategory.slug}`}
+                                href={`/urunler/${activeCategory.slug}`}
                                 className="text-sm font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full transition-colors"
                             >
                                 Tümünü Gör <ArrowRight className="w-4 h-4" />
@@ -106,7 +106,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                                 return (
                                     <Link 
                                         key={product.id} 
-                                        href={`/sektorel-cozumler/urunler/${activeCategory?.slug || 'detay'}/${product.slug}`}
+                                        href={`/urunler/${activeCategory?.slug || 'detay'}/${product.slug}`}
                                         className="group/item flex flex-col gap-2 rounded-xl p-2 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100"
                                     >
                                         <div className="relative w-full aspect-square bg-slate-100 rounded-lg overflow-hidden border border-slate-200">

@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Static Routes
     const routes = [
         '',
+        '/urunler',
         '/hakkimizda',
         '/iletisim',
         '/sektorel-cozumler',
@@ -19,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     // Dynamic: Products
-    const { data: products } = await supabase.from('products').select('slug, updated_at, categories(slug)');
+    const { data: products } = await supabase.from('products').select('slug, updated_at, categories(slug)').not('category_id', 'is', null);
     const productRoutes = products?.map((product: any) => ({
         url: `${baseUrl}/urunler/${product.categories?.slug}/${product.slug}`,
         lastModified: product.updated_at || new Date().toISOString(),

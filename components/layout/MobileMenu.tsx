@@ -52,7 +52,7 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
                             {isProductsOpen && (
                                 <div className="pl-4 mt-2 flex flex-col space-y-3">
                                     {categories.length > 0 ? categories.map(category => (
-                                        <Link key={category.id} href={`/sektorel-cozumler/urunler/${category.slug}`} className="text-slate-600 block py-1" onClick={toggleMenu}>
+                                        <Link key={category.id} href={`/urunler/${category.slug}`} className="text-slate-600 block py-1" onClick={toggleMenu}>
                                             {category.title}
                                         </Link>
                                     )) : (
