@@ -6,11 +6,18 @@ import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
 
-interface MobileMenuProps {
-    contactInfo?: any;
+interface Category {
+    id: string;
+    title: string;
+    slug: string;
 }
 
-export function MobileMenu({ contactInfo }: MobileMenuProps) {
+interface MobileMenuProps {
+    contactInfo?: any;
+    categories?: Category[];
+}
+
+export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const tNav = useTranslations('Navigation');
@@ -44,18 +51,13 @@ export function MobileMenu({ contactInfo }: MobileMenuProps) {
 
                             {isProductsOpen && (
                                 <div className="pl-4 mt-2 flex flex-col space-y-3">
-                                    <Link href="/urunler/etiketler" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        {tNav('labels')}
-                                    </Link>
-                                    <Link href="/urunler/ribonlar" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        {tNav('ribbons')}
-                                    </Link>
-                                    <Link href="/urunler/barkod-yazicilar" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        {tNav('printers')}
-                                    </Link>
-                                    <Link href="/urunler/barkod-yazici-kafasi" className="text-slate-600 block py-1" onClick={toggleMenu}>
-                                        {tNav('printheads')}
-                                    </Link>
+                                    {categories.length > 0 ? categories.map(category => (
+                                        <Link key={category.id} href={`/sektorel-cozumler/urunler/${category.slug}`} className="text-slate-600 block py-1" onClick={toggleMenu}>
+                                            {category.title}
+                                        </Link>
+                                    )) : (
+                                        <span className="text-slate-400 text-sm">Yükleniyor...</span>
+                                    )}
                                 </div>
                             )}
                         </div>
