@@ -38,11 +38,15 @@ export default function AdminSEOPage() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            await supabase.from('site_settings').upsert({ key: 'global_seo', value: globalSeo });
-            await supabase.from('site_settings').upsert({ key: 'seo_scripts', value: seoScripts });
+            const { error: err1 } = await supabase.from('site_settings').update({ value: globalSeo }).eq('key', 'global_seo');
+            if (err1) throw err1;
+            const { error: err2 } = await supabase.from('site_settings').update({ value: seoScripts }).eq('key', 'seo_scripts');
+            if (err2) throw err2;
+            
             toast.success('SEO ve Analitik ayarları kaydedildi');
         } catch (error) {
-            toast.error('Kaydedilirken hata oluştu');
+            console.error(error);
+            toast.error('Kaydedilirken hata oluştu: ' + (error as Error).message);
         } finally {
             setSaving(false);
         }
