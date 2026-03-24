@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, ArrowRight } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface Category {
     id: string;
@@ -29,6 +29,7 @@ interface ProductsMegaMenuProps {
 
 export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps) {
     const t = useTranslations('Navigation');
+    const locale = useLocale();
     
     // Build identical visual hierarchy as the Admin Panel D&D system
     const sortedCategories = (() => {
@@ -119,13 +120,13 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-800">{activeCategory.title}</h3>
-                                <p className="text-sm text-slate-500 mt-1">Öne Çıkan Ürünler</p>
+                                <p className="text-sm text-slate-500 mt-1">{locale === 'en' ? 'Featured Products' : locale === 'ar' ? 'المنتجات المميزة' : locale === 'fr' ? 'Produits en Vedette' : locale === 'de' ? 'Vorgestellte Produkte' : 'Öne Çıkan Ürünler'}</p>
                             </div>
                             <Link 
                                 href={`/urunler/${activeCategory.slug}`}
                                 className="text-sm font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full transition-colors"
                             >
-                                Tümünü Gör <ArrowRight className="w-4 h-4" />
+                                {locale === 'en' ? 'See All' : locale === 'ar' ? 'عرض الكل' : locale === 'fr' ? 'Voir Tout' : locale === 'de' ? 'Alle ansehen' : 'Tümünü Gör'} <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     )}
@@ -152,7 +153,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs bg-slate-50">
-                                                    Görsel Yok
+                                                    {locale === 'en' ? 'No Image' : locale === 'ar' ? 'صورة غير متوفرة' : locale === 'fr' ? 'Aucune image' : locale === 'de' ? 'Kein Bild' : 'Görsel Yok'}
                                                 </div>
                                             )}
                                         </div>
@@ -166,7 +167,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                     ) : (
                         <div className="h-48 flex items-center justify-center text-slate-400 text-sm flex-col gap-2">
                             <span className="bg-slate-100 p-3 rounded-full">📦</span>
-                            Bu kategoride henüz ürün bulunmuyor.
+                            {locale === 'en' ? 'No products found in this category yet.' : locale === 'ar' ? 'لا توجد منتجات في هذه الفئة بعد.' : locale === 'fr' ? 'Aucun produit trouvé dans cette catégorie pour le moment.' : locale === 'de' ? 'Noch keine Produkte in dieser Kategorie gefunden.' : 'Bu kategoride henüz ürün bulunmuyor.'}
                         </div>
                     )}
                 </div>
