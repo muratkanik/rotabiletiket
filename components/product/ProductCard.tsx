@@ -1,9 +1,12 @@
-import Link from 'next/link';
+import { Link } from '@/src/i18n/routing';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge'; // Will need to create Badge
 
+import { useLocale } from 'next-intl';
+
 export function ProductCard({ product, categorySlug }: { product: any, categorySlug: string }) {
+    const locale = useLocale();
     // Use first image or placeholder
     const storagePath = product.product_images?.[0]?.storage_path;
     const imageUrl = storagePath
@@ -36,7 +39,7 @@ export function ProductCard({ product, categorySlug }: { product: any, categoryS
                 />
 
                 <div className="mt-auto flex items-center text-sm font-medium text-blue-600 group-hover:text-orange-600">
-                    İncele <ArrowRight className="ml-2 w-4 h-4" />
+                    {locale === 'en' ? 'View Details' : locale === 'ar' ? 'عرض التفاصيل' : locale === 'fr' ? 'Voir les détails' : locale === 'de' ? 'Details ansehen' : 'İncele'} <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
             </div>
         </Link>
