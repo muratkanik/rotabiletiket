@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trash2, RefreshCw, Upload } from 'lucide-react';
+import { Loader2, Trash2, RefreshCw, Upload, Package, FolderTree, FileText } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ImageGalleryProps {
     defaultBucket?: string;
@@ -14,9 +15,9 @@ interface ImageGalleryProps {
 }
 
 const BUCKETS = [
-    { id: 'product-images', name: 'Ürün Görselleri' },
-    { id: 'category-images', name: 'Kategori Görselleri' },
-    { id: 'article-images', name: 'Makale Görselleri' },
+    { id: 'product-images', name: 'Ürün Görselleri', icon: Package },
+    { id: 'category-images', name: 'Kategori Görselleri', icon: FolderTree },
+    { id: 'article-images', name: 'Makale Görselleri', icon: FileText },
 ];
 
 export function ImageGallery({ defaultBucket = 'product-images', onSelect, className }: ImageGalleryProps) {
@@ -103,63 +104,67 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
     return (
         <div className={`space-y-4 ${className || ''}`}>
             {/* Header / Bucket Selector */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex flex-wrap gap-2">
-                    {BUCKETS.map(b => (
-                        <Button
-                            key={b.id}
-                            variant={activeBucket === b.id ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setActiveBucket(b.id)}
-                            className={activeBucket === b.id ? 'bg-orange-600 hover:bg-orange-700' : ''}
-                        >
-                            {b.name}
-                        </Button>
-                    ))}
-                </div>
-                
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                    <div className="relative w-full sm:w-64">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </span>
-                        <input
-                            type="text"
-                            placeholder="Dosya adı ile ara..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        />
+            <div className="flex items-center gap-2 overflow-x-auto w-full pb-2 sm:pb-0">
+                <TooltipProvider delayDuration={200}>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                        {BUCKETS.map(b => {
+                            const Icon = b.icon;
+                            return (
+                                <Tooltip key={b.id}>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant={activeBucket === b.id ? 'default' : 'outline'}
+                                            size="icon"
+                                            onClick={() => setActiveBucket(b.id)}
+                                            className={`shrink-0 w-9 h-9 ${activeBucket === b.id ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
+                                        >
+                                            <Icon className="h-4 w-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{b.name}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            );
+                        })}
                     </div>
-                    <Button variant="outline" size="sm" onClick={fetchFiles} disabled={loading} className="shrink-0 hidden sm:flex">
-                        <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                        Yenile
-                    </Button>
-                    <label className="cursor-pointer shrink-0">
-                        <input
-                            type="file"
-                            className="hidden"
-                            onChange={handleUpload}
-                            accept="image/*"
-                            disabled={uploading}
-                        />
-                        <div className={`flex items-center justify-center px-3 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors
-                            ${uploading
-                                ? 'bg-slate-100 text-slate-400 cursor-wait border-slate-200'
-                                : 'bg-slate-900 text-white hover:bg-slate-800'
-                            }`}
-                        >
-                            {uploading ? (
-                                <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                            ) : (
-                                <Upload className="mr-2 h-4 w-4" />
-                            )}
-                            Yeni Yükle
+                
+                    <div className="flex items-center gap-2 ml-auto shrink-0">
+                        <div className="relative w-40 sm:w-48 shrink-0">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Dosya adı ara..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-8 pr-3 py-1.5 h-9 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
                         </div>
-                    </label>
-                </div>
+                        
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" onClick={fetchFiles} disabled={loading} className="shrink-0 w-9 h-9 hidden sm:flex">
+                                    <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p>Yenile</p></TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <label className={`cursor-pointer shrink-0 flex items-center justify-center w-9 h-9 border rounded-md shadow-sm transition-colors ${uploading ? 'bg-slate-100 text-slate-400 cursor-wait border-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
+                                    <input type="file" className="hidden" onChange={handleUpload} accept="image/*" disabled={uploading} />
+                                    {uploading ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload className="h-4 w-4" />}
+                                </label>
+                            </TooltipTrigger>
+                            <TooltipContent><p>Yeni Görsel Yükle</p></TooltipContent>
+                        </Tooltip>
+                    </div>
+                </TooltipProvider>
             </div>
 
             {/* Grid */}

@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X, Sparkles, LogOut } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, Sparkles, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { VideoUpload } from '@/components/admin/VideoUpload';
@@ -54,6 +54,7 @@ export default function CategoryFormPage() {
     const [videoUrl, setVideoUrl] = useState<string>('');
 
     // Localized Data
+    const [originalTrTitle, setOriginalTrTitle] = useState<string>('');
     const [formData, setFormData] = useState<CategoryData>({
         title: '',
         slug: '',
@@ -117,8 +118,10 @@ export default function CategoryFormPage() {
                 .maybeSingle();
 
             if (lang === 'tr') {
+                const trTitle = trans?.title || category.title || '';
+                setOriginalTrTitle(trTitle);
                 setFormData({
-                    title: trans?.title || category.title || '',
+                    title: trTitle,
                     slug: trans?.slug || category.slug || '',
                     description: trans?.description || category.description || '',
                     // SEO from translation table if exists
@@ -127,6 +130,16 @@ export default function CategoryFormPage() {
                     keywords: trans?.keywords || ''
                 });
             } else {
+                // Fetch TR context explicitly to display it across all tabs
+                const { data: trFallback } = await supabase
+                    .from('category_translations')
+                    .select('title')
+                    .eq('category_id', id)
+                    .eq('language_code', 'tr')
+                    .maybeSingle();
+                
+                setOriginalTrTitle(trFallback?.title || category.title || '');
+
                 // Fetch Translation
                 if (trans) {
                     setFormData({
@@ -303,7 +316,14 @@ export default function CategoryFormPage() {
                     </Button>
                     <div className="flex flex-col">
                         <h1 className="text-xl md:text-2xl font-bold text-slate-900">{isNew ? 'Yeni Kategori' : 'Kategoriyi Düzenle'}</h1>
-                        {!isNew && <span className="text-xs text-slate-500 font-mono">ID: {id}</span>}
+                        {!isNew && (
+                            <div className="flex flex-col gap-0.5 mt-1">
+                                <span className="text-xs text-slate-500 font-mono" title="Kategori ID">ID: {id}</span>
+                                <span className="text-sm font-medium text-slate-700" title="Türkçe Adı">
+                                    {originalTrTitle}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 
@@ -349,11 +369,17 @@ export default function CategoryFormPage() {
                                 <p>Kaydet ve Çık</p>
                             </TooltipContent>
                         </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="shrink-0" size="icon">
+                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Kaydet</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </TooltipProvider>
-                    
-                    <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="whitespace-nowrap shrink-0">
-                        {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
-                    </Button>
                 </div>
             </div>
 
