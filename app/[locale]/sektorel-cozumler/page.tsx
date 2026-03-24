@@ -73,9 +73,10 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
                                         {title}
                                     </h3>
                                     {description && (
-                                        <p className="text-sm text-slate-300 line-clamp-2 mb-4 hidden group-hover:block transition-all">
-                                            {description}
-                                        </p>
+                                        <div 
+                                            className="text-sm text-slate-300 line-clamp-2 mb-4 hidden group-hover:block transition-all"
+                                            dangerouslySetInnerHTML={{ __html: description }}
+                                        />
                                     )}
                                     <div className="flex items-center text-white/80 text-sm font-medium mt-auto">
                                         {locale === 'en' ? 'View Solutions' : locale === 'ar' ? 'عرض الحلول' : locale === 'fr' ? 'Voir les Solutions' : locale === 'de' ? 'Lösungen ansehen' : 'Çözümleri İncele'} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />

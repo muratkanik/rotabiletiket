@@ -158,9 +158,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     </nav>
                 </div>
                 <h1 className="text-4xl font-bold mb-4">{displayTitle}</h1>
-                <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                    {displayDesc || `Endüstriyel standartlarda, yüksek kaliteli ${displayTitle.toLowerCase()} çözümlerimiz.`}
-                </p>
+                {displayDesc ? (
+                    <div 
+                        className="text-slate-400 max-w-2xl mx-auto text-lg prose prose-invert prose-p:leading-relaxed prose-a:text-blue-400"
+                        dangerouslySetInnerHTML={{ __html: displayDesc }}
+                    />
+                ) : (
+                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                        Endüstriyel standartlarda, yüksek kaliteli {displayTitle.toLowerCase()} çözümlerimiz.
+                    </p>
+                )}
             </div>
 
             {/* Grid */}
