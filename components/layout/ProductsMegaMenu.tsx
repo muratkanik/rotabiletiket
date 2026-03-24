@@ -31,30 +31,24 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
     const t = useTranslations('Navigation');
     const locale = useLocale();
     
-    // Build identical visual hierarchy as the Admin Panel D&D system
-    const sortedCategories = (() => {
-        const sortFn = (a: Category, b: Category) => {
-            const aVal = a.display_order || 0;
-            const bVal = b.display_order || 0;
-            if (aVal < bVal) return -1;
-            if (aVal > bVal) return 1;
-            return 0;
-        };
+    const sortFn = (a: Category, b: Category) => {
+        const aVal = a.display_order || 0;
+        const bVal = b.display_order || 0;
+        if (aVal < bVal) return -1;
+        if (aVal > bVal) return 1;
+        return 0;
+    };
 
-        const buildHierarchy = (items: Category[], parentId: string | null = null, level: number = 0): (Category & { level: number })[] => {
-            return items
-                .filter(item => (item.parent_id || null) === parentId)
-                .sort(sortFn)
-                .flatMap(item => [
-                    { ...item, level },
-                    ...buildHierarchy(items, item.id, level + 1)
-                ]);
-        };
+    const rootCategories = categories.filter(c => !c.parent_id).sort(sortFn);
 
-        return buildHierarchy(categories);
-    })();
+    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(rootCategories.length > 0 ? rootCategories[0].id : null);
+    const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
 
-    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(sortedCategories.length > 0 ? sortedCategories[0].id : null);
+    const toggleExpand = (id: string, e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }));
+    };
 
     // Filter products for the active category (limit to top 8)
     const activeProducts = activeCategoryId 
@@ -68,6 +62,52 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
         if (path.startsWith('http')) return path;
         if (path.startsWith('/')) return path;
         return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${path}`;
+    };
+
+    const renderCategory = (category: Category, level: number) => {
+        const children = categories.filter(c => c.parent_id === category.id).sort(sortFn);
+        const hasChildren = children.length > 0;
+        const isExpanded = !!expandedIds[category.id];
+
+        const isActive = activeCategoryId === category.id;
+
+        return (
+            <li key={category.id}>
+                <div 
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors text-sm ${
+                        isActive 
+                            ? 'bg-blue-600 text-white shadow-md font-medium' 
+                            : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900 font-medium'
+                    }`}
+                    style={{ paddingLeft: level > 0 ? `${(level * 1.5) + 0.75}rem` : '0.75rem' }}
+                    onMouseEnter={() => setActiveCategoryId(category.id)}
+                >
+                    <Link href={`/urunler/${category.slug}`} className="flex-1 flex items-center gap-2">
+                        {level > 0 && (
+                            <div className={`w-2 h-2 border-b border-l opacity-50 -mt-1 ${isActive ? 'border-white' : 'border-slate-400'}`}></div>
+                        )}
+                        {category.title}
+                    </Link>
+
+                    {hasChildren && (
+                        <button 
+                            onClick={(e) => toggleExpand(category.id, e)}
+                            className={`p-1 rounded-md transition-colors ${isActive ? 'hover:bg-blue-700 text-white' : 'hover:bg-slate-300 text-slate-500 hover:text-slate-900'}`}
+                        >
+                            <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    )}
+                </div>
+
+                {hasChildren && isExpanded && (
+                    <ul className="mt-1 space-y-1">
+                        {children.map(child => renderCategory(child, level + 1))}
+                    </ul>
+                )}
+            </li>
+        );
     };
 
     return (
@@ -89,28 +129,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                         {t('categories')}
                     </h3>
                     <ul className="space-y-1">
-                        {sortedCategories.map(category => (
-                            <li key={category.id}>
-                                <Link 
-                                    href={`/urunler/${category.slug}`}
-                                    onMouseEnter={() => setActiveCategoryId(category.id)}
-                                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors text-sm ${
-                                        activeCategoryId === category.id 
-                                            ? 'bg-blue-600 text-white shadow-md font-medium' 
-                                            : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900 font-medium'
-                                    }`}
-                                    style={{ paddingLeft: category.level > 0 ? `${(category.level * 1.5) + 0.75}rem` : '0.75rem' }}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        {category.level > 0 && (
-                                            <div className="w-2 h-2 border-b border-l border-slate-400 opacity-50 -mt-1"></div>
-                                        )}
-                                        {category.title}
-                                    </div>
-                                    {activeCategoryId === category.id && <ChevronRight className="w-4 h-4 opacity-80" />}
-                                </Link>
-                            </li>
-                        ))}
+                        {rootCategories.map(category => renderCategory(category, 0))}
                     </ul>
                 </div>
 
