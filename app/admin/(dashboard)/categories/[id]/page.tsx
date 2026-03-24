@@ -12,6 +12,8 @@ import { ImageUpload } from '@/components/admin/ImageUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 interface CategoryData {
@@ -292,17 +294,19 @@ export default function CategoryFormPage() {
 
     return (
         <div className="max-w-4xl mx-auto pb-10 space-y-6">
-            <div className="flex items-center justify-between">
+            {/* Header Action Bar */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm sticky top-4 z-10">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" asChild>
                         <Link href="/admin/categories"><ChevronLeft size={20} /></Link>
                     </Button>
                     <div className="flex flex-col">
-                        <h1 className="text-2xl font-bold text-slate-900">{isNew ? 'Yeni Kategori' : 'Kategoriyi Düzenle'}</h1>
-                        {!isNew && <span className="text-xs text-slate-500">ID: {id}</span>}
+                        <h1 className="text-xl md:text-2xl font-bold text-slate-900">{isNew ? 'Yeni Kategori' : 'Kategoriyi Düzenle'}</h1>
+                        {!isNew && <span className="text-xs text-slate-500 font-mono">ID: {id}</span>}
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                
+                <div className="flex flex-wrap items-center gap-3">
                     <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew}>
                         <SelectTrigger className="w-[180px] bg-white">
                             <SelectValue placeholder="Dil Seçiniz" />
@@ -322,14 +326,14 @@ export default function CategoryFormPage() {
                                 className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white"
                             >
                                 <Sparkles className="mr-2 h-4 w-4" />
-                                {enhancing ? 'Geliştiriliyor...' : 'AI ile İçerik Üret'}
+                                {enhancing ? 'Geliştiriliyor...' : 'AI İçerik'}
                             </Button>
                         )}
-                        <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="bg-green-600 hover:bg-green-700">
-                            {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
+                        <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary">
+                            Kaydet ve Çık
                         </Button>
-                        <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary" className="border-green-600 text-green-700 hover:bg-green-50">
-                            Kaydet ve Kapat
+                        <Button onClick={() => handleSave(false)} disabled={saving || enhancing}>
+                            {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
                         </Button>
                     </div>
                 </div>
@@ -411,53 +415,57 @@ export default function CategoryFormPage() {
                                 </TabsList>
 
                                 <TabsContent value="basic" className="space-y-6 mt-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Kategori Adı</label>
-                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Kategori Adı</label>
+                                        <Input
                                             value={formData.title}
                                             onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                            className="font-medium text-base h-11"
                                         />
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Slug (URL)</label>
-                                        <input className="w-full border rounded-lg p-2.5 bg-slate-50 text-slate-500 font-mono text-sm"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Slug (URL)</label>
+                                        <Input
                                             value={formData.slug}
                                             onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                                            className="bg-slate-50 font-mono"
                                         />
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Açıklama</label>
-                                        <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Açıklama</label>
+                                        <Textarea
                                             value={formData.description}
                                             onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                            className="min-h-[200px] resize-y"
                                         />
                                     </div>
                                 </TabsContent>
 
                                 <TabsContent value="seo" className="space-y-6 mt-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">SEO Başlığı (Meta Title)</label>
-                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">SEO Başlığı (Meta Title)</label>
+                                        <Input
                                             placeholder={formData.title}
                                             value={formData.seo_title || ''}
                                             onChange={e => setFormData({ ...formData, seo_title: e.target.value })}
                                         />
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">SEO Açıklaması (Meta Description)</label>
-                                        <textarea className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">SEO Açıklaması (Meta Description)</label>
+                                        <Textarea
                                             placeholder="Arama sonuçlarında görünecek açıklama..."
                                             value={formData.seo_description || ''}
                                             onChange={e => setFormData({ ...formData, seo_description: e.target.value })}
+                                            className="min-h-[120px]"
                                         />
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Anahtar Kelimeler</label>
-                                        <input className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Anahtar Kelimeler</label>
+                                        <Input
                                             placeholder="etiket, rulo etiket, baskı"
                                             value={formData.keywords || ''}
                                             onChange={e => setFormData({ ...formData, keywords: e.target.value })}
