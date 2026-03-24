@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Save, Upload, X, Sparkles } from 'lucide-react';
+import { ChevronLeft, Save, Upload, X, Sparkles, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { VideoUpload } from '@/components/admin/VideoUpload';
@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
 interface CategoryData {
@@ -318,23 +319,39 @@ export default function CategoryFormPage() {
                         </SelectContent>
                     </Select>
 
-                    {!isNew && selectedLang === 'tr' && (
-                        <Button
-                            onClick={handleEnhance}
-                            disabled={enhancing || saving}
-                            variant="outline"
-                            className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white whitespace-nowrap"
-                        >
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            {enhancing ? 'Geliştiriliyor...' : 'AI İçerik'}
-                        </Button>
-                    )}
+                    <TooltipProvider delayDuration={200}>
+                        {!isNew && selectedLang === 'tr' && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        onClick={handleEnhance}
+                                        disabled={enhancing || saving}
+                                        variant="outline"
+                                        size="icon"
+                                        className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white shrink-0"
+                                    >
+                                        <Sparkles className={`h-4 w-4 ${enhancing ? 'animate-pulse' : ''}`} />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{enhancing ? 'AI Geliştiriliyor...' : 'AI İçerik Optimizasyonu'}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
+                        
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary" size="icon" className="shrink-0 text-slate-700">
+                                    <LogOut className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Kaydet ve Çık</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     
-                    <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary" className="whitespace-nowrap">
-                        Kaydet ve Çık
-                    </Button>
-                    
-                    <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="whitespace-nowrap">
+                    <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="whitespace-nowrap shrink-0">
                         {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
                     </Button>
                 </div>
