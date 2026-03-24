@@ -142,7 +142,7 @@ export function ImageUpload({
                                 <DialogTitle>Görsel Seç</DialogTitle>
                             </DialogHeader>
                             <div className="flex-1 overflow-y-auto mt-4 px-1">
-                                <ImageGallery defaultBucket={bucket} onSelect={handleSelectFromGallery} />
+                                <ImageGallery defaultBucket="product-images" onSelect={handleSelectFromGallery} />
                             </div>
                         </DialogContent>
                     </Dialog>
