@@ -306,9 +306,9 @@ export default function CategoryFormPage() {
                     </div>
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
                     <Select value={selectedLang} onValueChange={setSelectedLang} disabled={isNew}>
-                        <SelectTrigger className="w-[180px] bg-white">
+                        <SelectTrigger className="w-[160px] bg-white whitespace-nowrap">
                             <SelectValue placeholder="Dil Seçiniz" />
                         </SelectTrigger>
                         <SelectContent>
@@ -317,25 +317,26 @@ export default function CategoryFormPage() {
                             ))}
                         </SelectContent>
                     </Select>
-                    <div className="flex items-center gap-2">
-                        {!isNew && selectedLang === 'tr' && (
-                            <Button
-                                onClick={handleEnhance}
-                                disabled={enhancing || saving}
-                                variant="outline"
-                                className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white"
-                            >
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                {enhancing ? 'Geliştiriliyor...' : 'AI İçerik'}
-                            </Button>
-                        )}
-                        <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary">
-                            Kaydet ve Çık
+
+                    {!isNew && selectedLang === 'tr' && (
+                        <Button
+                            onClick={handleEnhance}
+                            disabled={enhancing || saving}
+                            variant="outline"
+                            className="text-violet-600 border-violet-200 hover:bg-violet-50 bg-white whitespace-nowrap"
+                        >
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            {enhancing ? 'Geliştiriliyor...' : 'AI İçerik'}
                         </Button>
-                        <Button onClick={() => handleSave(false)} disabled={saving || enhancing}>
-                            {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
-                        </Button>
-                    </div>
+                    )}
+                    
+                    <Button onClick={() => handleSave(true)} disabled={saving} variant="secondary" className="whitespace-nowrap">
+                        Kaydet ve Çık
+                    </Button>
+                    
+                    <Button onClick={() => handleSave(false)} disabled={saving || enhancing} className="whitespace-nowrap">
+                        {saving ? 'Kaydediliyor...' : <><Save className="mr-2 h-4 w-4" /> Kaydet</>}
+                    </Button>
                 </div>
             </div>
 
