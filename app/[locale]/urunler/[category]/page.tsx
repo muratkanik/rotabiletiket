@@ -158,16 +158,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     </nav>
                 </div>
                 <h1 className="text-4xl font-bold mb-4">{displayTitle}</h1>
-                {displayDesc ? (
-                    <div 
-                        className="text-slate-400 max-w-2xl mx-auto text-lg prose prose-invert prose-p:leading-relaxed prose-a:text-blue-400"
-                        dangerouslySetInnerHTML={{ __html: displayDesc }}
-                    />
-                ) : (
-                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                        Endüstriyel standartlarda, yüksek kaliteli {displayTitle.toLowerCase()} çözümlerimiz.
-                    </p>
-                )}
+                <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                    Endüstriyel standartlarda, yüksek kaliteli {displayTitle.toLowerCase()} çözümlerimiz.
+                </p>
             </div>
 
             {/* Grid */}
@@ -183,6 +176,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     )}
                 </div>
             </div>
+
+            {/* SEO Description - Moved below products to keep items visible above the fold */}
+            {displayDesc && (
+                <div className="bg-white border-t border-slate-200 py-16">
+                    <div className="container mx-auto px-4 md:px-6">
+                        <div 
+                            className="prose prose-slate max-w-4xl mx-auto prose-p:leading-relaxed prose-a:text-orange-600 hover:prose-a:text-orange-700"
+                            dangerouslySetInnerHTML={{ __html: displayDesc }}
+                        />
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
