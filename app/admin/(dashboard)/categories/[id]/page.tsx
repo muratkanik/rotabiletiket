@@ -8,6 +8,7 @@ import { ChevronLeft, Save, Upload, X, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { VideoUpload } from '@/components/admin/VideoUpload';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -47,8 +48,6 @@ export default function CategoryFormPage() {
     const [parentId, setParentId] = useState<string | null>(null);
     const [parentCategories, setParentCategories] = useState<any[]>([]);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [videoUrl, setVideoUrl] = useState<string>('');
 
     // Localized Data
@@ -99,8 +98,8 @@ export default function CategoryFormPage() {
             // Common fields
             setParentId(category.parent_id);
             if (category.image_url) {
-                setImageUrl(category.image_url);
-                setImagePreview(category.image_url.startsWith('http') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`);
+                // Determine if it's already an absolute URL or just a filename
+                setImageUrl(category.image_url.startsWith('http') || category.image_url.startsWith('/') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`);
             }
             if (category.video_url) {
                 setVideoUrl(category.video_url);
@@ -266,19 +265,11 @@ export default function CategoryFormPage() {
                 if (error) throw error;
             }
 
-            // 2. Image Upload
-            if (imageFile && selectedLang === 'tr') {
-                const fileExt = imageFile.name.split('.').pop();
-                const fileName = `${categoryId}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const filePath = `${fileName}`;
-
-                const { error: uploadError } = await supabase.storage.from('category-images').upload(filePath, imageFile);
-                if (uploadError) throw uploadError;
-
-                await supabase.from('categories').update({ image_url: filePath }).eq('id', categoryId);
-                setImageUrl(filePath);
-            } else if (imageUrl === null && selectedLang === 'tr' && !isNew) {
-                await supabase.from('categories').update({ image_url: null }).eq('id', categoryId);
+            // 2. Image Update Sync
+            if (selectedLang === 'tr') {
+                if (imageUrl !== null || !isNew) {
+                    await supabase.from('categories').update({ image_url: imageUrl }).eq('id', categoryId);
+                }
             }
 
             toast.success('Kaydedildi');
@@ -373,34 +364,12 @@ export default function CategoryFormPage() {
                             <Card>
                                 <CardHeader><CardTitle>Kategori Görseli</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="space-y-4">
-                                        {imagePreview ? (
-                                            <div className="relative w-32 h-32 bg-slate-100 rounded-lg overflow-hidden group mx-auto border">
-                                                <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
-                                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <Button variant="destructive" size="icon" onClick={() => {
-                                                        setImagePreview(null);
-                                                        setImageUrl(null);
-                                                        setImageFile(null);
-                                                    }} disabled={selectedLang !== 'tr'}>
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <label className={`w-32 h-32 mx-auto bg-slate-50 rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer transition-colors ${selectedLang !== 'tr' ? 'opacity-50 pointer-events-none' : ''}`}>
-                                                <Upload className="h-6 w-6 mb-2" />
-                                                <span className="text-xs text-center px-2">Görsel Yükle</span>
-                                                <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                                                    if (e.target.files && e.target.files[0]) {
-                                                        const file = e.target.files[0];
-                                                        setImageFile(file);
-                                                        setImagePreview(URL.createObjectURL(file));
-                                                    }
-                                                }} disabled={selectedLang !== 'tr'} />
-                                            </label>
-                                        )}
-                                    </div>
+                                        <ImageUpload
+                                            value={imageUrl || ''}
+                                            onChange={(url) => setImageUrl(url || null)}
+                                            bucket="category-images"
+                                        />
+                                        {selectedLang !== 'tr' && <p className="text-xs text-amber-600 mt-1">Sadece ana dilde değiştirilebilir.</p>}
                                 </CardContent>
                             </Card>
                         </div>
