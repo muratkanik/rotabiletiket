@@ -3,7 +3,7 @@ import { ProductCard } from '@/components/product/ProductCard';
 
 import { notFound } from 'next/navigation';
 import { Link } from '@/src/i18n/routing';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -63,6 +63,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     const { category: categorySlug } = await params;
     const locale = await getLocale();
     const supabase = await createClient();
+    const tNav = await getTranslations('Navigation');
 
     // 1. Fetch Category with Translations
     let { data: category } = await supabase
@@ -139,12 +140,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     <nav className="flex justify-center text-sm text-slate-400 mb-4" aria-label="Breadcrumb">
                         <ol className="inline-flex items-center space-x-1 md:space-x-3">
                             <li className="inline-flex items-center">
-                                <Link href="/" className="hover:text-white transition-colors">Anasayfa</Link>
+                                <Link href="/" className="hover:text-white transition-colors">{tNav('home')}</Link>
                             </li>
                             <li>
                                 <div className="flex items-center">
                                     <span className="mx-2 text-slate-600">/</span>
-                                    <span className="text-white font-medium">Ürünler</span>
+                                    <span className="text-white font-medium">{tNav('products')}</span>
                                 </div>
                             </li>
                             <li aria-current="page">
@@ -170,7 +171,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     ))}
                     {products?.length === 0 && (
                         <div className="col-span-full text-center py-20 text-slate-500">
-                            Bu kategoride henüz ürün bulunmuyor.
+                            {locale === 'en' ? 'No products found in this category yet.' : locale === 'ar' ? 'لا توجد منتجات في هذه الفئة بعد.' : 'Bu kategoride henüz ürün bulunmuyor.'}
                         </div>
                     )}
                 </div>

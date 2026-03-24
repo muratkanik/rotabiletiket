@@ -13,7 +13,8 @@
     "labelsDesc": "Industrielle Etikettentypen",
     "ribbonsDesc": "Thermotransfer-Farbbänder",
     "printersDesc": "Desktop und Industrie",
-    "printheadsDesc": "Original-Ersatzteile"
+    "printheadsDesc": "Original-Ersatzteile",
+    "categories": "Kategorien"
   },
   "Common": {
     "readMore": "Weiterlesen",

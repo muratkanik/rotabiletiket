@@ -13,7 +13,8 @@
     "labelsDesc": "Types d'étiquettes industrielles",
     "ribbonsDesc": "Rubans transfert thermique",
     "printersDesc": "Bureau et industriel",
-    "printheadsDesc": "Pièces de rechange d'origine"
+    "printheadsDesc": "Pièces de rechange d'origine",
+    "categories": "Catégories"
   },
   "Common": {
     "readMore": "Lire la suite",

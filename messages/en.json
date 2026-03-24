@@ -13,7 +13,8 @@
     "labelsDesc": "Industrial label types",
     "ribbonsDesc": "Thermal transfer ribbons",
     "printersDesc": "Desktop and industrial",
-    "printheadsDesc": "Original spare parts"
+    "printheadsDesc": "Original spare parts",
+    "categories": "Categories"
   },
   "Common": {
     "readMore": "Read More",

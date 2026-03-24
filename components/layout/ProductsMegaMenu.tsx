@@ -85,7 +85,7 @@ export function ProductsMegaMenu({ categories, products }: ProductsMegaMenuProps
                 {/* Left Panel: Categories */}
                 <div className="w-1/3 bg-slate-50 border-r border-slate-100 p-4 max-h-[500px] overflow-y-auto no-scrollbar">
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">
-                        Kategoriler
+                        {t('categories')}
                     </h3>
                     <ul className="space-y-1">
                         {sortedCategories.map(category => (
