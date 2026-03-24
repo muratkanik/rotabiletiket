@@ -78,7 +78,7 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
                                         </p>
                                     )}
                                     <div className="flex items-center text-white/80 text-sm font-medium mt-auto">
-                                        {locale === 'tr' ? 'Çözümleri İncele' : 'View Solutions'} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                                        {locale === 'en' ? 'View Solutions' : locale === 'ar' ? 'عرض الحلول' : locale === 'fr' ? 'Voir les Solutions' : locale === 'de' ? 'Lösungen ansehen' : 'Çözümleri İncele'} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                     </div>
                                 </div>
                             </Link>

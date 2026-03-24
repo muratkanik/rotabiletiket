@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { submitContactForm } from '@/app/actions';
+import { useTranslations } from 'next-intl';
 
 export function ContactForm() {
+    const t = useTranslations('Contact');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -30,22 +32,22 @@ export function ContactForm() {
         <form id="contact-form" action={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium text-slate-700 mb-1 block">Adınız</label>
+                    <label className="text-sm font-medium text-slate-700 mb-1 block">{t('firstName')}</label>
                     <input name="first_name" required className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
                 </div>
                 <div>
-                    <label className="text-sm font-medium text-slate-700 mb-1 block">Soyadınız</label>
+                    <label className="text-sm font-medium text-slate-700 mb-1 block">{t('lastName')}</label>
                     <input name="last_name" required className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
                 </div>
             </div>
 
             <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">E-posta</label>
+                <label className="text-sm font-medium text-slate-700 mb-1 block">{t('email')}</label>
                 <input name="email" type="email" required className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" />
             </div>
 
             <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">Mesajınız</label>
+                <label className="text-sm font-medium text-slate-700 mb-1 block">{t('yourMessage')}</label>
                 <textarea name="message" required className="w-full border rounded-lg px-4 py-3 h-32 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 resize-none" />
             </div>
 
@@ -56,7 +58,7 @@ export function ContactForm() {
             )}
 
             <Button type="submit" disabled={loading} className="w-full bg-orange-600 hover:bg-orange-700 text-lg h-12">
-                {loading ? 'Gönderiliyor...' : 'Gönder'}
+                {loading ? t('sending') : t('send')}
             </Button>
         </form>
     );

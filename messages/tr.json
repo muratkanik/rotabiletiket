@@ -39,5 +39,23 @@
     "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
     "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
     "readMore": "Devamını Oku"
+  },
+  "Contact": {
+    "title": "İletişim",
+    "subtitle": "Bizimle İletişime Geçin",
+    "officeFactory": "Ofis & Fabrika",
+    "address": "Adres",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "workingHours": "Çalışma Saatleri",
+    "weekdays": "Pazartesi - Cuma: 08:30 - 18:00",
+    "saturday": "Cumartesi: 09:00 - 13:00",
+    "sendMessage": "Mesaj Gönderin",
+    "sendMessageDesc": "Size en kısa sürede dönüş yapacağız.",
+    "firstName": "Adınız",
+    "lastName": "Soyadınız",
+    "yourMessage": "Mesajınız",
+    "sending": "Gönderiliyor...",
+    "send": "Gönder"
   }
 }

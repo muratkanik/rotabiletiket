@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface Category {
     id: string;
@@ -22,6 +22,7 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const tNav = useTranslations('Navigation');
     const tCommon = useTranslations('Common');
+    const locale = useLocale();
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -56,7 +57,7 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
                                             {category.title}
                                         </Link>
                                     )) : (
-                                        <span className="text-slate-400 text-sm">Yükleniyor...</span>
+                                        <span className="text-slate-400 text-sm">{locale === 'en' ? 'Loading...' : locale === 'ar' ? 'جاري التحميل...' : locale === 'fr' ? 'Chargement...' : locale === 'de' ? 'Wird geladen...' : 'Yükleniyor...'}</span>
                                     )}
                                 </div>
                             )}

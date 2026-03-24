@@ -39,5 +39,23 @@
     "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
     "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
     "readMore": "Weiterlesen"
+  },
+  "Contact": {
+    "title": "Kontakt",
+    "subtitle": "Nehmen Sie Kontakt auf",
+    "officeFactory": "Büro & Fabrik",
+    "address": "Adresse",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "workingHours": "Arbeitszeiten",
+    "weekdays": "Montag - Freitag: 08:30 - 18:00",
+    "saturday": "Samstag: 09:00 - 13:00",
+    "sendMessage": "Nachricht senden",
+    "sendMessageDesc": "Wir werden uns so schnell wie möglich bei Ihnen melden.",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "yourMessage": "Ihre Nachricht",
+    "sending": "Senden...",
+    "send": "Senden"
   }
 }

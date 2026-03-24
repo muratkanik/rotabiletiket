@@ -63,7 +63,7 @@ export async function Footer({ locale }: { locale: string }) {
                     <div>
                         {/* Assuming 'Corporate' translation exists or hardcode localized logic */}
                         <h3 className="font-bold text-lg mb-6">
-                            {locale === 'en' ? 'Corporate' : locale === 'ar' ? 'الشركة' : 'Kurumsal'}
+                            {locale === 'en' ? 'Corporate' : locale === 'ar' ? 'الشركة' : locale === 'fr' ? 'Entreprise' : locale === 'de' ? 'Unternehmen' : 'Kurumsal'}
                         </h3>
                         <ul className="space-y-4 text-slate-400">
                             <li><Link href="/" className="hover:text-white transition-colors">{t('home')}</Link></li>

@@ -39,5 +39,23 @@
     "headerSubtitle": "Sectoral Guide and Technical Insights",
     "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
     "readMore": "Read More"
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "Get in Touch With Us",
+    "officeFactory": "Office & Factory",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "workingHours": "Working Hours",
+    "weekdays": "Monday - Friday: 08:30 - 18:00",
+    "saturday": "Saturday: 09:00 - 13:00",
+    "sendMessage": "Send a Message",
+    "sendMessageDesc": "We will get back to you as soon as possible.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "yourMessage": "Your Message",
+    "sending": "Sending...",
+    "send": "Send"
   }
 }

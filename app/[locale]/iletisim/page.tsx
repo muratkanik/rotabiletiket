@@ -9,16 +9,19 @@ export const metadata = {
     description: 'Rotabil Etiket iletişim bilgileri. Adres, telefon ve e-posta.'
 }
 
+import { getTranslations } from "next-intl/server";
+
 export default async function ContactPage() {
     const contactInfo = await getSiteSettings('contact_info');
+    const t = await getTranslations('Contact');
 
     return (
         <main className="min-h-screen bg-slate-50">
 
 
             <div className="bg-slate-900 py-20 text-white text-center">
-                <h1 className="text-4xl font-bold mb-4">İletişim</h1>
-                <p className="text-slate-400">Bizimle İletişime Geçin</p>
+                <h1 className="text-4xl font-bold mb-4">{t('title')}</h1>
+                <p className="text-slate-400">{t('subtitle')}</p>
             </div>
 
             <div className="container px-4 md:px-6 py-16">
@@ -27,14 +30,14 @@ export default async function ContactPage() {
                     {/* Info */}
                     <div className="space-y-8">
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900 mb-6">Ofis & Fabrika</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-6">{t('officeFactory')}</h2>
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4">
                                     <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 shrink-0">
                                         <MapPin size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-slate-900 mb-1">Adres</h3>
+                                        <h3 className="font-semibold text-slate-900 mb-1">{t('address')}</h3>
                                         <p className="text-slate-600 leading-relaxed">
                                             {contactInfo?.address || "Kurtköy-Pendik/İSTANBUL"}
                                         </p>
@@ -46,7 +49,7 @@ export default async function ContactPage() {
                                         <Phone size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-slate-900 mb-1">Telefon</h3>
+                                        <h3 className="font-semibold text-slate-900 mb-1">{t('phone')}</h3>
                                         <p className="text-slate-600">
                                             {contactInfo?.phone || "(+90) 216 595 03 23"}
                                         </p>
@@ -58,7 +61,7 @@ export default async function ContactPage() {
                                         <Mail size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-slate-900 mb-1">E-posta</h3>
+                                        <h3 className="font-semibold text-slate-900 mb-1">{t('email')}</h3>
                                         <p className="text-slate-600">
                                             {contactInfo?.email || "info@rotabiletiket.com"}
                                         </p>
@@ -70,10 +73,10 @@ export default async function ContactPage() {
                                         <Clock size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-slate-900 mb-1">Çalışma Saatleri</h3>
+                                        <h3 className="font-semibold text-slate-900 mb-1">{t('workingHours')}</h3>
                                         <p className="text-slate-600">
-                                            Pazartesi - Cuma: 08:30 - 18:00 <br />
-                                            Cumartesi: 09:00 - 13:00
+                                            {t('weekdays')} <br />
+                                            {t('saturday')}
                                         </p>
                                     </div>
                                 </div>
@@ -83,8 +86,8 @@ export default async function ContactPage() {
 
                     {/* Simple Form */}
                     <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Mesaj Gönderin</h2>
-                        <p className="text-slate-500 mb-6">Size en kısa sürede dönüş yapacağız.</p>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">{t('sendMessage')}</h2>
+                        <p className="text-slate-500 mb-6">{t('sendMessageDesc')}</p>
 
                         <ContactForm />
                     </div>
