@@ -4,11 +4,11 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Pencil, Eye, ArrowUpDown, Search, Sparkles, GripVertical, Save } from 'lucide-react';
+import { Plus, Pencil, Eye, ArrowUpDown, Search, Sparkles, GripVertical, Save, Trash2, Loader2 } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { updateProductsOrder, bulkUpdateProductsCategory } from '@/app/admin/(dashboard)/products/actions';
+import { updateProductsOrder, bulkUpdateProductsCategory, deleteProduct } from '@/app/admin/(dashboard)/products/actions';
 import { quickCreateCategory } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
 import {
@@ -55,12 +55,14 @@ interface ProductListProps {
 
 type SortKey = 'title' | 'category' | 'status' | 'seo_score' | 'display_order';
 
-function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, onOrderChange }: { 
+function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, onOrderChange, isDeleting, onDelete }: { 
     product: Product & { _seoScore: number }, 
     selectedIds: string[], 
     handleSelect: (id: string, selected: boolean) => void,
     isDragEnabled: boolean,
-    onOrderChange: (id: string, newOrder: number) => void
+    onOrderChange: (id: string, newOrder: number) => void,
+    isDeleting: boolean,
+    onDelete: (id: string, title: string) => void
 }) {
     const {
         attributes,
@@ -152,7 +154,7 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
                 </div>
             </td>
             <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-1">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href={`/urunler/${product.categories?.slug}/${product.slug}`} target="_blank">
                             <Eye size={16} className="text-slate-400 hover:text-blue-600" />
@@ -162,6 +164,15 @@ function SortableTableRow({ product, selectedIds, handleSelect, isDragEnabled, o
                         <Link href={`/admin/products/${product.id}`}>
                             <Pencil size={16} className="text-slate-400 hover:text-orange-600" />
                         </Link>
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => onDelete(product.id, product.title)}
+                        disabled={isDeleting}
+                        className="hover:bg-red-50"
+                    >
+                        {isDeleting ? <Loader2 size={16} className="text-red-600 animate-spin" /> : <Trash2 size={16} className="text-slate-400 hover:text-red-600" />}
                     </Button>
                 </div>
             </td>
@@ -180,6 +191,7 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
     const [bulkCategoryId, setBulkCategoryId] = useState<string>('');
     const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const [isBulkingCategory, setIsBulkingCategory] = useState(false);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     useEffect(() => {
         setProducts(initialProducts);
@@ -449,6 +461,27 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
     // But allow dragging if we are filtering by category
     const isDragEnabled = !searchTerm;
 
+    const handleDeleteProduct = async (id: string, title: string) => {
+        if (!window.confirm(`'${title}' adlı ürünü silmek istediğinize emin misiniz?\n\n(DİKKAT: Ürün görselleri diğer içeriklerde kullanılabileceği için depolamadan SİLİNMEYECEKTİR. Sadece ürün kaydı silinecektir.)`)) {
+            return;
+        }
+        setDeletingId(id);
+        try {
+            const res = await deleteProduct(id);
+            if (res.success) {
+                toast.success('Ürün başarıyla silindi.');
+                setProducts(prev => prev.filter(p => p.id !== id));
+                setSelectedIds(prev => prev.filter(selectedId => selectedId !== id));
+            } else {
+                toast.error('Ürün silinemedi: ' + res.error);
+            }
+        } catch (e: any) {
+            toast.error('Beklenmeyen bir hata oluştu.');
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -622,6 +655,8 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
                                             }}
                                             isDragEnabled={isDragEnabled}
                                             onOrderChange={handleOrderChange}
+                                            isDeleting={deletingId === product.id}
+                                            onDelete={handleDeleteProduct}
                                         />
                                     ))}
                                 </SortableContext>

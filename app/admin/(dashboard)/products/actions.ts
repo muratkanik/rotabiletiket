@@ -52,3 +52,24 @@ export async function bulkUpdateProductsCategory(productIds: string[], categoryI
         return { success: false, error: error.message };
     }
 }
+
+export async function deleteProduct(id: string) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { error } = await supabase.from('products').delete().eq('id', id);
+
+        if (error) {
+            console.error('Error deleting product:', error);
+            return { success: false, error: error.message };
+        }
+
+        revalidatePath('/admin/products');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error deleting product:', error);
+        return { success: false, error: error.message };
+    }
+}
