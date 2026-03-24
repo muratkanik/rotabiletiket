@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Loader2, Upload, X, Library } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ImageGallery } from '@/components/admin/ImageGallery';
 
 interface ImageUploadProps {
     value?: string;
@@ -27,6 +29,7 @@ export function ImageUpload({
     accept = "image/*"
 }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const supabase = createClient();
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +65,11 @@ export function ImageUpload({
 
     const handleRemove = () => {
         onChange('');
+    };
+
+    const handleSelectFromGallery = (url: string) => {
+        onChange(url);
+        setDialogOpen(false);
     };
 
     return (
@@ -121,6 +129,23 @@ export function ImageUpload({
                             )}
                         </div>
                     </label>
+
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button type="button" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
+                                <Library className="mr-2 h-4 w-4" />
+                                Mevcut Görsellerden Seç
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+                            <DialogHeader>
+                                <DialogTitle>Görsel Seç</DialogTitle>
+                            </DialogHeader>
+                            <div className="flex-1 overflow-y-auto mt-4 px-1">
+                                <ImageGallery defaultBucket={bucket} onSelect={handleSelectFromGallery} />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                     <span className="text-sm text-slate-500">Max 50MB</span>
                 </div>
             )}
