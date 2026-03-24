@@ -22,14 +22,15 @@ export function WhatsAppButton({ phoneNumber }: WhatsAppButtonProps) {
     const cleanedNumber = phoneNumber.replace(/[^0-9]/g, "");
     const whatsappUrl = `https://wa.me/${cleanedNumber}`;
 
-    // Turkey Time Zone (UTC+3) check for off-hours
+    // Turkey Time Zone (GMT+3) check for off-hours
     const isOffHours = () => {
         try {
-            const trTimeStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" });
-            const currentHour = new Date(trTimeStr).getHours();
+            const now = new Date();
+            const utcHour = now.getUTCHours();
+            const gmt3Hour = (utcHour + 3) % 24;
             
             // Off hours: Before 09:00 or after 17:59 (18:00+)
-            return currentHour < 9 || currentHour >= 18;
+            return gmt3Hour < 9 || gmt3Hour >= 18;
         } catch (e) {
             return false;
         }
