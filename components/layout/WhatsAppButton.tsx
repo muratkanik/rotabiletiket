@@ -18,11 +18,24 @@ export function WhatsAppButton({ phoneNumber }: WhatsAppButtonProps) {
 
     if (!isVisible || !phoneNumber) return null;
 
-    // Clean phone number for WhatsApp API (remove spaces, plus sign is optional but let's keep it safe by just formatting it)
+    // Clean phone number for WhatsApp API
     const cleanedNumber = phoneNumber.replace(/[^0-9]/g, "");
-    
-    // Construct WhatsApp URL
     const whatsappUrl = `https://wa.me/${cleanedNumber}`;
+
+    // Turkey Time Zone (UTC+3) check for off-hours
+    const isOffHours = () => {
+        try {
+            const trTimeStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" });
+            const currentHour = new Date(trTimeStr).getHours();
+            
+            // Off hours: Before 09:00 or after 17:59 (18:00+)
+            return currentHour < 9 || currentHour >= 18;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    const offHours = isOffHours();
 
     return (
         <a
@@ -30,13 +43,24 @@ export function WhatsAppButton({ phoneNumber }: WhatsAppButtonProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-lg hover:bg-[#20bd5a] hover:scale-110 transition-all duration-300 group"
+            onClick={(e) => {
+                // We let them click to WhatsApp anyway, but this is just for UI tooltip check
+            }}
             aria-label="WhatsApp İletişim"
         >
             <MessageCircle size={28} className="fill-current" />
             
             {/* Tooltip on hover */}
-            <span className="absolute right-16 px-3 py-1.5 bg-white text-slate-800 text-sm font-medium rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap dark:bg-slate-800 dark:text-white border border-slate-100 dark:border-slate-700">
-                Bize Ulaşın
+            <span className="absolute right-16 px-4 py-2 bg-white text-slate-800 text-sm font-medium rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap dark:bg-slate-800 dark:text-white border border-slate-100 dark:border-slate-700">
+                {offHours ? (
+                    <span className="flex flex-col gap-1 items-end text-right">
+                        <span className="font-semibold text-orange-500">Mesai Saatleri Dışındayız</span>
+                        <span className="text-xs text-slate-500 font-normal">Mesajınız alınmıştır. Mesai saatleri (09:00-18:00)</span>
+                        <span className="text-xs text-slate-500 font-normal">içinde dönüş yapılacaktır.</span>
+                    </span>
+                ) : (
+                    "Bize Ulaşın"
+                )}
             </span>
         </a>
     );
