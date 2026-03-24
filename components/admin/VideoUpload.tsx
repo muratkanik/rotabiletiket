@@ -6,6 +6,7 @@ import { Loader2, Upload, X, PlayCircle, Youtube, Link as LinkIcon, Check } from
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface VideoUploadProps {
     value?: string;
@@ -153,50 +154,58 @@ export function VideoUpload({
                             </div>
                         </form>
                     ) : (
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                            <label className="cursor-pointer">
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleUpload}
-                                    accept={accept}
-                                    disabled={uploading}
-                                />
-                                <div className={`flex items-center justify-center px-4 py-2.5 border rounded-lg shadow-sm text-sm font-medium transition-all
-                                    ${uploading
-                                        ? 'bg-slate-50 text-slate-400 cursor-wait border-slate-200'
-                                        : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400 border-slate-300'
-                                    }`}
-                                >
-                                    {uploading ? (
-                                        <>
-                                            <Loader2 className="animate-spin mr-2 h-4 w-4 text-blue-500" />
-                                            Yükleniyor...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Upload className="mr-2 h-4 w-4 text-slate-500" />
-                                            Dosya Yükle
-                                        </>
-                                    )}
-                                </div>
-                            </label>
-                            
-                            <div className="flex items-center gap-4">
-                                <span className="text-slate-300 text-sm hidden sm:block">veya</span>
-                                
-                                <Button 
-                                    type="button" 
-                                    variant="outline" 
-                                    onClick={() => setShowUrlInput(true)}
-                                    className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400"
-                                >
-                                    <Youtube className="mr-2 h-4 w-4 text-red-500" />
-                                    YouTube Linki
-                                </Button>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                                <TooltipProvider delayDuration={200}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <label className="cursor-pointer">
+                                                <input
+                                                    type="file"
+                                                    className="hidden"
+                                                    onChange={handleUpload}
+                                                    accept={accept}
+                                                    disabled={uploading}
+                                                />
+                                                <div className={`flex items-center justify-center w-10 h-10 border rounded-md shadow-sm transition-colors
+                                                    ${uploading
+                                                        ? 'bg-slate-100 text-slate-400 cursor-wait'
+                                                        : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                                                    }`}
+                                                >
+                                                    {uploading ? (
+                                                        <Loader2 className="animate-spin h-4 w-4 text-blue-500" />
+                                                    ) : (
+                                                        <Upload className="h-4 w-4" />
+                                                    )}
+                                                </div>
+                                            </label>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Dosya Yükle</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button 
+                                                type="button" 
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() => setShowUrlInput(true)}
+                                                className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 shrink-0"
+                                            >
+                                                <Youtube className="h-4 w-4 text-red-500" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>YouTube Linki</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
 
-                            <div className="flex flex-col ml-0 sm:ml-2">
+                            <div className="flex flex-col">
                                 <span className="text-xs text-slate-500 font-medium">MP4, WEBM (Max 50MB) veya YouTube Linki</span>
                                 <span className="text-[10px] text-slate-400">Yatay (16:9) tavsiye edilir</span>
                             </div>
