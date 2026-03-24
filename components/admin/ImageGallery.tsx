@@ -29,12 +29,18 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
     const fetchFiles = useCallback(async () => {
         try {
             setLoading(true);
-            const { data, error } = await supabase.storage.from(activeBucket).list();
+            const { data, error } = await supabase.storage.from(activeBucket).list('', {
+                limit: 5000,
+                offset: 0,
+                sortBy: { column: 'created_at', order: 'desc' }
+            });
             if (error) throw error;
             
             // Filter out empty folder placeholder files like .emptyFolderPlaceholder
             const validFiles = data?.filter(f => f.name && !f.name.startsWith('.')).sort((a, b) => {
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return dateB - dateA;
             }) || [];
             
             setFiles(validFiles);
