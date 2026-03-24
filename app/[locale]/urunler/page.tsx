@@ -58,15 +58,16 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
                         const title = trans.title || category.title;
                         
                         const getImageUrl = (path: string) => {
-                            if (!path) return '/placeholder-sector.jpg';
+                            if (!path) return '/logo.png';
                             if (path.startsWith('http') || path.startsWith('/')) return path;
+                            if (path.startsWith('category-')) return `/${path}`; // Seeded local assets
                             return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${path}`;
                         };
 
                         return (
                             <Link
                                 key={category.id}
-                                href={`/sektorel-cozumler/urunler/${category.slug}`}
+                                href={`/urunler/${category.slug}`}
                                 className="group relative flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all border border-slate-100"
                             >
                                 <div className="relative h-56 w-full overflow-hidden bg-slate-100">

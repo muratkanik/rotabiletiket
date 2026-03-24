@@ -11,7 +11,7 @@ export function ProductCard({ product, categorySlug }: { product: any, categoryS
     const storagePath = product.product_images?.[0]?.storage_path;
     const imageUrl = storagePath
         ? (storagePath.startsWith('/') ? storagePath : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${storagePath}`)
-        : '/placeholder-product.jpg';
+        : '/logo.png';
 
     return (
         <Link
