@@ -332,3 +332,27 @@ export async function bulkUpdateCategoryParent(ids: string[], parentId: string |
         return { success: false, error: error.message };
     }
 }
+
+export async function updateCategoryImage(id: string, imageUrl: string) {
+    try {
+        const supabase = createAdminClient();
+        if (!supabase) return { success: false, error: "Service Role Key missing" };
+
+        const { error } = await supabase
+            .from('categories')
+            .update({ image_url: imageUrl })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error updating category image:', error);
+            return { success: false, error: "Görsel güncellenirken hata oluştu." };
+        }
+
+        revalidatePath('/admin/categories');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error updating category image:', error);
+        return { success: false, error: error.message };
+    }
+}

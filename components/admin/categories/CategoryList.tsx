@@ -10,9 +10,11 @@ import { Plus, ArrowUpDown, Search, Pencil, Trash2 } from 'lucide-react';
 import { calculateSeoScore } from '@/utils/seo-helper';
 import { cn } from '@/lib/utils';
 import { HackerScreenModal } from '@/components/admin/HackerScreenModal';
-import { Sparkles, GripVertical, X, CornerUpLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder, reorderCategory, reorderCategoryToLastRoot } from '@/app/admin/(dashboard)/categories/actions';
+import { Sparkles, GripVertical, X, CornerUpLeft, ChevronRight, ChevronDown, ImagePlus } from 'lucide-react';
+import { deleteCategory, bulkDeleteCategories, deleteEmptyCategories, updateCategoryParent, bulkUpdateCategoryParent, updateCategoryOrder, reorderCategory, reorderCategoryToLastRoot, updateCategoryImage } from '@/app/admin/(dashboard)/categories/actions';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ImageGallery } from '@/components/admin/ImageGallery';
 import {
     DndContext,
     pointerWithin, useDraggable, useDroppable, DragEndEvent, DragOverlay } from '@dnd-kit/core';
@@ -71,9 +73,10 @@ interface CategoryRowProps {
     isExpanded: boolean;
     onToggleExpand: (id: string) => void;
     isDeleting: boolean;
+    onSelectImageClick: (id: string) => void;
 }
 
-function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateOrder, onMakeRoot, isExpanded, onToggleExpand, isDeleting }: CategoryRowProps) {
+function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateOrder, onMakeRoot, isExpanded, onToggleExpand, isDeleting, onSelectImageClick }: CategoryRowProps) {
     const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
         id: category.id,
         data: { type: 'category', category }
@@ -127,19 +130,31 @@ function CategoryRow({ category, isSelected, onToggleSelect, onDelete, onUpdateO
                 />
             </td>
             <td className="px-6 py-4">
-                <div className="relative w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border">
+                <button 
+                    onClick={() => onSelectImageClick(category.id)}
+                    className="relative w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border group cursor-pointer hover:border-blue-500 hover:shadow-sm transition-all flex items-center justify-center p-0 m-0 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                    title="Görseli değiştir / Ekle"
+                >
                     {category.image_url ? (
-                        <Image
-                            src={category.image_url.startsWith('http') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`}
-                            alt={category.title}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                        />
+                        <>
+                            <Image
+                                src={category.image_url.startsWith('http') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`}
+                                alt={category.title}
+                                fill
+                                className="object-cover transition-opacity group-hover:opacity-40"
+                                unoptimized
+                            />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 bg-slate-900/40 text-white transition-opacity">
+                                <ImagePlus size={16} />
+                            </div>
+                        </>
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">Yok</div>
+                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-blue-500 bg-slate-50 transition-colors">
+                            <ImagePlus size={16} className="mb-0.5 opacity-60 group-hover:opacity-100" />
+                            <span className="text-[10px] font-medium leading-none">Ekle</span>
+                        </div>
                     )}
-                </div>
+                </button>
             </td>
             <td className="px-6 py-4 font-medium text-slate-900">
                 <div 
@@ -263,6 +278,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUpdatingParent, setIsUpdatingParent] = useState(false);
     const [activeDragCategory, setActiveDragCategory] = useState<Category | null>(null);
+    const [selectingImageFor, setSelectingImageFor] = useState<string | null>(null);
 
     const handleUpdateOrder = async (id: string, newOrder: number) => {
         const result = await updateCategoryOrder(id, newOrder);
@@ -441,6 +457,27 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
             setEnhancingId(null);
             router.refresh();
         }
+    };
+
+    const handleAssignImage = async (url: string) => {
+        if (!selectingImageFor) return;
+        setSelectingImageFor(null);
+        
+        toast.promise(
+            updateCategoryImage(selectingImageFor, url),
+            {
+                loading: 'Görsel kaydediliyor...',
+                success: (res) => {
+                    if (res.success) {
+                        router.refresh();
+                        return "Görsel başarıyla kategoriye atandı!";
+                    } else {
+                        throw new Error(res.error || "Hata");
+                    }
+                },
+                error: (err) => `Görsel atama başarısız: ${err.message}`
+            }
+        );
     };
 
     // Filter categories first
@@ -622,6 +659,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                                         isExpanded={expandedIds.has(category.id)}
                                         onToggleExpand={toggleExpand}
                                         isDeleting={isDeleting}
+                                        onSelectImageClick={setSelectingImageFor}
                                     />
                                     {index === displayCategories.length - 1 && (
                                         <DropzoneRow id="after-last" categoryId={null} position="last" />
@@ -671,6 +709,17 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                 onClose={() => setIsHackerScreenOpen(false)}
                 title="CATEGORY AI SERP ENHANCER"
             />
+            {/* Inline Media Gallery Assignment Modal */}
+            <Dialog open={!!selectingImageFor} onOpenChange={(open) => !open && setSelectingImageFor(null)}>
+                <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Kategori İçin Görsel Seç</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto mt-2 px-1 pb-4">
+                        <ImageGallery defaultBucket="category-images" onSelect={handleAssignImage} />
+                    </div>
+                </DialogContent>
+            </Dialog>
             </div>
         </DndContext>
     );
