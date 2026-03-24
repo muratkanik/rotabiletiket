@@ -716,7 +716,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                         <DialogTitle>Kategori İçin Görsel Seç</DialogTitle>
                     </DialogHeader>
                     <div className="flex-1 overflow-y-auto mt-2 px-1 pb-4">
-                        <ImageGallery defaultBucket="category-images" onSelect={handleAssignImage} />
+                        <ImageGallery defaultBucket="product-images" onSelect={handleAssignImage} />
                     </div>
                 </DialogContent>
             </Dialog>
