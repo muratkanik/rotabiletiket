@@ -29,7 +29,7 @@ export function HeroClient({ slides }: { slides: any[] }) {
         >
             <CarouselContent className="h-full ml-0">
                 {slides.map((slide, index) => (
-                    <CarouselItem key={slide.id} className="relative h-full pl-0 min-h-[70vh]">
+                    <CarouselItem key={slide.id} className="relative h-full pl-0 min-h-[60vh]">
                         {/* 1. Background Layer */}
                         <div className="absolute inset-0 z-0">
                             {slide.background_url?.endsWith('.mp4') ? (
