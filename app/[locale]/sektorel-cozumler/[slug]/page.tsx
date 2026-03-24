@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }: { params: Promise<{ slug: string, locale: string }> }) {
     const { slug, locale } = await params;
     const supabase = await createClient();
-    const { data: sector } = await supabase
+    let { data: sector } = await supabase
         .from('sectors')
         .select(`
             *,
@@ -25,6 +25,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         `)
         .eq('slug', slug)
         .single();
+
+    if (!sector) {
+        const { data: transMatch } = await supabase.from('sector_translations').select('sector_id').eq('slug', slug).limit(1).single();
+        if (transMatch) {
+            const { data: matchedSector } = await supabase.from('sectors').select('*, sector_translations(language_code, title, content_html, seo_title, seo_description, keywords)').eq('id', transMatch.sector_id).single();
+            sector = matchedSector;
+        }
+    }
 
     if (!sector) return { title: 'Not Found' };
 
@@ -47,7 +55,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
     const { slug, locale } = await params;
     const supabase = await createClient();
 
-    const { data: sector } = await supabase
+    let { data: sector } = await supabase
         .from('sectors')
         .select(`
             *,
@@ -75,6 +83,14 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
         `)
         .eq('slug', slug)
         .single();
+
+    if (!sector) {
+        const { data: transMatch } = await supabase.from('sector_translations').select('sector_id').eq('slug', slug).limit(1).single();
+        if (transMatch) {
+            const { data: matchedSector } = await supabase.from('sectors').select('*, sector_translations(language_code, title, content_html), sector_products(product_id, display_order, products(id, slug, product_images(storage_path, is_primary), product_translations(title, language_code)))').eq('id', transMatch.sector_id).single();
+            sector = matchedSector;
+        }
+    }
 
     if (!sector) notFound();
 

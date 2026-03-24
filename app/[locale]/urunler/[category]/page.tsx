@@ -12,8 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     const locale = await getLocale();
     const supabase = await createClient();
 
-    // Fetch Category with Translations
-    const { data: category } = await supabase
+    // 1. Fetch Category with Translations
+    let { data: category } = await supabase
         .from('categories')
         .select(`
             *,
@@ -28,6 +28,19 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
         `)
         .eq('slug', categorySlug)
         .single();
+
+    // If not found by primary slug, lookup via translations
+    if (!category) {
+        const { data: transMatch } = await supabase.from('category_translations').select('category_id').eq('slug', categorySlug).limit(1).single();
+        if (transMatch) {
+            const { data: matchedCategory } = await supabase
+                .from('categories')
+                .select('*, category_translations (language_code, title, description, seo_title, seo_description, keywords)')
+                .eq('id', transMatch.category_id)
+                .single();
+            category = matchedCategory;
+        }
+    }
 
     if (!category) return { title: 'Ürünler | Rotabil Etiket' };
 
@@ -52,7 +65,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     const supabase = await createClient();
 
     // 1. Fetch Category with Translations
-    const { data: category } = await supabase
+    let { data: category } = await supabase
         .from('categories')
         .select(`
             *,
@@ -64,6 +77,19 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         `)
         .eq('slug', categorySlug)
         .single();
+
+    // If not found by primary slug, lookup via translations
+    if (!category) {
+        const { data: transMatch } = await supabase.from('category_translations').select('category_id').eq('slug', categorySlug).limit(1).single();
+        if (transMatch) {
+            const { data: matchedCategory } = await supabase
+                .from('categories')
+                .select('*, category_translations (language_code, title, description)')
+                .eq('id', transMatch.category_id)
+                .single();
+            category = matchedCategory;
+        }
+    }
 
     if (!category) {
         notFound();
