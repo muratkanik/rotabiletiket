@@ -7,6 +7,7 @@ import { Loader2, Upload, X, Library } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ImageGallery } from '@/components/admin/ImageGallery';
 
 interface ImageUploadProps {
@@ -101,43 +102,52 @@ export function ImageUpload({
                     </div>
                 </div>
             ) : (
-                <div className="flex items-center gap-4">
-                    <label className="cursor-pointer">
-                        <input
-                            type="file"
-                            className="hidden"
-                            onChange={handleUpload}
-                            accept={accept}
-                            disabled={uploading}
-                        />
-                        <div className={`flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors
-                            ${uploading
-                                ? 'bg-slate-100 text-slate-400 cursor-wait'
-                                : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
-                            }`}
-                        >
-                            {uploading ? (
-                                <>
-                                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                                    Yükleniyor...
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="mr-2 h-4 w-4" />
-                                    Dosya Seç
-                                </>
-                            )}
-                        </div>
-                    </label>
+                <div className="flex items-center gap-2">
+                    <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <label className="cursor-pointer">
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleUpload}
+                                        accept={accept}
+                                        disabled={uploading}
+                                    />
+                                    <div className={`flex items-center justify-center w-10 h-10 border rounded-md shadow-sm transition-colors
+                                        ${uploading
+                                            ? 'bg-slate-100 text-slate-400 cursor-wait'
+                                            : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'
+                                        }`}
+                                    >
+                                        {uploading ? (
+                                            <Loader2 className="animate-spin h-4 w-4" />
+                                        ) : (
+                                            <Upload className="h-4 w-4" />
+                                        )}
+                                    </div>
+                                </label>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Bilgisayardan Dosya Yükle</p>
+                            </TooltipContent>
+                        </Tooltip>
 
-                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button type="button" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
-                                <Library className="mr-2 h-4 w-4" />
-                                Mevcut Görsellerden Seç
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <DialogTrigger asChild>
+                                        <Button type="button" variant="outline" size="icon" className="border-slate-300 text-slate-700 hover:bg-slate-50 shrink-0">
+                                            <Library className="h-4 w-4" />
+                                        </Button>
+                                    </DialogTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Medya Kütüphanesinden Seç</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            
+                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
                             <DialogHeader>
                                 <DialogTitle>Görsel Seç</DialogTitle>
                             </DialogHeader>
@@ -147,6 +157,7 @@ export function ImageUpload({
                         </DialogContent>
                     </Dialog>
                     <span className="text-sm text-slate-500">Max 50MB</span>
+                    </TooltipProvider>
                 </div>
             )}
         </div>
