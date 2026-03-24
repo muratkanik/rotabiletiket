@@ -120,6 +120,15 @@ export default function AdminSettingsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
+                                <Label>WhatsApp Numarası</Label>
+                                <Input
+                                    value={contactInfo.whatsapp || ''}
+                                    onChange={e => setContactInfo({ ...contactInfo, whatsapp: e.target.value })}
+                                    placeholder="+90 555 965 89 18"
+                                />
+                                <p className="text-[10px] text-slate-500">Örnek: +90 555 965 89 18 (Sitedeki WhatsApp butonunda kullanılacak)</p>
+                            </div>
+                            <div className="space-y-2">
                                 <Label>Adres</Label>
                                 <Textarea
                                     value={contactInfo.address || ''}

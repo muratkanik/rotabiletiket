@@ -12,6 +12,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
+import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -52,6 +53,10 @@ export default async function RootLayout({
     // side is the easiest way to get started
     const messages = await getMessages();
 
+    // Fetch contact info for WhatsApp
+    const contactInfo = await getSiteSettings('contact_info');
+    const whatsappNumber = contactInfo?.whatsapp || '+90 555 965 89 18';
+
     return (
         <html lang={locale}>
             <head>
@@ -65,6 +70,7 @@ export default async function RootLayout({
                     {children}
                     <Footer locale={locale} />
                     <CookieBanner locale={locale} />
+                    <WhatsAppButton phoneNumber={whatsappNumber} />
                     <Toaster />
                 </NextIntlClientProvider>
             </body>
