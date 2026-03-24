@@ -45,7 +45,7 @@ export async function Hero({ locale }: { locale: string }) {
     });
 
     return (
-        <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-900">
+        <div className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-900">
             <HeroClient slides={localizedSlides} />
         </div >
     );
