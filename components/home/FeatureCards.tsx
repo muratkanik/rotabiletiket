@@ -57,6 +57,10 @@ export async function FeatureCards({ locale }: { locale: string }) {
         };
     }) || [];
 
+    const stripHtml = (html: string) => {
+        return html ? html.replace(/<[^>]*>?/gm, '') : '';
+    };
+
     return (
         <section className="py-24 bg-slate-50">
             <div className="container px-4 md:px-6">
@@ -90,7 +94,7 @@ export async function FeatureCards({ locale }: { locale: string }) {
                                     </h3>
 
                                     <p className="text-slate-600 mb-6 leading-relaxed line-clamp-2">
-                                        {category.description || ''}
+                                        {stripHtml(category.description || '')}
                                     </p>
 
                                     <div className="flex items-center text-sm font-semibold text-blue-600 group-hover:text-orange-600 transition-colors">
