@@ -224,6 +224,8 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
             { code: 'ar', instruction: 'Translate to Arabic (العربية)' }
         ];
 
+        let englishSlug = generateSlug(trTitle);
+
         for (const lang of targetLanguages) {
             const translatePrompt = `Aşağıdaki JSON verisindeki tüm metin değerlerini çevir. HTML yapılarını, JSON anahtarlarını (keys) ve etiketlerini hiçbir şekilde bozma. Sadece içeriği çevir.
 Gelen Veri: ${generatedRaw} `;
@@ -238,11 +240,16 @@ Gelen Veri: ${generatedRaw} `;
                     const cleanRaw = langRaw.replace(/```json/gi, '').replace(/```/g, '').trim();
                     const langContent = JSON.parse(cleanRaw);
                     const langTitle = langContent.seo_title || langContent.title || generatedContent.seo_title;
+                    
+                    let currentSlug = generateSlug(langTitle);
+                    if (lang.code === 'en') englishSlug = currentSlug;
+                    if (lang.code === 'ar') currentSlug = englishSlug; // Fallback to EN slug for AR to prevent 404s
+
                     await supabase.from('category_translations').upsert({
                         category_id: categoryId, 
                         language_code: lang.code,
                         title: langTitle,
-                        slug: generateSlug(langTitle),
+                        slug: currentSlug,
                         description: langContent.description,
                         seo_title: langContent.seo_title || langContent.title || generatedContent.seo_title,
                         seo_description: langContent.seo_description,
