@@ -22,6 +22,7 @@ const BUCKETS = [
 export function ImageGallery({ defaultBucket = 'product-images', onSelect, className }: ImageGalleryProps) {
     const [activeBucket, setActiveBucket] = useState(defaultBucket);
     const [files, setFiles] = useState<any[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const supabase = createClient();
@@ -117,12 +118,26 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
                     ))}
                 </div>
                 
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={fetchFiles} disabled={loading}>
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-64">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Dosya adı ile ara..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                    </div>
+                    <Button variant="outline" size="sm" onClick={fetchFiles} disabled={loading} className="shrink-0 hidden sm:flex">
                         <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                         Yenile
                     </Button>
-                    <label className="cursor-pointer">
+                    <label className="cursor-pointer shrink-0">
                         <input
                             type="file"
                             className="hidden"
@@ -148,17 +163,28 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
             </div>
 
             {/* Grid */}
-            {loading && files.length === 0 ? (
-                <div className="flex items-center justify-center h-48 border-2 border-dashed border-slate-200 rounded-xl">
-                    <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-                </div>
-            ) : files.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-200 rounded-xl text-slate-500">
-                    <p>Bu klasörde henüz görsel yok.</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto max-h-[600px] p-1">
-                    {files.map(file => {
+            {(() => {
+                const filteredFiles = files.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()));
+                
+                if (loading && files.length === 0) {
+                    return (
+                        <div className="flex items-center justify-center h-48 border-2 border-dashed border-slate-200 rounded-xl">
+                            <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                        </div>
+                    );
+                }
+                
+                if (filteredFiles.length === 0) {
+                    return (
+                        <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-200 rounded-xl text-slate-500">
+                            {searchQuery ? <p>"{searchQuery}" aramasıyla eşleşen görsel bulunamadı.</p> : <p>Bu klasörde henüz görsel yok.</p>}
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto max-h-[600px] p-1">
+                        {filteredFiles.map(file => {
                         const isVideo = file.name.match(/\.(mp4|webm|ogg)$/i);
                         const url = getPublicUrl(file.name);
                         return (
@@ -198,7 +224,8 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
                         );
                     })}
                 </div>
-            )}
+                );
+            })()}
         </div>
     );
 }
