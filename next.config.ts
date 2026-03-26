@@ -34,6 +34,23 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        // Matches any path that ends with .php (e.g., /wax-ribbon.php, /a/b.php)
+        source: '/:path(.*\\.php)',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        // Catch-all for any straggling URLs starting with /index.php/ (e.g., /index.php/barkod-yazicilar/bilgi-bankasi.php) 
+        // that might not be caught if there are query strings or weird structures.
+        source: '/index.php/:path*',
+        destination: '/',
+        permanent: true,
+      }
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
