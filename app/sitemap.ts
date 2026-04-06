@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@/utils/supabase/server';
+import locationsData from '../data/locations.json';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = await createClient();
@@ -68,5 +69,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
     }));
 
-    return [...routes, ...extraRoutes, ...categoryRoutes, ...productRoutes, ...sectorRoutes, ...articleRoutes];
+    // Dynamic: Locations
+    const locationRoutes = locationsData.map((loc: any) => ({
+        url: `${baseUrl}/${loc.slug}-etiket`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+    }));
+
+    return [...routes, ...extraRoutes, ...categoryRoutes, ...productRoutes, ...sectorRoutes, ...articleRoutes, ...locationRoutes];
 }
