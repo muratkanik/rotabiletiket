@@ -5268,5 +5268,15 @@
     "city": "Düzce",
     "district": "Yığılca",
     "slug": "yigilca"
+  },
+  {
+    "city": "İstanbul",
+    "district": "Anadolu Yakası",
+    "slug": "istanbul-anadolu"
+  },
+  {
+    "city": "İstanbul",
+    "district": "Avrupa Yakası",
+    "slug": "istanbul-avrupa"
   }
 ]
