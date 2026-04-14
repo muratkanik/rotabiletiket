@@ -109,50 +109,35 @@ Detaylar: ${itemRef.description}`;
 
         let caption = "Muhteşem bir fırsat! Hemen tıkla, detayları incele.";
         const hasOpenAI = !!openai_api_key;
-        const hasGemini = !!gemini_api_key;
-
         let viralBackgroundImageUrl = itemRef.image; // Fallback to original image
 
         try {
+            const { callAIFallback } = await import("@/utils/ai");
+            const captionResult = await callAIFallback("Sen uzman bir sosyal medya yöneticisisin.", prompt, false, settings as any);
+            if (captionResult) {
+                caption = captionResult;
+            }
+
             if (hasOpenAI) {
                 const { default: OpenAI } = await import("openai");
                 const openai = new OpenAI({ apiKey: openai_api_key });
 
-                // 1. Generate Caption (Parallel with Image)
-                const captionPromise = openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [{ role: "user", content: prompt }],
-                    temperature: 0.7,
-                    max_tokens: 100,
-                }).then(res => res.choices[0]?.message?.content?.trim());
-
-                // 2. Generate Viral Background (DALL-E 3)
                 const imagePrompt = `A striking, highly aesthetic, and photorealistic showcase image for an Instagram story. The primary focal point MUST exactly represent the product or topic: "${itemRef.title}". Produce a visually stunning, real-world representation of this specific item or concept, with professional studio lighting. DO NOT include any text, letters, or words in the image. The image must clearly and accurately correspond to the actual product category without being generic.`;
-                const imagePromise = openai.images.generate({
+                const imageResult = await openai.images.generate({
                     model: "dall-e-3",
                     prompt: imagePrompt,
                     n: 1,
-                    size: "1024x1024", // DALL-E 3 supports 1024x1792 but it might be slower/more expensive or unsupported in some API versions, let's stick to 1024x1024 and let OG cover/crop it, or request 1024x1792 if possible. Standard is 1024x1024 or 1024x1792. Let's try 1024x1792.
+                    size: "1024x1024",
                 }).catch(err => {
                     console.error("DALL-E 3 Error:", err);
                     return null;
                 });
 
-                // Await both
-                const [captionResult, imageResult] = await Promise.all([captionPromise, imagePromise]);
-
-                if (captionResult) caption = captionResult;
                 if (imageResult && imageResult.data && imageResult.data.length > 0) {
                     viralBackgroundImageUrl = imageResult.data[0].url || itemRef.image;
                 }
-
-            } else if (hasGemini) {
-                const { GoogleGenerativeAI } = await import("@google/generative-ai");
-                const genAI = new GoogleGenerativeAI(gemini_api_key);
-                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-                const result = await model.generateContent(prompt);
-                caption = result.response.text()?.trim() || caption;
             }
+
             caption = caption.replace(/^["']|["']$/g, '').trim();
         } catch (err) {
             console.error("AI Generation failed in cron, using fallback caption/image.", err);

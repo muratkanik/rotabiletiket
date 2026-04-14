@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+
+
 import { createClient } from "@/utils/supabase/server";
-import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { callAIFallback } from "@/utils/ai";
 
 export async function POST(req: Request) {
     try {
@@ -15,11 +16,8 @@ export async function POST(req: Request) {
 
         const { data: settings } = await supabase.from("meta_settings").select("openai_api_key, gemini_api_key").single();
 
-        const hasOpenAI = !!settings?.openai_api_key;
-        const hasGemini = !!settings?.gemini_api_key;
-
-        if (!hasOpenAI && !hasGemini) {
-            return NextResponse.json({ error: "OpenAI veya Gemini API anahtarı ayarlanmamış." }, { status: 400 });
+        if (!settings?.openai_api_key && !settings?.gemini_api_key && !settings?.xai_api_key) {
+            return NextResponse.json({ error: "API anahtarı ayarlanmamış." }, { status: 400 });
         }
 
         const prompt = `Sen bir sosyal medya yöneticisisin. Aşağıdaki ürün için Instagram Gönderisi ve Hikayesi olarak kullanılacak ÇOK KISA, dikkat çekici, ve merak uyandıran maks 2 cümlelik bir metin yaz.
@@ -33,23 +31,13 @@ Fiyat: ${productPrice ? productPrice + " TL" : "Belirtilmedi"}
 Özellikler: ${productFeatures || "Genel"}
 `;
 
-        let text = "";
-
-        if (hasOpenAI) {
-            const openai = new OpenAI({ apiKey: settings.openai_api_key });
-            const response = await openai.chat.completions.create({
-                model: "gpt-4o-mini",
-                messages: [{ role: "user", content: prompt }],
-                temperature: 0.7,
-                max_tokens: 100,
-            });
-            text = response.choices[0]?.message?.content?.trim() || "";
-        } else if (hasGemini) {
-            const genAI = new GoogleGenerativeAI(settings.gemini_api_key);
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-            const result = await model.generateContent(prompt);
-            text = result.response.text()?.trim() || "";
-        }
+        const rawText = await callAIFallback(
+            "Sen uzman bir sosyal medya yöneticisisin.", 
+            prompt, 
+            false, 
+            settings
+        );
+        let text = rawText || "";
 
         // Clean up quotes if AI included them despite instruction
         text = text.replace(/^["']|["']$/g, '').trim();

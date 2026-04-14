@@ -1,7 +1,6 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callAIFallback } from '@/utils/ai';
 
 export const maxDuration = 60;
 
@@ -22,56 +21,12 @@ export async function POST(req: Request) {
             .select('openai_api_key, serper_api_key, gemini_api_key')
             .single();
 
-        const hasOpenAI = !!settings?.openai_api_key;
-        const hasGemini = !!settings?.gemini_api_key;
-
-        if (!hasOpenAI && !hasGemini) {
-            return NextResponse.json({ error: "Sistemde OpenAI veya Gemini API Key tanımlı değil." }, { status: 400 });
-        }
-
-        if (!settings?.serper_api_key) {
-            return NextResponse.json({ error: "Sistemde Serper.dev API Key tanımlı değil." }, { status: 400 });
-        }
-
-        let openai: OpenAI | null = null;
-        if (hasOpenAI) openai = new OpenAI({ apiKey: settings.openai_api_key });
-
-        let genAI: GoogleGenerativeAI | null = null;
-        if (hasGemini) genAI = new GoogleGenerativeAI(settings.gemini_api_key);
-
-        // --- Helper Function: Call AI (prefers Gemini if user requested fallback logic, but let's prefer OpenAI if exists, or Gemini if OpenAI is missing. Wait, I will use OpenAI first. If OpenAI is missing, fallback to Gemini.) ---
-        const callAI = async (systemPrompt: string, userPrompt: string, asJson = false) => {
-            if (hasOpenAI && openai) {
-                const completion = await openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: userPrompt }
-                    ],
-                    response_format: asJson ? { type: "json_object" } : undefined
-                });
-                return completion.choices[0]?.message.content;
-            } else if (hasGemini && genAI) {
-                const model = genAI.getGenerativeModel({
-                    model: "gemini-2.5-flash",
-                    generationConfig: { responseMimeType: asJson ? "application/json" : "text/plain" }
-                });
-                // Gemini system instructions can be mixed or set directly
-                const result = await model.generateContent({
-                    contents: [{ role: 'user', parts: [{ text: `System Instructions: ${systemPrompt}\n\nTask: ${userPrompt}` }] }]
-                });
-                return result.response.text();
-            }
-            throw new Error("No AI available");
-        };
+        
 
         // 1. Translate Keyword to English
         let englishKeyword = keywords;
         try {
-            const rawTranslate = await callAI(
-                "You are a translator. Translate the given Turkish text to English. Return ONLY the translation.",
-                keywords
-            );
+            const rawTranslate = await callAIFallback("You are a translator. Translate the given Turkish text to English. Return ONLY the translation.", keywords, false, settings);
             if (rawTranslate) englishKeyword = rawTranslate.trim();
         } catch (e) {
             console.error("Keyword translation failed:", e);
@@ -135,7 +90,7 @@ ${enSerp}
 
 Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
 
-        const generatedRaw = await callAI(systemPrompt, userPrompt, true);
+        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings);
         if (!generatedRaw) throw new Error("Makale üretilemedi.");
 
         let generatedContent;
@@ -220,7 +175,7 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
                 const translateSysPrompt = `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks.`;
                 const translateUserPrompt = `Translate the following JSON's values, preserving HTML tags: \n${JSON.stringify(generatedContent)}`;
 
-                const langRaw = await callAI(translateSysPrompt, translateUserPrompt, true);
+                const langRaw = await callAIFallback(translateSysPrompt, translateUserPrompt, true, settings);
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
                     await supabase.from('article_translations').insert({

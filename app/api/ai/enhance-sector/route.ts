@@ -1,7 +1,6 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callAIFallback } from '@/utils/ai';
 
 export const maxDuration = 60; // Allow 60 seconds execution for AI tasks on Vercel
 
@@ -47,35 +46,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Sistemde OpenAI veya Gemini API Key tanımlı değil. (Ayarlar > Entegrasyonlar)." }, { status: 400 });
         }
 
-        let openai: OpenAI | null = null;
-        if (hasOpenAI) openai = new OpenAI({ apiKey: settings.openai_api_key });
 
-        let genAI: GoogleGenerativeAI | null = null;
-        if (hasGemini) genAI = new GoogleGenerativeAI(settings.gemini_api_key);
-
-        const callAI = async (systemPrompt: string, userPrompt: string, asJson = false) => {
-            if (hasOpenAI && openai) {
-                const completion = await openai.chat.completions.create({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: userPrompt }
-                    ],
-                    response_format: asJson ? { type: "json_object" } : undefined
-                });
-                return completion.choices[0]?.message.content;
-            } else if (hasGemini && genAI) {
-                const model = genAI.getGenerativeModel({
-                    model: "gemini-2.5-flash",
-                    generationConfig: { responseMimeType: asJson ? "application/json" : "text/plain" }
-                });
-                const result = await model.generateContent({
-                    contents: [{ role: 'user', parts: [{ text: `System Instructions: ${systemPrompt}\n\nTask: ${userPrompt}` }] }]
-                });
-                return result.response.text();
-            }
-            throw new Error("No AI available");
-        };
 
         let trSerpDataText = "GERÇEK ZAMANLI TÜRKÇE VERİ YOK.";
         let enSerpDataText = "GERÇEK ZAMANLI İNGİLİZCE VERİ YOK.";
@@ -87,10 +58,7 @@ export async function POST(req: Request) {
 
             try {
                 // 1. Translate Title to English for English SERP
-                const englishTitleRaw = await callAI(
-                    "You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else.",
-                    trTranslation.title
-                );
+                const englishTitleRaw = await callAIFallback("You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else.", trTranslation.title, false, settings);
                 const englishTitle = englishTitleRaw?.trim() || trTranslation.title;
 
                 // 2. Fetch Helper Function
@@ -168,7 +136,7 @@ ${trTranslation.content_html || trTranslation.description || 'İçerik boş, sen
 
 Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Türkçe Sektör (B2B Hizmet) Açıklaması üret (JSON formatında geri dön).`;
 
-        const generatedRaw = await callAI(systemPrompt, userPrompt, true);
+        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings);
 
         if (!generatedRaw) {
             return NextResponse.json({ error: "Yapay zeka yanıt oluşturamadı." }, { status: 500 });
