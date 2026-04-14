@@ -176,10 +176,11 @@ Yukarıdaki katı kurallara harfiyen uyarak, HTML formatında mükemmel bir Tür
 Gelen Veri: ${generatedRaw} `;
 
             try {
-                const langRaw = await callAI(
+                const langRaw = await callAIFallback(
                     `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.`,
                     translatePrompt,
-                    true
+                    true,
+                    settings
                 );
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
