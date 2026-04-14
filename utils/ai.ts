@@ -11,7 +11,7 @@ export async function callAIFallback(
     systemPrompt: string,
     userPrompt: string,
     asJson = false,
-    settings: AISettings
+    settings?: AISettings | null
 ): Promise<string | undefined | null> {
     const hasOpenAI = !!settings?.openai_api_key;
     const hasGemini = !!settings?.gemini_api_key;
