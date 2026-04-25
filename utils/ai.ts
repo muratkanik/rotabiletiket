@@ -25,7 +25,7 @@ export async function callAIFallback(
     if (hasOpenAI) {
         try {
             console.log("Calling OpenAI for text generation...");
-            const openai = new OpenAI({ apiKey: settings.openai_api_key! });
+            const openai = new OpenAI({ apiKey: settings.openai_api_key!, maxRetries: 0 });
             const completion = await openai.chat.completions.create({
                 model: "gpt-4o-mini",
                 messages: [

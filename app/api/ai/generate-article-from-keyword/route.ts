@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
         const { data: settings } = await supabase
             .from('meta_settings')
-            .select('openai_api_key, serper_api_key, gemini_api_key')
+            .select('openai_api_key, serper_api_key, gemini_api_key, xai_api_key')
             .single();
 
         const fallbackLogs: string[] = [];

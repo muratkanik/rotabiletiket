@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         // Fetch API Key from Settings
         const { data: settings } = await supabase
             .from('meta_settings')
-            .select('openai_api_key, serper_api_key, gemini_api_key')
+            .select('openai_api_key, serper_api_key, gemini_api_key, xai_api_key')
             .single();
 
         const hasOpenAI = !!settings?.openai_api_key;
