@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
         const { data: settings } = await supabase.from("meta_settings").select("openai_api_key, gemini_api_key").single();
 
-        if (!settings?.openai_api_key && !settings?.gemini_api_key && !settings?.xai_api_key) {
+        if (!settings?.openai_api_key && !settings?.gemini_api_key && !(settings as any)?.xai_api_key) {
             return NextResponse.json({ error: "API anahtarı ayarlanmamış." }, { status: 400 });
         }
 

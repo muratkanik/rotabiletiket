@@ -95,6 +95,12 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
             if (!res.ok) throw new Error("API Hatası");
             const data = await res.json();
 
+            if (data.fallbackLogs && data.fallbackLogs.length > 0) {
+                data.fallbackLogs.forEach((log: string) => {
+                    setLogs(prev => [...prev, log]);
+                });
+            }
+
             setLogs(prev => [...prev, `> Çeviriler hazırlanıyor...`]);
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -179,6 +185,13 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                     continue;
                 }
 
+                const data = await res.json();
+                if (data.fallbackLogs && data.fallbackLogs.length > 0) {
+                    data.fallbackLogs.forEach((log: string) => {
+                        setLogs(prev => [...prev, log]);
+                    });
+                }
+
                 setLogs(prev => [...prev, `> BAŞARILI: "${articleTitle}" optimize edildi ve çevirileri yapıldı.`]);
             }
 
@@ -217,6 +230,13 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
             if (!res.ok) {
                 const errorResponse = await res.json().catch(() => ({}));
                 throw new Error(errorResponse.error || res.statusText);
+            }
+
+            const data = await res.json();
+            if (data.fallbackLogs && data.fallbackLogs.length > 0) {
+                data.fallbackLogs.forEach((log: string) => {
+                    setLogs(prev => [...prev, log]);
+                });
             }
 
             setLogs(prev => [...prev, `> İŞLEM BAŞARILI! DALL-E görseli eklendi, çeviriler yapıldı ve veritabanına kaydedildi.`]);

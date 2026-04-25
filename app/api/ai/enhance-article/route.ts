@@ -45,6 +45,8 @@ export async function POST(req: Request) {
         let trSerpDataText = "GERÇEK ZAMANLI TÜRKÇE VERİ YOK.";
         let enSerpDataText = "GERÇEK ZAMANLI İNGİLİZCE VERİ YOK.";
 
+        const fallbackLogs: string[] = [];
+
         if (!mock) {
             if (!settings?.serper_api_key) {
                 return NextResponse.json({ error: "Sistemde Serper.dev API Key tanımlı değil. (Ayarlar > Entegrasyonlar)." }, { status: 400 });
@@ -52,7 +54,7 @@ export async function POST(req: Request) {
 
             try {
                 // 1. Translate Title to English for English SERP
-                const englishTitleRaw = await callAIFallback("You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else.", article.title, false, settings);
+                const englishTitleRaw = await callAIFallback("You are a professional translator. Translate the given Turkish text to English. Return ONLY the translation, nothing else.", article.title, false, settings, fallbackLogs);
                 const englishTitle = englishTitleRaw?.trim() || article.title;
 
                 // 2. Fetch Helper Function
@@ -130,7 +132,7 @@ ${article.content_html || 'İçerik boş, sen sıfırdan yarat.'}
 
 Yukarıdaki katı kurallara (özellikle karakter/kelime sınırları ve keyword yerleşimi) harfiyen uyarak, hem Türkiye hem de Global verileri harmanlayıp HTML formatında mükemmel bir Türkçe Seo Blog içeriği üret (JSON formatında geri dön). Makalenin en sonuna konuyla ilgili 3-4 adet Sıkça Sorulan Sorular (S.S.S) ve cevaplarını HTML formatında eklemeyi unutma.`;
 
-        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings);
+        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings, fallbackLogs);
 
         if (!generatedRaw) {
             return NextResponse.json({ error: "Yapay zeka yanıt oluşturamadı." }, { status: 500 });
@@ -190,7 +192,8 @@ Gelen Veri: ${generatedRaw}`;
                     `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks like \`\`\`json.`,
                     translatePrompt,
                     true,
-                    settings
+                    settings,
+                    fallbackLogs
                 );
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
@@ -212,7 +215,8 @@ Gelen Veri: ${generatedRaw}`;
         return NextResponse.json({
             success: true,
             message: "Makale başarıyla AI tarafından geliştirildi ve veritabanına kaydedildi.",
-            data: generatedContent
+            data: generatedContent,
+            fallbackLogs: fallbackLogs
         });
 
     } catch (e: any) {

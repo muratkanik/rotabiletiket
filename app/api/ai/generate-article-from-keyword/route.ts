@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import { callAIFallback } from '@/utils/ai';
+import OpenAI from 'openai';
 
 export const maxDuration = 60;
 
@@ -21,12 +22,22 @@ export async function POST(req: Request) {
             .select('openai_api_key, serper_api_key, gemini_api_key')
             .single();
 
-        
+        const fallbackLogs: string[] = [];
+
+        if (!settings) {
+            return NextResponse.json({ error: "Ayarlar bulunamadı." }, { status: 500 });
+        }
+
+        const hasOpenAI = !!settings?.openai_api_key;
+        let openai;
+        if (hasOpenAI) {
+            openai = new OpenAI({ apiKey: settings.openai_api_key! });
+        }
 
         // 1. Translate Keyword to English
         let englishKeyword = keywords;
         try {
-            const rawTranslate = await callAIFallback("You are a translator. Translate the given Turkish text to English. Return ONLY the translation.", keywords, false, settings);
+            const rawTranslate = await callAIFallback("You are a translator. Translate the given Turkish text to English. Return ONLY the translation.", keywords, false, settings, fallbackLogs);
             if (rawTranslate) englishKeyword = rawTranslate.trim();
         } catch (e) {
             console.error("Keyword translation failed:", e);
@@ -37,7 +48,7 @@ export async function POST(req: Request) {
             try {
                 const res = await fetch("https://google.serper.dev/search", {
                     method: 'POST',
-                    headers: { 'X-API-KEY': settings.serper_api_key, 'Content-Type': 'application/json' },
+                    headers: { 'X-API-KEY': settings.serper_api_key || '', 'Content-Type': 'application/json' },
                     body: JSON.stringify({ q: query, gl, hl, num: 10 })
                 });
                 if (res.ok) {
@@ -90,7 +101,7 @@ ${enSerp}
 
 Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
 
-        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings);
+        const generatedRaw = await callAIFallback(systemPrompt, userPrompt, true, settings, fallbackLogs);
         if (!generatedRaw) throw new Error("Makale üretilemedi.");
 
         let generatedContent;
@@ -175,7 +186,7 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
                 const translateSysPrompt = `You are a professional translator and SEO expert. ${lang.instruction}. Output MUST BE valid JSON matching the input schema exactly. Do not add markdown blocks.`;
                 const translateUserPrompt = `Translate the following JSON's values, preserving HTML tags: \n${JSON.stringify(generatedContent)}`;
 
-                const langRaw = await callAIFallback(translateSysPrompt, translateUserPrompt, true, settings);
+                const langRaw = await callAIFallback(translateSysPrompt, translateUserPrompt, true, settings, fallbackLogs);
                 if (langRaw) {
                     const langContent = JSON.parse(langRaw);
                     await supabase.from('article_translations').insert({
@@ -197,7 +208,8 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
         return NextResponse.json({
             success: true,
             message: "Makale başarıyla üretildi.",
-            articleId: articleId
+            articleId: articleId,
+            fallbackLogs: fallbackLogs
         });
 
     } catch (e: any) {

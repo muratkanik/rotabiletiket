@@ -11,7 +11,8 @@ export async function callAIFallback(
     systemPrompt: string,
     userPrompt: string,
     asJson = false,
-    settings?: AISettings | null
+    settings?: AISettings | null,
+    fallbackLogs?: string[]
 ): Promise<string | undefined | null> {
     const hasOpenAI = !!settings?.openai_api_key;
     const hasGemini = !!settings?.gemini_api_key;
@@ -37,6 +38,11 @@ export async function callAIFallback(
             if (result) return result;
         } catch (err: any) {
             console.warn("OpenAI API returned an error, cascading to x.ai (Grok)...", err.message);
+            if (fallbackLogs) {
+                const time = new Date().toLocaleTimeString('tr-TR', { hour12: false });
+                fallbackLogs.push(`[${time}]> KRITIK HATA: ${err.message}`);
+                fallbackLogs.push(`[${time}]> OpenAI başarısız oldu. GROK API ile deneniyor...`);
+            }
             lastError = err;
         }
     }
@@ -81,6 +87,11 @@ export async function callAIFallback(
         }
     } catch (err: any) {
         console.warn("x.ai API returned an error, cascading to Google Gemini...", err.message);
+        if (fallbackLogs) {
+            const time = new Date().toLocaleTimeString('tr-TR', { hour12: false });
+            fallbackLogs.push(`[${time}]> KRITIK HATA: ${err.message}`);
+            fallbackLogs.push(`[${time}]> GROK başarısız oldu. Gemini (Antigravity) API ile deneniyor...`);
+        }
         lastError = err;
     }
 
