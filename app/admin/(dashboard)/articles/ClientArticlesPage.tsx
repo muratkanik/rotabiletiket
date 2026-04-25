@@ -24,6 +24,9 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     const [isBulkLinkScreenOpen, setIsBulkLinkScreenOpen] = useState(false);
     const [isBulkLinking, setIsBulkLinking] = useState(false);
 
+    // Bulk Delete State
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
     // Auto Article Generator States
     const [isAutoGenerateModalOpen, setIsAutoGenerateModalOpen] = useState(false);
     const [autoGenerateKeywords, setAutoGenerateKeywords] = useState("");
@@ -209,6 +212,33 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
         }
     };
 
+    const handleBulkDelete = async () => {
+        if (!confirm(`Seçili ${selectedIds.length} adet makaleyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) return;
+
+        setIsBulkDeleting(true);
+        try {
+            const res = await fetch('/api/articles/bulk-delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ articleIds: selectedIds })
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || 'Silme işlemi başarısız oldu.');
+            }
+
+            // Remove from local state
+            setArticles(prev => prev.filter(a => !selectedIds.includes(a.id)));
+            setSelectedIds([]);
+            alert('Seçili makaleler başarıyla silindi.');
+        } catch (error: any) {
+            alert(`Hata: ${error.message}`);
+        } finally {
+            setIsBulkDeleting(false);
+        }
+    };
+
     const handleAutoGenerate = async () => {
         if (!autoGenerateKeywords.trim()) return;
 
@@ -261,14 +291,25 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                 </div>
                 <div className="flex items-center gap-3">
                     {selectedIds.length > 0 && (
-                        <Button
-                            onClick={handleBulkEnhance}
-                            disabled={isBulkEnhancing || enhancingArticleId !== null}
-                            variant="outline"
-                            className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                        >
-                            <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
-                        </Button>
+                        <>
+                            <Button
+                                onClick={handleBulkDelete}
+                                disabled={isBulkDeleting}
+                                variant="outline"
+                                className="border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                Sil ({selectedIds.length})
+                            </Button>
+                            <Button
+                                onClick={handleBulkEnhance}
+                                disabled={isBulkEnhancing || enhancingArticleId !== null}
+                                variant="outline"
+                                className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                            >
+                                <Sparkles className="mr-2 h-4 w-4" /> Seçili Olanları Yapay Zekaya Geliştir ({selectedIds.length})
+                            </Button>
+                        </>
                     )}
                     <Button
                         onClick={() => setIsAutoGenerateModalOpen(true)}
