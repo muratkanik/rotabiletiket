@@ -2,7 +2,7 @@ import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import { callAIFallback } from '@/utils/ai';
 
-export const maxDuration = 60; // Allow 60 seconds execution for AI tasks on Vercel
+export const maxDuration = 300; // Allow 300 seconds execution for AI tasks on Vercel
 
 export async function POST(req: Request) {
     try {

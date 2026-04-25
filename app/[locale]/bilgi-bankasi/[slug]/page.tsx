@@ -8,6 +8,8 @@ import { ArrowLeft, Calendar, User } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
     params: Promise<{
         slug: string;
