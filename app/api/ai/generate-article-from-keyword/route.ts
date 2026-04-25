@@ -112,12 +112,19 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
             throw new Error("AI geçerli bir JSON formatı döndürmedi.");
         }
 
-        // 4. Save to Database
+        // 4. Handle Duplicate Slug
+        let finalSlug = generatedContent.slug;
+        const { data: existingArticle } = await supabase.from('articles').select('id').eq('slug', finalSlug).maybeSingle();
+        if (existingArticle) {
+            finalSlug = `${finalSlug}-${Date.now()}`;
+        }
+
+        // 5. Save to Database
         const { data: newArticle, error: insertError } = await supabase
             .from('articles')
             .insert({
                 title: generatedContent.title || generatedContent.seo_title,
-                slug: generatedContent.slug,
+                slug: finalSlug,
                 summary: generatedContent.summary,
                 content_html: generatedContent.content_html,
                 is_published: true // Publish immediately or leave as draft? Let's publish. Wait, let's keep it draft (false) so admin can review.
@@ -137,7 +144,7 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
             article_id: articleId,
             language_code: 'tr',
             title: generatedContent.title || generatedContent.seo_title,
-            slug: generatedContent.slug,
+            slug: finalSlug,
             summary: generatedContent.summary,
             content_html: generatedContent.content_html,
             seo_description: generatedContent.seo_description,
