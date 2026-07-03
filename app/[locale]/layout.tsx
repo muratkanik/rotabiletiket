@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../globals.css';
 import { SEOScripts, SEOBodyScripts } from '@/components/layout/SEOScripts';
+import { OrganizationSchema } from '@/components/layout/OrganizationSchema';
 import { getSiteSettings } from '@/lib/settings';
 import { Footer } from '@/components/layout/Footer';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
@@ -60,6 +61,7 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
+                <OrganizationSchema />
                 <SEOScripts />
             </head>
             <body className={`${inter.className} antialiased`}>

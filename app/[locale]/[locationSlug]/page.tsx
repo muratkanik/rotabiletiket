@@ -3,6 +3,24 @@ import locationsData from '../../../data/locations.json';
 import { MapPin, Phone, Mail, Clock, CheckCircle2, Truck, Star, ShieldCheck, Factory, Layers } from 'lucide-react';
 import Link from 'next/link';
 import { getSiteSettings } from "@/lib/settings";
+import { routing } from '@/src/i18n/routing';
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+    const params: { locationSlug: string, locale: string }[] = [];
+    
+    for (const locale of routing.locales) {
+        for (const loc of locationsData) {
+            params.push({
+                locationSlug: `${loc.slug}-etiket`,
+                locale: locale,
+            });
+        }
+    }
+    
+    return params;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locationSlug: string, locale: string }> }) {
     const resolvedParams = await params;
@@ -46,9 +64,33 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
     
     const name = location.district || location.city;
     const contactInfo = await getSiteSettings('contact_info');
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        name: `Rotabil Etiket - ${name} Şubesi`,
+        image: 'https://rotabiletiket.com/logo.png',
+        url: `https://rotabiletiket.com/${locale}/${locationSlug}`,
+        telephone: contactInfo?.phone || '+90 216 595 03 23',
+        address: {
+            '@type': 'PostalAddress',
+            addressLocality: name,
+            addressCountry: 'TR'
+        },
+        geo: {
+            '@type': 'GeoCoordinates',
+            latitude: location.lat || '41.0082',
+            longitude: location.lon || '28.9784'
+        },
+        description: `Rotabil Etiket olarak ${name} bölgesindeki işletmelere profesyonel etiket üretim hizmeti sunuyoruz.`
+    };
     
     return (
         <main className="min-h-screen bg-slate-50">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Hero Section */}
             <div className="bg-slate-900 py-24 text-white text-center relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500 via-slate-900 to-black"></div>

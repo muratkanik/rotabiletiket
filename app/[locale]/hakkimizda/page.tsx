@@ -27,9 +27,33 @@ export default async function AboutPage() {
     const qualityPolicy = aboutContent?.quality_policy || [];
     const missionVision = aboutContent?.mission_vision || { vision: "", mission: "" };
 
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'Hakkımızda | Rotabil Etiket',
+        description: '20 yılı aşkın tecrübesiyle Rotabil Etiket, endüstriyel barkod ve etiket çözümlerinde güvenilir iş ortağınız. Üretim gücümüz ve kalite politikamız hakkında bilgi edinin.',
+        publisher: {
+            '@type': 'Organization',
+            name: 'Rotabil Etiket',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://rotabiletiket.com/logo.png'
+            }
+        },
+        mainEntity: {
+            '@type': 'Organization',
+            name: 'Rotabil Etiket',
+            foundingDate: '2000',
+            description: history.text?.[0] || '2000 yılından günümüze etiket sektöründe hizmet vermekteyiz.',
+        }
+    };
+
     return (
         <main className="min-h-screen bg-white">
-
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
 
             {/* Introduction Hero */}
             <div className="relative bg-slate-900 py-24 text-white overflow-hidden">
