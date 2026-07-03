@@ -79,8 +79,8 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
         },
         geo: {
             '@type': 'GeoCoordinates',
-            latitude: location.lat || '41.0082',
-            longitude: location.lon || '28.9784'
+            latitude: (location as any).lat || '41.0082',
+            longitude: (location as any).lon || '28.9784'
         },
         description: `Rotabil Etiket olarak ${name} bölgesindeki işletmelere profesyonel etiket üretim hizmeti sunuyoruz.`
     };
