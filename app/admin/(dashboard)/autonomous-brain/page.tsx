@@ -106,7 +106,7 @@ export default function AutonomousBrainTerminal() {
                 
                 <div className="flex-1 p-4 overflow-y-auto bg-black/95 text-[#00ff00] leading-relaxed">
                     {logs.map((log, index) => (
-                        <div key={index} className={\`whitespace-pre-wrap \${log.includes('HATA') ? 'text-red-500' : ''}\`}>
+                        <div key={index} className={`whitespace-pre-wrap ${log.includes('HATA') ? 'text-red-500' : ''}`}>
                             {log}
                         </div>
                     ))}
