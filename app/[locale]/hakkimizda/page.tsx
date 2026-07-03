@@ -119,6 +119,32 @@ export default async function AboutPage() {
                 </div>
             </div>
 
+            {/* Certificates & Registrations */}
+            <div className="bg-white py-20">
+                <div className="container px-4 md:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <h2 className="text-3xl font-bold text-slate-900 mb-4">Tescil ve Sertifikalarımız</h2>
+                        <p className="text-slate-600">Markamız ve üretim standartlarımız, resmi kurumlar tarafından tescillenmiş ve güvence altına alınmıştır.</p>
+                    </div>
+                    <div className="flex justify-center">
+                        <div className="max-w-md w-full bg-slate-50 p-4 rounded-2xl border shadow-sm hover:shadow-lg transition-shadow">
+                            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden border border-slate-200 bg-white">
+                                <Image 
+                                    src="/img/certificates/rotabil-etiket-marka-tescil-belgesi.jpeg" 
+                                    alt="Rotabil Etiket Marka Tescil Belgesi" 
+                                    fill 
+                                    className="object-contain p-2" 
+                                />
+                            </div>
+                            <div className="mt-6 text-center mb-2">
+                                <h3 className="font-bold text-slate-900 text-xl">Marka Tescil Belgesi</h3>
+                                <p className="text-slate-500 font-medium mt-1">Türk Patent ve Marka Kurumu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Quality Policy & Mission/Vision */}
             <div className="container px-4 md:px-6 py-20">
                 <div className="bg-slate-900 rounded-3xl p-8 md:p-16 text-white overflow-hidden relative">

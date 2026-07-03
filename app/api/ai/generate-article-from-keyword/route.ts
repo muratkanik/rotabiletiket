@@ -31,7 +31,10 @@ export async function POST(req: Request) {
         const hasOpenAI = !!settings?.openai_api_key;
         let openai;
         if (hasOpenAI) {
-            openai = new OpenAI({ apiKey: settings.openai_api_key! });
+            openai = new OpenAI({ 
+                apiKey: process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || settings.openai_api_key!,
+                baseURL: "https://openrouter.ai/api/v1"
+            });
         }
 
         // 1. Translate Keyword to English
