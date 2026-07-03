@@ -57,5 +57,9 @@
     "yourMessage": "Votre Message",
     "sending": "Envoi en cours...",
     "send": "Envoyer"
+  },
+  "Products": {
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Bonjour, je voudrais obtenir un devis pour %{product}."
   }
 }

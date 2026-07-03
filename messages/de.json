@@ -57,5 +57,9 @@
     "yourMessage": "Ihre Nachricht",
     "sending": "Senden...",
     "send": "Senden"
+  },
+  "Products": {
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Hallo, ich möchte ein Angebot für %{product} erhalten."
   }
 }

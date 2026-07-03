@@ -25,6 +25,16 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             images: [seo?.og_image_url || '/logo.png']
         },
+        alternates: {
+            languages: {
+                'x-default': '/',
+                'tr': '/tr',
+                'en': '/en',
+                'de': '/de',
+                'fr': '/fr',
+                'ar': '/ar'
+            }
+        },
         icons: {
             icon: '/icon.png',
             shortcut: '/icon.png',

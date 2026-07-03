@@ -57,5 +57,9 @@
     "yourMessage": "Mesajınız",
     "sending": "Gönderiliyor...",
     "send": "Gönder"
+  },
+  "Products": {
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Merhaba, %{product} için fiyat almak istiyorum."
   }
 }

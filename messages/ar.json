@@ -57,5 +57,9 @@
     "yourMessage": "رسالتك",
     "sending": "جاري الإرسال...",
     "send": "إرسال"
+  },
+  "Products": {
+    "whatsapp": "واتساب",
+    "whatsappMessage": "مرحبًا، أود الحصول على عرض سعر لـ %{product}."
   }
 }
