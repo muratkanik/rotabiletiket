@@ -120,9 +120,15 @@ Detaylar: ${itemRef.description}`;
 
             if (hasOpenAI) {
                 const { default: OpenAI } = await import("openai");
+                const apiKey = process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || openai_api_key;
                 const openai = new OpenAI({ 
-                    apiKey: process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || openai_api_key,
-                    baseURL: "https://openrouter.ai/api/v1" 
+                    apiKey: apiKey!.trim(),
+                    baseURL: "https://openrouter.ai/api/v1",
+                    defaultHeaders: {
+                        "HTTP-Referer": "https://rotabiletiket.com",
+                        "X-Title": "Rotabil Etiket AI",
+                        "Authorization": `Bearer ${apiKey!.trim()}`
+                    }
                 });
 
                 const imagePrompt = `A striking, highly aesthetic, and photorealistic showcase image for an Instagram story. The primary focal point MUST exactly represent the product or topic: "${itemRef.title}". Produce a visually stunning, real-world representation of this specific item or concept, with professional studio lighting. DO NOT include any text, letters, or words in the image. The image must clearly and accurately correspond to the actual product category without being generic.`;

@@ -22,7 +22,12 @@ export async function callAIFallback(
 
     const openai = new OpenAI({
         baseURL: "https://openrouter.ai/api/v1",
-        apiKey: apiKey,
+        apiKey: apiKey.trim(),
+        defaultHeaders: {
+            "HTTP-Referer": "https://rotabiletiket.com",
+            "X-Title": "Rotabil Etiket AI",
+            "Authorization": `Bearer ${apiKey.trim()}`
+        }
     });
 
     const models = [
