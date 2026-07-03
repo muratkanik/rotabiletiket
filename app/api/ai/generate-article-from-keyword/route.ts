@@ -31,15 +31,17 @@ export async function POST(req: Request) {
         const hasOpenAI = !!settings?.openai_api_key;
         let openai;
         if (hasOpenAI) {
-            const apiKey = process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || settings.openai_api_key!;
+            const apiKey = (process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || settings.openai_api_key!).trim();
+            const isOpenRouter = apiKey.startsWith('sk-or-');
             openai = new OpenAI({ 
-                apiKey: apiKey.trim(),
-                baseURL: "https://openrouter.ai/api/v1",
-                defaultHeaders: {
-                    "HTTP-Referer": "https://rotabiletiket.com",
-                    "X-Title": "Rotabil Etiket AI",
-                    "Authorization": `Bearer ${apiKey.trim()}`
-                }
+                apiKey: apiKey,
+                ...(isOpenRouter ? { baseURL: "https://openrouter.ai/api/v1" } : {}),
+                ...(isOpenRouter ? {
+                    defaultHeaders: {
+                        "HTTP-Referer": "https://rotabiletiket.com",
+                        "X-Title": "Rotabil Etiket AI",
+                    }
+                } : {})
             });
         }
 

@@ -20,21 +20,21 @@ export async function callAIFallback(
 
     let lastError: any = null;
 
+    const isOpenRouter = apiKey.trim().startsWith('sk-or-');
     const openai = new OpenAI({
-        baseURL: "https://openrouter.ai/api/v1",
+        ...(isOpenRouter ? { baseURL: "https://openrouter.ai/api/v1" } : {}),
         apiKey: apiKey.trim(),
-        defaultHeaders: {
-            "HTTP-Referer": "https://rotabiletiket.com",
-            "X-Title": "Rotabil Etiket AI",
-            "Authorization": `Bearer ${apiKey.trim()}`
-        }
+        ...(isOpenRouter ? {
+            defaultHeaders: {
+                "HTTP-Referer": "https://rotabiletiket.com",
+                "X-Title": "Rotabil Etiket AI",
+            }
+        } : {})
     });
 
-    const models = [
-        "google/gemini-2.5-flash",
-        "deepseek/deepseek-chat",
-        "meta-llama/llama-3.1-8b-instruct"
-    ];
+    const models = isOpenRouter 
+        ? ["google/gemini-2.5-flash", "deepseek/deepseek-chat", "meta-llama/llama-3.1-8b-instruct"]
+        : ["gpt-4o-mini", "gpt-4o"];
 
     for (const model of models) {
         try {
