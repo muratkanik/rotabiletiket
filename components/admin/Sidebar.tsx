@@ -16,6 +16,7 @@ import {
     Instagram,
     TrendingUp,
     Settings2,
+    Cpu,
     X
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -31,6 +32,7 @@ const MENU_ITEMS = [
     { name: 'Hero Slider', href: '/admin/hero', icon: LayoutDashboard },
     { name: 'Kullanıcılar', href: '/admin/users', icon: Users },
     { name: 'Site Ayarları', href: '/admin/settings', icon: Settings },
+    { name: 'Otonom Beyin', href: '/admin/autonomous-brain', icon: Cpu },
     { name: 'SEO & Analiz', href: '/admin/seo', icon: BarChart },
     { name: 'Meta Ayarları', href: '/admin/meta-settings', icon: Settings2 },
     { name: 'Instagram', href: '/admin/instagram', icon: Instagram },
