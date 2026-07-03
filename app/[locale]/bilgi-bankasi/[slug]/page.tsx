@@ -8,7 +8,7 @@ import { ArrowLeft, Calendar, User } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 type Props = {
     params: Promise<{
@@ -139,6 +139,7 @@ export default async function ArticlePage({ params }: Props) {
                                     : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`}
                                 alt={article.title}
                                 fill
+                                priority
                                 className="object-cover"
                             />
                         </div>
