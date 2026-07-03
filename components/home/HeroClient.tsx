@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
     Carousel,
     CarouselContent,
@@ -44,10 +45,13 @@ export function HeroClient({ slides }: { slides: any[] }) {
                                 </video>
                             ) : (
                                 <div className="absolute inset-0">
-                                    <img
+                                    <Image
                                         src={slide.background_url || '/placeholder.jpg'}
-                                        alt="Hero Background"
-                                        className="w-full h-full object-cover opacity-30 grayscale-[20%]"
+                                        alt={slide.title ? slide.title.replace(/<[^>]*>?/gm, '') : "Rotabil Etiket Hero"}
+                                        fill
+                                        priority={index === 0}
+                                        className="object-cover opacity-30 grayscale-[20%]"
+                                        sizes="100vw"
                                     />
                                 </div>
                             )}
