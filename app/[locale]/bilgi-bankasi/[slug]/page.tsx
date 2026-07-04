@@ -146,6 +146,19 @@ export default async function ArticlePage({ params }: Props) {
                             />
                         </div>
                     )}
+                    
+                    {/* Generative Engine Optimization (GEO) - TL;DR Section */}
+                    {article.seo_description && (
+                        <div className="bg-orange-50 border-l-4 border-orange-500 rounded-r-xl p-6 mb-10 not-prose">
+                            <h2 className="text-sm font-bold text-orange-600 mb-2 flex items-center gap-2 uppercase tracking-wide">
+                                ⚡ Hızlı Özet (TL;DR)
+                            </h2>
+                            <p className="text-slate-700 font-medium leading-relaxed">
+                                {article.seo_description}
+                            </p>
+                        </div>
+                    )}
+
                     <div dangerouslySetInnerHTML={{ __html: enhancedContent }} />
                     
                     {/* Tags / Hashtags */}

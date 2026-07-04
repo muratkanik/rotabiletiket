@@ -85,6 +85,7 @@ export async function Footer({ locale }: { locale: string }) {
                             <li><Link href="/urunler/barkod-yazicilar" className="hover:text-white transition-colors">{t('printers')}</Link></li>
                             <li><Link href="/urunler/barkod-yazici-kafalari-ile-kaliteyi-artirma-cozumleri" className="hover:text-white transition-colors">{t('printheads')}</Link></li>
                             <li><Link href="/urunler/yedek-parca" className="hover:text-white transition-colors">Yedek Parça</Link></li>
+                            <li><Link href="/amazon-fba-etiketleri" className="hover:text-orange-400 text-orange-400 font-bold transition-colors">Amazon FBA Etiketleri</Link></li>
                             <li className="pt-2 mt-2 border-t border-slate-800"><Link href="/hizmet-bolgelerimiz" className="hover:text-orange-400 text-slate-300 transition-colors">Hizmet Bölgelerimiz 📍</Link></li>
                         </ul>
                     </div>
