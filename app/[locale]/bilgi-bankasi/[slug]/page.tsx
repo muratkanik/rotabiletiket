@@ -152,7 +152,7 @@ export default async function ArticlePage({ params }: Props) {
                     <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
                         <h3 className="font-bold text-lg mb-4 text-slate-900">{t('relatedCategories')}</h3>
                         <ul className="space-y-2 text-slate-600">
-                            <li><Link href="/urunler/etiketler" className="hover:text-orange-600 transition-colors">{t('labels')}</Link></li>
+                            <li><Link href="/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin" className="hover:text-orange-600 transition-colors">{t('labels')}</Link></li>
                             <li><Link href="/urunler/barkod-yazicilar" className="hover:text-orange-600 transition-colors">{t('printers')}</Link></li>
                             <li><Link href="/urunler/ribonlar" className="hover:text-orange-600 transition-colors">{t('ribbons')}</Link></li>
                         </ul>

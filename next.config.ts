@@ -38,6 +38,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/:locale(tr|en|de|ar|fr)/urunler/etiketler',
+        destination: '/:locale/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin',
+        permanent: true,
+      },
+      {
+        source: '/urunler/etiketler',
+        destination: '/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin',
+        permanent: true,
+      },
+      {
         // Matches any path that ends with .php (e.g., /wax-ribbon.php, /a/b.php)
         source: '/:path(.*\\.php)',
         destination: '/',

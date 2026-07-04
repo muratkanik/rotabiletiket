@@ -81,7 +81,7 @@ export async function Footer({ locale }: { locale: string }) {
                     <div>
                         <h3 className="font-bold text-lg mb-6">{t('products')}</h3>
                         <ul className="space-y-4 text-slate-400">
-                            <li><Link href="/urunler/etiketler" className="hover:text-white transition-colors">{t('labels')}</Link></li>
+                            <li><Link href="/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin" className="hover:text-white transition-colors">{t('labels')}</Link></li>
                             <li><Link href="/urunler/ribonlar" className="hover:text-white transition-colors">{t('ribbons')}</Link></li>
                             <li><Link href="/urunler/barkod-yazicilar" className="hover:text-white transition-colors">{t('printers')}</Link></li>
                             <li><Link href="/urunler/yedek-parca" className="hover:text-white transition-colors">{t('printheads')}</Link></li>
