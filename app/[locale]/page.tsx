@@ -1,4 +1,5 @@
 import { Hero } from '@/components/home/Hero';
+import { QuickCategories } from '@/components/home/QuickCategories';
 import { FeatureCards } from '@/components/home/FeatureCards';
 import { SectorsSection } from '@/components/home/SectorsSection';
 
@@ -7,6 +8,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     return (
         <main className="min-h-screen bg-slate-50 font-sans text-slate-900">
             <Hero locale={locale} />
+            <QuickCategories locale={locale} />
             <FeatureCards locale={locale} />
             <SectorsSection locale={locale} />
 
