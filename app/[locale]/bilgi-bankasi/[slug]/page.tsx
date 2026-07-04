@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/src/i18n/routing';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Hash } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -73,7 +73,7 @@ export default async function ArticlePage({ params }: Props) {
         headline: article.title,
         description: article.summary,
         image: article.image_url
-            ? [article.image_url.startsWith('http') || article.image_url.startsWith('/') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`]
+            ? [article.image_url.startsWith('http') ? article.image_url : (article.image_url.startsWith('/') ? `https://rotabiletiket.com${article.image_url}` : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`)]
             : [],
         datePublished: article.created_at,
         dateModified: article.updated_at || article.created_at,
@@ -145,6 +145,29 @@ export default async function ArticlePage({ params }: Props) {
                         </div>
                     )}
                     <div dangerouslySetInnerHTML={{ __html: article.content_html || '' }} />
+                    
+                    {/* Tags / Hashtags */}
+                    {article.keywords && (
+                        <div className="mt-12 pt-8 border-t border-slate-100 not-prose">
+                            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">İlgili Etiketler</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {article.keywords.split(',').map((keyword, idx) => {
+                                    const cleanKeyword = keyword.trim();
+                                    if (!cleanKeyword) return null;
+                                    return (
+                                        <Link 
+                                            key={idx} 
+                                            href={`/bilgi-bankasi?tag=${encodeURIComponent(cleanKeyword)}`}
+                                            className="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-50 text-slate-600 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                                        >
+                                            <Hash size={14} className="mr-1 opacity-50" />
+                                            {cleanKeyword}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Sidebar (Optional: Related Links or Categories) */}

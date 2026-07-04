@@ -1,9 +1,8 @@
-import Link from 'next/link';
+import { Link } from '@/src/i18n/routing';
 import Image from 'next/image';
 import { getSiteSettings } from '@/lib/settings';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import { ServiceAreasSEO } from './ServiceAreasSEO';
 
 export async function Footer({ locale }: { locale: string }) {
     const contactInfo = await getSiteSettings('contact_info');
@@ -24,10 +23,8 @@ export async function Footer({ locale }: { locale: string }) {
     const linkedinLink = footerContent?.social_links?.linkedin || '#';
 
     return (
-        <>
-            <ServiceAreasSEO />
-            <footer className="bg-slate-900 text-white pt-16 pb-8">
-                <div className="container px-4 md:px-6">
+        <footer className="bg-slate-900 text-white pt-16 pb-8">
+            <div className="container px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
                     <div className="space-y-6">
@@ -85,6 +82,7 @@ export async function Footer({ locale }: { locale: string }) {
                             <li><Link href="/urunler/ribonlar" className="hover:text-white transition-colors">{t('ribbons')}</Link></li>
                             <li><Link href="/urunler/barkod-yazicilar" className="hover:text-white transition-colors">{t('printers')}</Link></li>
                             <li><Link href="/urunler/yedek-parca" className="hover:text-white transition-colors">{t('printheads')}</Link></li>
+                            <li className="pt-2 mt-2 border-t border-slate-800"><Link href="/hizmet-bolgelerimiz" className="hover:text-orange-400 text-slate-300 transition-colors">Hizmet Bölgelerimiz 📍</Link></li>
                         </ul>
                     </div>
 
@@ -128,6 +126,5 @@ export async function Footer({ locale }: { locale: string }) {
                 </div>
             </div>
         </footer>
-        </>
     );
 }
