@@ -68,6 +68,8 @@ export async function Footer({ locale }: { locale: string }) {
                         <ul className="space-y-4 text-slate-400">
                             <li><Link href="/" className="hover:text-white transition-colors">{t('home')}</Link></li>
                             <li><Link href="/hakkimizda" className="hover:text-white transition-colors">{t('about')}</Link></li>
+                            <li><Link href="/kalite-politikamiz" className="hover:text-white transition-colors">{locale === 'en' ? 'Quality Policy' : 'Kalite Politikamız'}</Link></li>
+                            <li><Link href="/uretim-tesisimiz" className="hover:text-white transition-colors">{locale === 'en' ? 'Production Facility' : 'Üretim Tesisimiz'}</Link></li>
                             <li><Link href="/sektorel-cozumler" className="hover:text-white transition-colors">{t('sectoral')}</Link></li>
                             <li><Link href="/bilgi-bankasi" className="hover:text-white transition-colors">{t('blog')}</Link></li>
                             <li><Link href="/iletisim" className="hover:text-white transition-colors">{t('contact')}</Link></li>
