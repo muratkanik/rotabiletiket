@@ -1,65 +1,66 @@
 {
-  "Navigation": {
-    "home": "Home",
-    "products": "Products",
-    "about": "About Us",
-    "contact": "Contact",
-    "blog": "Knowledge Base",
-    "sectoral": "Sectoral Solutions",
-    "labels": "Labels",
-    "ribbons": "Ribbons",
-    "printers": "Barcode Printers",
-    "printheads": "Printheads",
-    "labelsDesc": "Industrial label types",
-    "ribbonsDesc": "Thermal transfer ribbons",
-    "printersDesc": "Desktop and industrial",
-    "printheadsDesc": "Original spare parts",
-    "categories": "Categories"
-  },
-  "Common": {
-    "readMore": "Read More",
-    "contactUs": "Contact Us",
-    "getQuote": "Get Quote",
-    "loading": "Loading...",
-    "seeAllCategories": "See All Categories",
-    "seeAllSectors": "See All Sectors"
-  },
-  "Hero": {
-    "badge": "Industrial Label & Barcode Solutions",
-    "ctaPrimary": "View Products",
-    "ctaSecondary": "Contact Us"
-  },
-  "KnowledgeBase": {
-    "backToKB": "Back to Knowledge Base",
-    "relatedCategories": "Related Categories",
-    "labels": "Labels",
-    "ribbons": "Ribbons",
-    "printers": "Barcode Printers",
-    "title": "Knowledge Base",
-    "headerSubtitle": "Sectoral Guide and Technical Insights",
-    "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
-    "readMore": "Read More"
-  },
-  "Contact": {
-    "title": "Contact",
-    "subtitle": "Get in Touch With Us",
-    "officeFactory": "Office & Factory",
-    "address": "Address",
-    "phone": "Phone",
-    "email": "Email",
-    "workingHours": "Working Hours",
-    "weekdays": "Monday - Friday: 08:30 - 18:00",
-    "saturday": "Saturday: 09:00 - 13:00",
-    "sendMessage": "Send a Message",
-    "sendMessageDesc": "We will get back to you as soon as possible.",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "yourMessage": "Your Message",
-    "sending": "Sending...",
-    "send": "Send"
-  },
-  "Products": {
-    "whatsapp": "WhatsApp",
-    "whatsappMessage": "Hello, I would like to get a quote for %{product}."
-  }
+    "Navigation": {
+        "home": "Home",
+        "products": "Products",
+        "about": "About Us",
+        "contact": "Contact",
+        "blog": "Knowledge Base",
+        "sectoral": "Sectoral Solutions",
+        "labels": "Labels",
+        "ribbons": "Ribbons",
+        "printers": "Barcode Printers",
+        "printheads": "Printheads",
+        "labelsDesc": "Industrial label types",
+        "ribbonsDesc": "Thermal transfer ribbons",
+        "printersDesc": "Desktop and industrial",
+        "printheadsDesc": "Original spare parts",
+        "categories": "Categories"
+    },
+    "Common": {
+        "readMore": "Read More",
+        "contactUs": "Contact Us",
+        "getQuote": "Get Quote",
+        "loading": "Loading...",
+        "seeAllCategories": "See All Categories",
+        "seeAllSectors": "See All Sectors",
+        "serviceAreas": "Service Areas"
+    },
+    "Hero": {
+        "badge": "Industrial Label & Barcode Solutions",
+        "ctaPrimary": "View Products",
+        "ctaSecondary": "Contact Us"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Back to Knowledge Base",
+        "relatedCategories": "Related Categories",
+        "labels": "Labels",
+        "ribbons": "Ribbons",
+        "printers": "Barcode Printers",
+        "title": "Knowledge Base",
+        "headerSubtitle": "Sectoral Guide and Technical Insights",
+        "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
+        "readMore": "Read More"
+    },
+    "Contact": {
+        "title": "Contact",
+        "subtitle": "Get in Touch With Us",
+        "officeFactory": "Office & Factory",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "workingHours": "Working Hours",
+        "weekdays": "Monday - Friday: 08:30 - 18:00",
+        "saturday": "Saturday: 09:00 - 13:00",
+        "sendMessage": "Send a Message",
+        "sendMessageDesc": "We will get back to you as soon as possible.",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "yourMessage": "Your Message",
+        "sending": "Sending...",
+        "send": "Send"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Hello, I would like to get a quote for %{product}."
+    }
 }

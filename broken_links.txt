@@ -1,0 +1,21 @@
+Getting links from: https://www.rotabiletiket.com/
+├───OK─── https://www.rotabiletiket.com/logo.png?dpl=dpl_8nMy93JkgrVKSgPeZe7xg8ba9skK
+├───OK─── https://www.rotabiletiket.com/urunler
+├───OK─── https://www.rotabiletiket.com/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin-profesyonel-yaklasim
+├───OK─── https://www.rotabiletiket.com/urunler/barkod-yazici-cozumleri-ile-i-sletmenize-deger-katin
+├───OK─── https://www.rotabiletiket.com/urunler/ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin
+├───OK─── https://www.rotabiletiket.com/urunler/yedek-parca-kalite-ve-guvenilirlik-saglayin
+├───OK─── https://www.rotabiletiket.com/urunler/barkod-yazici-kafalari-ile-kaliteyi-artirma-cozumleri
+├───OK─── https://www.rotabiletiket.com/urunler/el-terminali-fiyatlari-ile-uygun-cozumler-bulun
+├───OK─── https://www.rotabiletiket.com/urunler/barkod-okuyucu-fiyatlari-i-sletmelere-ozel-cozumler
+├───OK─── https://www.rotabiletiket.com/urunler/hacim-olcerler-ile-yuksek-performansli-cozumler
+├───OK─── https://www.rotabiletiket.com/urunler/sarf-malzemeler-i-sletmenize-ozel-cozumler
+├───OK─── https://www.rotabiletiket.com/urunler/endustriyel-tablet-pc-modelleri-ile-verimliligi-artirin
+├───OK─── https://www.rotabiletiket.com/urunler/rfid-okuyucular-ile-i-s-sureclerinizi-guclendirin
+├───OK─── https://www.rotabiletiket.com/urunler/access-point-ile-guclu-ag-deneyimi-profesyonel-cozumler
+├───OK─── https://www.rotabiletiket.com/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin-profesyonel-yaklasim/lamine-termal-etiket
+├───OK─── https://www.rotabiletiket.com/img/products/labels/lamine-termal-etiket.png?dpl=dpl_8nMy93JkgrVKSgPeZe7xg8ba9skK
+├───OK─── https://www.rotabiletiket.com/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin-profesyonel-yaklasim/eco-termal-etiket
+├───OK─── https://www.rotabiletiket.com/img/products/labels/eco-termal-etiket.png?dpl=dpl_8nMy93JkgrVKSgPeZe7xg8ba9skK
+├───OK─── https://www.rotabiletiket.com/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin-profesyonel-yaklasim/kuse-etiket
+├───OK─── https://www.rotabiletiket.com/img/products/labels/kuse-etiket.jpg?dpl=dpl_8nMy93JkgrVKSgPeZe7xg8ba9skK

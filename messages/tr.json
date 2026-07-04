@@ -1,65 +1,66 @@
 {
-  "Navigation": {
-    "home": "Anasayfa",
-    "products": "Ürünler",
-    "about": "Hakkımızda",
-    "contact": "İletişim",
-    "blog": "Bilgi Bankası",
-    "sectoral": "Sektörel Çözümler",
-    "labels": "Etiketler",
-    "ribbons": "Ribonlar",
-    "printers": "Barkod Yazıcılar",
-    "printheads": "Yazıcı Kafaları",
-    "labelsDesc": "Endüstriyel etiket çeşitleri",
-    "ribbonsDesc": "Termal transfer ribonlar",
-    "printersDesc": "Masaüstü ve endüstriyel",
-    "printheadsDesc": "Orijinal yedek parçalar",
-    "categories": "Kategoriler"
-  },
-  "Common": {
-    "readMore": "Devamını Oku",
-    "contactUs": "Bize Ulaşın",
-    "getQuote": "Teklif Al",
-    "loading": "Yükleniyor...",
-    "seeAllCategories": "Tüm Kategorileri Gör",
-    "seeAllSectors": "Tüm Sektörel Çözümleri Gör"
-  },
-  "Hero": {
-    "badge": "Endüstriyel Etiket & Barkod Çözümleri",
-    "ctaPrimary": "Ürünleri İncele",
-    "ctaSecondary": "Bize Ulaşın"
-  },
-  "KnowledgeBase": {
-    "backToKB": "Bilgi Bankasına Dön",
-    "relatedCategories": "İlgili Ürün Kategorileri",
-    "labels": "Etiketler",
-    "ribbons": "Ribonlar",
-    "printers": "Barkod Yazıcılar",
-    "title": "Bilgi Bankası",
-    "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
-    "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
-    "readMore": "Devamını Oku"
-  },
-  "Contact": {
-    "title": "İletişim",
-    "subtitle": "Bizimle İletişime Geçin",
-    "officeFactory": "Ofis & Fabrika",
-    "address": "Adres",
-    "phone": "Telefon",
-    "email": "E-posta",
-    "workingHours": "Çalışma Saatleri",
-    "weekdays": "Pazartesi - Cuma: 08:30 - 18:00",
-    "saturday": "Cumartesi: 09:00 - 13:00",
-    "sendMessage": "Mesaj Gönderin",
-    "sendMessageDesc": "Size en kısa sürede dönüş yapacağız.",
-    "firstName": "Adınız",
-    "lastName": "Soyadınız",
-    "yourMessage": "Mesajınız",
-    "sending": "Gönderiliyor...",
-    "send": "Gönder"
-  },
-  "Products": {
-    "whatsapp": "WhatsApp",
-    "whatsappMessage": "Merhaba, %{product} için fiyat almak istiyorum."
-  }
+    "Navigation": {
+        "home": "Anasayfa",
+        "products": "Ürünler",
+        "about": "Hakkımızda",
+        "contact": "İletişim",
+        "blog": "Bilgi Bankası",
+        "sectoral": "Sektörel Çözümler",
+        "labels": "Etiketler",
+        "ribbons": "Ribonlar",
+        "printers": "Barkod Yazıcılar",
+        "printheads": "Yazıcı Kafaları",
+        "labelsDesc": "Endüstriyel etiket çeşitleri",
+        "ribbonsDesc": "Termal transfer ribonlar",
+        "printersDesc": "Masaüstü ve endüstriyel",
+        "printheadsDesc": "Orijinal yedek parçalar",
+        "categories": "Kategoriler"
+    },
+    "Common": {
+        "readMore": "Devamını Oku",
+        "contactUs": "Bize Ulaşın",
+        "getQuote": "Teklif Al",
+        "loading": "Yükleniyor...",
+        "seeAllCategories": "Tüm Kategorileri Gör",
+        "seeAllSectors": "Tüm Sektörel Çözümleri Gör",
+        "serviceAreas": "Hizmet Bölgelerimiz"
+    },
+    "Hero": {
+        "badge": "Endüstriyel Etiket & Barkod Çözümleri",
+        "ctaPrimary": "Ürünleri İncele",
+        "ctaSecondary": "Bize Ulaşın"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Bilgi Bankasına Dön",
+        "relatedCategories": "İlgili Ürün Kategorileri",
+        "labels": "Etiketler",
+        "ribbons": "Ribonlar",
+        "printers": "Barkod Yazıcılar",
+        "title": "Bilgi Bankası",
+        "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
+        "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
+        "readMore": "Devamını Oku"
+    },
+    "Contact": {
+        "title": "İletişim",
+        "subtitle": "Bizimle İletişime Geçin",
+        "officeFactory": "Ofis & Fabrika",
+        "address": "Adres",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "workingHours": "Çalışma Saatleri",
+        "weekdays": "Pazartesi - Cuma: 08:30 - 18:00",
+        "saturday": "Cumartesi: 09:00 - 13:00",
+        "sendMessage": "Mesaj Gönderin",
+        "sendMessageDesc": "Size en kısa sürede dönüş yapacağız.",
+        "firstName": "Adınız",
+        "lastName": "Soyadınız",
+        "yourMessage": "Mesajınız",
+        "sending": "Gönderiliyor...",
+        "send": "Gönder"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Merhaba, %{product} için fiyat almak istiyorum."
+    }
 }

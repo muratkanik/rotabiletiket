@@ -40,39 +40,52 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
             {isOpen && (
                 <div className="fixed inset-0 z-40 bg-white pt-24 px-4 pb-6 overflow-y-auto">
                     <div className="flex flex-col space-y-4">
-                        {/* Products Dropdown */}
-                        <div className="border-b border-slate-100 pb-4">
+                        {/* Products Dropdown (Accordion) */}
+                        <div className="flex flex-col">
                             <button
                                 onClick={() => setIsProductsOpen(!isProductsOpen)}
-                                className="flex items-center justify-between w-full text-lg font-medium text-slate-800 py-2"
+                                className={`flex items-center justify-between w-full px-4 py-3 text-lg font-medium rounded-lg transition-colors ${
+                                    isProductsOpen ? 'bg-slate-50 text-orange-600' : 'text-slate-800 hover:bg-slate-50'
+                                }`}
                             >
-                                {tNav('products')}
-                                <ChevronDown className={`h-5 w-5 transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
+                                <span>{tNav('products')}</span>
+                                <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isProductsOpen ? 'rotate-180' : ''}`} />
                             </button>
 
-                            {isProductsOpen && (
-                                <div className="pl-4 mt-2 flex flex-col space-y-3">
+                            <div 
+                                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                    isProductsOpen ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'
+                                }`}
+                            >
+                                <div className="flex flex-col space-y-1 pl-4 border-l-2 border-slate-100 ml-4 py-1">
                                     {categories.length > 0 ? categories.map(category => (
-                                        <Link key={category.id} href={`/urunler/${category.slug}`} className="text-slate-600 block py-1" onClick={toggleMenu}>
+                                        <Link 
+                                            key={category.id} 
+                                            href={`/urunler/${category.slug}`} 
+                                            className="text-slate-600 block py-2 px-4 rounded-md hover:bg-slate-50 hover:text-orange-600 transition-colors" 
+                                            onClick={toggleMenu}
+                                        >
                                             {category.title}
                                         </Link>
                                     )) : (
-                                        <span className="text-slate-400 text-sm">{locale === 'en' ? 'Loading...' : locale === 'ar' ? 'جاري التحميل...' : locale === 'fr' ? 'Chargement...' : locale === 'de' ? 'Wird geladen...' : 'Yükleniyor...'}</span>
+                                        <span className="text-slate-400 text-sm px-4 py-2">
+                                            {locale === 'en' ? 'Loading...' : locale === 'ar' ? 'جاري التحميل...' : locale === 'fr' ? 'Chargement...' : locale === 'de' ? 'Wird geladen...' : 'Yükleniyor...'}
+                                        </span>
                                     )}
                                 </div>
-                            )}
+                            </div>
                         </div>
 
-                        <Link href="/sektorel-cozumler" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
+                        <Link href="/sektorel-cozumler" className="text-lg font-medium text-slate-800 py-3 px-4 rounded-lg hover:bg-slate-50 transition-colors" onClick={toggleMenu}>
                             {tNav('sectoral')}
                         </Link>
-                        <Link href="/bilgi-bankasi" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
+                        <Link href="/bilgi-bankasi" className="text-lg font-medium text-slate-800 py-3 px-4 rounded-lg hover:bg-slate-50 transition-colors" onClick={toggleMenu}>
                             {tNav('blog')}
                         </Link>
-                        <Link href="/hakkimizda" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
+                        <Link href="/hakkimizda" className="text-lg font-medium text-slate-800 py-3 px-4 rounded-lg hover:bg-slate-50 transition-colors" onClick={toggleMenu}>
                             {tNav('about')}
                         </Link>
-                        <Link href="/iletisim" className="text-lg font-medium text-slate-800 py-2 border-b border-slate-100" onClick={toggleMenu}>
+                        <Link href="/iletisim" className="text-lg font-medium text-slate-800 py-3 px-4 rounded-lg hover:bg-slate-50 transition-colors" onClick={toggleMenu}>
                             {tNav('contact')}
                         </Link>
 

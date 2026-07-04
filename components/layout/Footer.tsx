@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getSiteSettings } from '@/lib/settings';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { ServiceAreasSEO } from './ServiceAreasSEO';
 
 export async function Footer({ locale }: { locale: string }) {
     const contactInfo = await getSiteSettings('contact_info');
@@ -23,8 +24,10 @@ export async function Footer({ locale }: { locale: string }) {
     const linkedinLink = footerContent?.social_links?.linkedin || '#';
 
     return (
-        <footer className="bg-slate-900 text-white pt-16 pb-8">
-            <div className="container px-4 md:px-6">
+        <>
+            <ServiceAreasSEO />
+            <footer className="bg-slate-900 text-white pt-16 pb-8">
+                <div className="container px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
                     <div className="space-y-6">
@@ -125,5 +128,6 @@ export async function Footer({ locale }: { locale: string }) {
                 </div>
             </div>
         </footer>
+        </>
     );
 }

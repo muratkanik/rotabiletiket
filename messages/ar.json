@@ -1,65 +1,66 @@
 {
-  "Navigation": {
-    "home": "الرئيسية",
-    "products": "المنتجات",
-    "about": "معلومات عنا",
-    "contact": "اتصل بنا",
-    "blog": "قاعدة المعرفة",
-    "sectoral": "الحلول القطاعية",
-    "labels": "ملصقات",
-    "ribbons": "شرائط",
-    "printers": "طابعات الباركود",
-    "printheads": "رؤوس الطباعة",
-    "labelsDesc": "أنواع الملصقات الصناعية",
-    "ribbonsDesc": "شرائط النقل الحراري",
-    "printersDesc": "سطح المكتب والصناعية",
-    "printheadsDesc": "قطع غيار أصلية",
-    "categories": "الفئات"
-  },
-  "Common": {
-    "readMore": "اقرأ المزيد",
-    "contactUs": "اتصل بنا",
-    "getQuote": "احصل على عرض أسعار",
-    "loading": "جار التحميل...",
-    "seeAllCategories": "عرض جميع الفئات",
-    "seeAllSectors": "عرض جميع القطاعات"
-  },
-  "Hero": {
-    "badge": "حلول الملصقات والباركود الصناعية",
-    "ctaPrimary": "عرض المنتجات",
-    "ctaSecondary": "اتصل بنا"
-  },
-  "KnowledgeBase": {
-    "backToKB": "عودة إلى قاعدة المعرفة",
-    "relatedCategories": "فئات ذات صلة",
-    "labels": "ملصقات",
-    "ribbons": "شرائط",
-    "printers": "طابعات الباركود",
-    "title": "قاعدة المعرفة",
-    "headerSubtitle": "الدليل القطاعي والرؤى الفنية",
-    "headerDescription": "مقالات شاملة وأدلة ومعلومات فنية حول وضع العلامات الصناعية وأنظمة الباركود والحلول القطاعية.",
-    "readMore": "اقرأ المزيد"
-  },
-  "Contact": {
-    "title": "اتصل بنا",
-    "subtitle": "تواصل معنا",
-    "officeFactory": "المكتب والمصنع",
-    "address": "العنوان",
-    "phone": "الهاتف",
-    "email": "البريد الإلكتروني",
-    "workingHours": "ساعات العمل",
-    "weekdays": "الاثنين - الجمعة: 08:30 - 18:00",
-    "saturday": "السبت: 09:00 - 13:00",
-    "sendMessage": "إرسال رسالة",
-    "sendMessageDesc": "سوف نقوم بالرد عليك في أقرب وقت ممكن.",
-    "firstName": "الاسم الأول",
-    "lastName": "الاسم الأخير",
-    "yourMessage": "رسالتك",
-    "sending": "جاري الإرسال...",
-    "send": "إرسال"
-  },
-  "Products": {
-    "whatsapp": "واتساب",
-    "whatsappMessage": "مرحبًا، أود الحصول على عرض سعر لـ %{product}."
-  }
+    "Navigation": {
+        "home": "الرئيسية",
+        "products": "المنتجات",
+        "about": "معلومات عنا",
+        "contact": "اتصل بنا",
+        "blog": "قاعدة المعرفة",
+        "sectoral": "الحلول القطاعية",
+        "labels": "ملصقات",
+        "ribbons": "شرائط",
+        "printers": "طابعات الباركود",
+        "printheads": "رؤوس الطباعة",
+        "labelsDesc": "أنواع الملصقات الصناعية",
+        "ribbonsDesc": "شرائط النقل الحراري",
+        "printersDesc": "سطح المكتب والصناعية",
+        "printheadsDesc": "قطع غيار أصلية",
+        "categories": "الفئات"
+    },
+    "Common": {
+        "readMore": "اقرأ المزيد",
+        "contactUs": "اتصل بنا",
+        "getQuote": "احصل على عرض أسعار",
+        "loading": "جار التحميل...",
+        "seeAllCategories": "عرض جميع الفئات",
+        "seeAllSectors": "عرض جميع القطاعات",
+        "serviceAreas": "مناطق الخدمة"
+    },
+    "Hero": {
+        "badge": "حلول الملصقات والباركود الصناعية",
+        "ctaPrimary": "عرض المنتجات",
+        "ctaSecondary": "اتصل بنا"
+    },
+    "KnowledgeBase": {
+        "backToKB": "عودة إلى قاعدة المعرفة",
+        "relatedCategories": "فئات ذات صلة",
+        "labels": "ملصقات",
+        "ribbons": "شرائط",
+        "printers": "طابعات الباركود",
+        "title": "قاعدة المعرفة",
+        "headerSubtitle": "الدليل القطاعي والرؤى الفنية",
+        "headerDescription": "مقالات شاملة وأدلة ومعلومات فنية حول وضع العلامات الصناعية وأنظمة الباركود والحلول القطاعية.",
+        "readMore": "اقرأ المزيد"
+    },
+    "Contact": {
+        "title": "اتصل بنا",
+        "subtitle": "تواصل معنا",
+        "officeFactory": "المكتب والمصنع",
+        "address": "العنوان",
+        "phone": "الهاتف",
+        "email": "البريد الإلكتروني",
+        "workingHours": "ساعات العمل",
+        "weekdays": "الاثنين - الجمعة: 08:30 - 18:00",
+        "saturday": "السبت: 09:00 - 13:00",
+        "sendMessage": "إرسال رسالة",
+        "sendMessageDesc": "سوف نقوم بالرد عليك في أقرب وقت ممكن.",
+        "firstName": "الاسم الأول",
+        "lastName": "الاسم الأخير",
+        "yourMessage": "رسالتك",
+        "sending": "جاري الإرسال...",
+        "send": "إرسال"
+    },
+    "Products": {
+        "whatsapp": "واتساب",
+        "whatsappMessage": "مرحبًا، أود الحصول على عرض سعر لـ %{product}."
+    }
 }

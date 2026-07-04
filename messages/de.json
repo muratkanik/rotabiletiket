@@ -1,65 +1,66 @@
 {
-  "Navigation": {
-    "home": "Startseite",
-    "products": "Produkte",
-    "about": "Über uns",
-    "contact": "Kontakt",
-    "blog": "Wissensdatenbank",
-    "sectoral": "Branchenlösungen",
-    "labels": "Etiketten",
-    "ribbons": "Farbbänder",
-    "printers": "Barcode-Drucker",
-    "printheads": "Druckköpfe",
-    "labelsDesc": "Industrielle Etikettentypen",
-    "ribbonsDesc": "Thermotransfer-Farbbänder",
-    "printersDesc": "Desktop und Industrie",
-    "printheadsDesc": "Original-Ersatzteile",
-    "categories": "Kategorien"
-  },
-  "Common": {
-    "readMore": "Weiterlesen",
-    "contactUs": "Kontaktieren Sie uns",
-    "getQuote": "Angebot einholen",
-    "loading": "Wird geladen...",
-    "seeAllCategories": "Alle Kategorien anzeigen",
-    "seeAllSectors": "Alle Branchenlösungen ansehen"
-  },
-  "Hero": {
-    "badge": "Industrielle Etiketten- und Barcodelösungen",
-    "ctaPrimary": "Produkte ansehen",
-    "ctaSecondary": "Kontaktieren Sie uns"
-  },
-  "KnowledgeBase": {
-    "backToKB": "Zurück zur Wissensdatenbank",
-    "relatedCategories": "Verwandte Kategorien",
-    "labels": "Etiketten",
-    "ribbons": "Farbbänder",
-    "printers": "Barcode-Drucker",
-    "title": "Wissensdatenbank",
-    "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
-    "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
-    "readMore": "Weiterlesen"
-  },
-  "Contact": {
-    "title": "Kontakt",
-    "subtitle": "Nehmen Sie Kontakt auf",
-    "officeFactory": "Büro & Fabrik",
-    "address": "Adresse",
-    "phone": "Telefon",
-    "email": "E-Mail",
-    "workingHours": "Arbeitszeiten",
-    "weekdays": "Montag - Freitag: 08:30 - 18:00",
-    "saturday": "Samstag: 09:00 - 13:00",
-    "sendMessage": "Nachricht senden",
-    "sendMessageDesc": "Wir werden uns so schnell wie möglich bei Ihnen melden.",
-    "firstName": "Vorname",
-    "lastName": "Nachname",
-    "yourMessage": "Ihre Nachricht",
-    "sending": "Senden...",
-    "send": "Senden"
-  },
-  "Products": {
-    "whatsapp": "WhatsApp",
-    "whatsappMessage": "Hallo, ich möchte ein Angebot für %{product} erhalten."
-  }
+    "Navigation": {
+        "home": "Startseite",
+        "products": "Produkte",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "blog": "Wissensdatenbank",
+        "sectoral": "Branchenlösungen",
+        "labels": "Etiketten",
+        "ribbons": "Farbbänder",
+        "printers": "Barcode-Drucker",
+        "printheads": "Druckköpfe",
+        "labelsDesc": "Industrielle Etikettentypen",
+        "ribbonsDesc": "Thermotransfer-Farbbänder",
+        "printersDesc": "Desktop und Industrie",
+        "printheadsDesc": "Original-Ersatzteile",
+        "categories": "Kategorien"
+    },
+    "Common": {
+        "readMore": "Weiterlesen",
+        "contactUs": "Kontaktieren Sie uns",
+        "getQuote": "Angebot einholen",
+        "loading": "Wird geladen...",
+        "seeAllCategories": "Alle Kategorien anzeigen",
+        "seeAllSectors": "Alle Branchenlösungen ansehen",
+        "serviceAreas": "Servicegebiete"
+    },
+    "Hero": {
+        "badge": "Industrielle Etiketten- und Barcodelösungen",
+        "ctaPrimary": "Produkte ansehen",
+        "ctaSecondary": "Kontaktieren Sie uns"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Zurück zur Wissensdatenbank",
+        "relatedCategories": "Verwandte Kategorien",
+        "labels": "Etiketten",
+        "ribbons": "Farbbänder",
+        "printers": "Barcode-Drucker",
+        "title": "Wissensdatenbank",
+        "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
+        "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
+        "readMore": "Weiterlesen"
+    },
+    "Contact": {
+        "title": "Kontakt",
+        "subtitle": "Nehmen Sie Kontakt auf",
+        "officeFactory": "Büro & Fabrik",
+        "address": "Adresse",
+        "phone": "Telefon",
+        "email": "E-Mail",
+        "workingHours": "Arbeitszeiten",
+        "weekdays": "Montag - Freitag: 08:30 - 18:00",
+        "saturday": "Samstag: 09:00 - 13:00",
+        "sendMessage": "Nachricht senden",
+        "sendMessageDesc": "Wir werden uns so schnell wie möglich bei Ihnen melden.",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "yourMessage": "Ihre Nachricht",
+        "sending": "Senden...",
+        "send": "Senden"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Hallo, ich möchte ein Angebot für %{product} erhalten."
+    }
 }

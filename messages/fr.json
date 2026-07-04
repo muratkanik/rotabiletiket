@@ -1,65 +1,66 @@
 {
-  "Navigation": {
-    "home": "Accueil",
-    "products": "Produits",
-    "about": "À propos",
-    "contact": "Contact",
-    "blog": "Base de connaissances",
-    "sectoral": "Solutions Sectorielles",
-    "labels": "Étiquettes",
-    "ribbons": "Rubans",
-    "printers": "Imprimantes Code-barres",
-    "printheads": "Têtes d'Impression",
-    "labelsDesc": "Types d'étiquettes industrielles",
-    "ribbonsDesc": "Rubans transfert thermique",
-    "printersDesc": "Bureau et industriel",
-    "printheadsDesc": "Pièces de rechange d'origine",
-    "categories": "Catégories"
-  },
-  "Common": {
-    "readMore": "Lire la suite",
-    "contactUs": "Contactez-nous",
-    "getQuote": "Obtenir un devis",
-    "loading": "Chargement...",
-    "seeAllCategories": "Voir toutes les catégories",
-    "seeAllSectors": "Voir tous les secteurs"
-  },
-  "Hero": {
-    "badge": "Solutions d'étiquetage et de codes-barres industriels",
-    "ctaPrimary": "Voir les produits",
-    "ctaSecondary": "Contactez-nous"
-  },
-  "KnowledgeBase": {
-    "backToKB": "Retour à la base de connaissances",
-    "relatedCategories": "Catégories connexes",
-    "labels": "Étiquettes",
-    "ribbons": "Rubans",
-    "printers": "Imprimantes Code-barres",
-    "title": "Base de Connaissances",
-    "headerSubtitle": "Guide Sectoriel et Informations Techniques",
-    "headerDescription": "Articles complets, guides et informations techniques sur l'étiquetage industriel, les systèmes de codes-barres et les solutions sectorielles.",
-    "readMore": "Lire la suite"
-  },
-  "Contact": {
-    "title": "Contact",
-    "subtitle": "Entrez en contact avec nous",
-    "officeFactory": "Bureau & Usine",
-    "address": "Adresse",
-    "phone": "Téléphone",
-    "email": "E-mail",
-    "workingHours": "Heures de travail",
-    "weekdays": "Lundi - Vendredi: 08:30 - 18:00",
-    "saturday": "Samedi: 09:00 - 13:00",
-    "sendMessage": "Envoyer un message",
-    "sendMessageDesc": "Nous vous répondrons dans les plus brefs délais.",
-    "firstName": "Prénom",
-    "lastName": "Nom de famille",
-    "yourMessage": "Votre Message",
-    "sending": "Envoi en cours...",
-    "send": "Envoyer"
-  },
-  "Products": {
-    "whatsapp": "WhatsApp",
-    "whatsappMessage": "Bonjour, je voudrais obtenir un devis pour %{product}."
-  }
+    "Navigation": {
+        "home": "Accueil",
+        "products": "Produits",
+        "about": "À propos",
+        "contact": "Contact",
+        "blog": "Base de connaissances",
+        "sectoral": "Solutions Sectorielles",
+        "labels": "Étiquettes",
+        "ribbons": "Rubans",
+        "printers": "Imprimantes Code-barres",
+        "printheads": "Têtes d'Impression",
+        "labelsDesc": "Types d'étiquettes industrielles",
+        "ribbonsDesc": "Rubans transfert thermique",
+        "printersDesc": "Bureau et industriel",
+        "printheadsDesc": "Pièces de rechange d'origine",
+        "categories": "Catégories"
+    },
+    "Common": {
+        "readMore": "Lire la suite",
+        "contactUs": "Contactez-nous",
+        "getQuote": "Obtenir un devis",
+        "loading": "Chargement...",
+        "seeAllCategories": "Voir toutes les catégories",
+        "seeAllSectors": "Voir tous les secteurs",
+        "serviceAreas": "Zones de Service"
+    },
+    "Hero": {
+        "badge": "Solutions d'étiquetage et de codes-barres industriels",
+        "ctaPrimary": "Voir les produits",
+        "ctaSecondary": "Contactez-nous"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Retour à la base de connaissances",
+        "relatedCategories": "Catégories connexes",
+        "labels": "Étiquettes",
+        "ribbons": "Rubans",
+        "printers": "Imprimantes Code-barres",
+        "title": "Base de Connaissances",
+        "headerSubtitle": "Guide Sectoriel et Informations Techniques",
+        "headerDescription": "Articles complets, guides et informations techniques sur l'étiquetage industriel, les systèmes de codes-barres et les solutions sectorielles.",
+        "readMore": "Lire la suite"
+    },
+    "Contact": {
+        "title": "Contact",
+        "subtitle": "Entrez en contact avec nous",
+        "officeFactory": "Bureau & Usine",
+        "address": "Adresse",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "workingHours": "Heures de travail",
+        "weekdays": "Lundi - Vendredi: 08:30 - 18:00",
+        "saturday": "Samedi: 09:00 - 13:00",
+        "sendMessage": "Envoyer un message",
+        "sendMessageDesc": "Nous vous répondrons dans les plus brefs délais.",
+        "firstName": "Prénom",
+        "lastName": "Nom de famille",
+        "yourMessage": "Votre Message",
+        "sending": "Envoi en cours...",
+        "send": "Envoyer"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Bonjour, je voudrais obtenir un devis pour %{product}."
+    }
 }
