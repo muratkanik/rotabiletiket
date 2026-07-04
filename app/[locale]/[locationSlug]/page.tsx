@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locationS
     const isCity = !location.district;
     
     return {
-        title: `${name} Etiket Üreticisi ve İmalatı | Tüm Ölçülerde Hızlı Teslimat - Rota Bil Etiket`,
-        description: `Rota Bil Etiket olarak ${name} ve çevresindeki işletmeler için her ölçüde ve türde etiket üretim ihtiyaçlarınızı karşılıyoruz. ${name} etiket firması arıyorsanız, üretici fiyatlarıyla garantili ürünler.`,
+        title: `${name} Etiket Üreticisi ve İmalatı | Tüm Ölçülerde Hızlı Teslimat - Rotabil Etiket`,
+        description: `Rotabil Etiket olarak ${name} ve çevresindeki işletmeler için her ölçüde ve türde etiket üretim ihtiyaçlarınızı karşılıyoruz. ${name} etiket firması arıyorsanız, üretici fiyatlarıyla garantili ürünler.`,
         keywords: `${name} etiket, ${name} etiket firmaları, ${name} etiket üreticisi, ${name} etiket imalatı, ${name} rulo etiket, barkod etiketi ${name}, kuşe etiket ${name}`,
     };
 }
@@ -102,8 +102,8 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
                         {name} <span className="text-blue-500">Etiket Üretim Merkezi</span>
                     </h1>
-                    <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
-                        Rota Bil Etiket olarak, {name} bölgesindeki tüm işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat.
+                    <p className="text-xl text-slate-200 font-light mb-8 max-w-2xl mx-auto">
+                        Rotabil Etiket olarak, {name} bölgesindeki tüm işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link href={`/${locale}/iletisim`} className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
