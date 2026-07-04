@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ProductCTA } from '@/components/product/ProductCTA';
 
 export const revalidate = 3600;
 
@@ -144,6 +145,8 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                                 .replace(/src="img\//g, 'src="https://rotabiletiket.com/img/')
                         }} />
                     </div>
+                    
+                    <ProductCTA productName={displayTitle} />
 
                     {/* Linked Products */}
                     {sector.sector_products && sector.sector_products.length > 0 && (

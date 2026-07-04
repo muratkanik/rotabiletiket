@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/src/i18n/routing';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, User, Hash } from 'lucide-react';
+import { ArrowLeft, Clock, CalendarDays, Share2, Printer, Tag } from 'lucide-react';
+import { enhanceHtmlWithInternalLinks } from '@/utils/autoLinker';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -95,6 +96,7 @@ export default async function ArticlePage({ params }: Props) {
             '@id': `https://rotabiletiket.com/${locale}/bilgi-bankasi/${article.slug}`,
         },
     };
+    const enhancedContent = await enhanceHtmlWithInternalLinks(article.content_html || '', article.slug, locale);
 
     return (
         <article className="min-h-screen bg-white">
@@ -144,7 +146,7 @@ export default async function ArticlePage({ params }: Props) {
                             />
                         </div>
                     )}
-                    <div dangerouslySetInnerHTML={{ __html: article.content_html || '' }} />
+                    <div dangerouslySetInnerHTML={{ __html: enhancedContent }} />
                     
                     {/* Tags / Hashtags */}
                     {article.keywords && (
