@@ -42,8 +42,8 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
         <div className="md:hidden">
             <button
                 onClick={toggleMenu}
-                className="p-2 text-slate-700 hover:bg-slate-100 rounded-md"
-                aria-label={tCommon('readMore')} // adapting fallback or using a generic open-menu label if available, or just keeping aria-label generic english/localized if strict
+                className="p-2 text-slate-700 hover:bg-slate-100 rounded-md relative z-50"
+                aria-label="Toggle Menu"
             >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
