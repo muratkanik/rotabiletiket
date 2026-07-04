@@ -74,7 +74,7 @@ export default async function RootLayout({
                 <OrganizationSchema />
                 <SEOScripts />
             </head>
-            <body className={`${inter.className} antialiased`}>
+            <body className={`${inter.className} antialiased overflow-x-hidden`}>
                 <SEOBodyScripts />
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />

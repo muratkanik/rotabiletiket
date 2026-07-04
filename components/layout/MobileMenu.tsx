@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
@@ -25,6 +25,18 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
     const locale = useLocale();
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    // Prevent body scrolling when mobile menu is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
 
     return (
         <div className="md:hidden">
@@ -54,7 +66,7 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
 
                             <div 
                                 className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                                    isProductsOpen ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'
+                                    isProductsOpen ? 'max-h-[2000px] opacity-100 mt-2' : 'max-h-0 opacity-0'
                                 }`}
                             >
                                 <div className="flex flex-col space-y-1 pl-4 border-l-2 border-slate-100 ml-4 py-1">
