@@ -1,0 +1,66 @@
+{
+    "Navigation": {
+        "home": "Inicio",
+        "products": "Productos",
+        "about": "Nosotros",
+        "contact": "Contacto",
+        "blog": "Base de Conocimientos",
+        "sectoral": "Soluciones Sectoriales",
+        "labels": "Etiquetas",
+        "ribbons": "Cintas",
+        "printers": "Impresoras de Códigos",
+        "printheads": "Cabezales de Impresión",
+        "labelsDesc": "Tipos de etiquetas industriales",
+        "ribbonsDesc": "Cintas de transferencia térmica",
+        "printersDesc": "De escritorio e industriales",
+        "printheadsDesc": "Repuestos originales",
+        "categories": "Categorías"
+    },
+    "Common": {
+        "readMore": "Leer más",
+        "contactUs": "Contáctenos",
+        "getQuote": "Obtener Cotización",
+        "loading": "Cargando...",
+        "seeAllCategories": "Ver todas las categorías",
+        "seeAllSectors": "Ver todos los sectores",
+        "serviceAreas": "Áreas de Servicio"
+    },
+    "Hero": {
+        "badge": "Soluciones Industriales de Etiquetas",
+        "ctaPrimary": "Ver Productos",
+        "ctaSecondary": "Contáctenos"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Volver a la Base de Conocimientos",
+        "relatedCategories": "Categorías Relacionadas",
+        "labels": "Etiquetas",
+        "ribbons": "Cintas",
+        "printers": "Impresoras de Códigos",
+        "title": "Base de Conocimientos",
+        "headerSubtitle": "Guía Sectorial e Información Técnica",
+        "headerDescription": "Artículos completos, guías e información técnica sobre etiquetado industrial y sistemas de códigos de barras.",
+        "readMore": "Leer más"
+    },
+    "Contact": {
+        "title": "Contacto",
+        "subtitle": "Póngase en contacto",
+        "officeFactory": "Oficina y Fábrica",
+        "address": "Dirección",
+        "phone": "Teléfono",
+        "email": "Correo Electrónico",
+        "workingHours": "Horario de Trabajo",
+        "weekdays": "Lunes - Viernes: 08:30 - 18:00",
+        "saturday": "Sábado: 09:00 - 13:00",
+        "sendMessage": "Enviar un Mensaje",
+        "sendMessageDesc": "Nos pondremos en contacto con usted lo antes posible.",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "yourMessage": "Su Mensaje",
+        "sending": "Enviando...",
+        "send": "Enviar"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Hola, me gustaría obtener una cotización para %{product}."
+    }
+}

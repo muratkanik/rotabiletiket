@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
             const segments = pathname.split('/');
 
             // If the first segment is a known locale, remove it
-            if (['tr', 'en', 'de', 'fr', 'ar'].includes(segments[1])) {
+            if (['tr', 'en', 'de', 'fr', 'ar', 'es', 'it'].includes(segments[1])) {
                 segments.splice(1, 1);
                 newPath = segments.join('/');
             }
@@ -56,6 +56,8 @@ export function LanguageSwitcher() {
         { code: 'de', label: 'DE', name: 'Deutsch' },
         { code: 'fr', label: 'FR', name: 'Français' },
         { code: 'ar', label: 'AR', name: 'العربية' },
+        { code: 'es', label: 'ES', name: 'Español' },
+        { code: 'it', label: 'IT', name: 'Italiano' },
     ];
 
     return (

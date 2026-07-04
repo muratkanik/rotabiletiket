@@ -1,0 +1,66 @@
+{
+    "Navigation": {
+        "home": "Home",
+        "products": "Prodotti",
+        "about": "Chi Siamo",
+        "contact": "Contatti",
+        "blog": "Base di Conoscenza",
+        "sectoral": "Soluzioni Settoriali",
+        "labels": "Etichette",
+        "ribbons": "Nastri",
+        "printers": "Stampanti di Codici",
+        "printheads": "Testine di Stampa",
+        "labelsDesc": "Tipi di etichette industriali",
+        "ribbonsDesc": "Nastri a trasferimento termico",
+        "printersDesc": "Desktop e industriali",
+        "printheadsDesc": "Pezzi di ricambio originali",
+        "categories": "Categorie"
+    },
+    "Common": {
+        "readMore": "Leggi di più",
+        "contactUs": "Contattaci",
+        "getQuote": "Richiedi Preventivo",
+        "loading": "Caricamento...",
+        "seeAllCategories": "Vedi tutte le categorie",
+        "seeAllSectors": "Vedi tutti i settori",
+        "serviceAreas": "Aree di Servizio"
+    },
+    "Hero": {
+        "badge": "Soluzioni Industriali di Etichette",
+        "ctaPrimary": "Vedi Prodotti",
+        "ctaSecondary": "Contattaci"
+    },
+    "KnowledgeBase": {
+        "backToKB": "Torna alla Base di Conoscenza",
+        "relatedCategories": "Categorie Correlate",
+        "labels": "Etichette",
+        "ribbons": "Nastri",
+        "printers": "Stampanti di Codici",
+        "title": "Base di Conoscenza",
+        "headerSubtitle": "Guida Settoriale e Informazioni Tecniche",
+        "headerDescription": "Articoli completi, guide e informazioni tecniche su etichettatura industriale e sistemi di codici a barre.",
+        "readMore": "Leggi di più"
+    },
+    "Contact": {
+        "title": "Contatti",
+        "subtitle": "Mettiti in contatto con noi",
+        "officeFactory": "Ufficio e Fabbrica",
+        "address": "Indirizzo",
+        "phone": "Telefono",
+        "email": "Email",
+        "workingHours": "Orari di Lavoro",
+        "weekdays": "Lunedì - Venerdì: 08:30 - 18:00",
+        "saturday": "Sabato: 09:00 - 13:00",
+        "sendMessage": "Invia un Messaggio",
+        "sendMessageDesc": "Ti risponderemo il prima possibile.",
+        "firstName": "Nome",
+        "lastName": "Cognome",
+        "yourMessage": "Il tuo Messaggio",
+        "sending": "Invio...",
+        "send": "Invia"
+    },
+    "Products": {
+        "whatsapp": "WhatsApp",
+        "whatsappMessage": "Salve, vorrei ricevere un preventivo per %{product}."
+    }
+}
