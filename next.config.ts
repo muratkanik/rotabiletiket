@@ -48,6 +48,36 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/:locale(tr|en|de|ar|fr)/urunler/ribonlar',
+        destination: '/:locale/urunler/ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin',
+        permanent: true,
+      },
+      {
+        source: '/urunler/ribonlar',
+        destination: '/urunler/ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin',
+        permanent: true,
+      },
+      {
+        source: '/:locale(tr|en|de|ar|fr)/urunler/barkod-yazicilar',
+        destination: '/:locale/urunler/barkod-yazici-cozumleri-i-sletmenize-deger-katin',
+        permanent: true,
+      },
+      {
+        source: '/urunler/barkod-yazicilar',
+        destination: '/urunler/barkod-yazici-cozumleri-i-sletmenize-deger-katin',
+        permanent: true,
+      },
+      {
+        source: '/:locale(tr|en|de|ar|fr)/urunler/yedek-parca',
+        destination: '/:locale/urunler/yedek-parca-kalite-ve-guvenilirlik-saglayin',
+        permanent: true,
+      },
+      {
+        source: '/urunler/yedek-parca',
+        destination: '/urunler/yedek-parca-kalite-ve-guvenilirlik-saglayin',
+        permanent: true,
+      },
+      {
         // Matches any path that ends with .php (e.g., /wax-ribbon.php, /a/b.php)
         source: '/:path(.*\\.php)',
         destination: '/',

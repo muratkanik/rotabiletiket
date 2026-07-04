@@ -14,8 +14,11 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
     const [searchTerm, setSearchTerm] = useState('');
 
     const filteredLocations = locations.filter(loc => {
-        const name = (loc.district || loc.city).toLowerCase();
-        return name.includes(searchTerm.toLowerCase());
+        const searchLower = searchTerm.toLocaleLowerCase('tr-TR');
+        const cityMatch = loc.city.toLocaleLowerCase('tr-TR').includes(searchLower);
+        const districtMatch = loc.district ? loc.district.toLocaleLowerCase('tr-TR').includes(searchLower) : false;
+        
+        return cityMatch || districtMatch;
     });
 
     return (
@@ -51,7 +54,7 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
                                     <MapPin size={20} />
                                 </div>
                                 <h3 className="font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
-                                    {name} Etiket
+                                    {loc.district ? `${loc.district}, ${loc.city}` : loc.city} Etiket
                                 </h3>
                             </div>
                             <div className="flex items-center text-sm font-medium text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
