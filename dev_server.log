@@ -1,0 +1,20 @@
+
+> web@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by process 3383
+42640, using available port 3001 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.109:3001
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 475ms
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3001". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ GET /tr/bilgi-bankasi/hangi-barkod-yaziciyi-secmeliyim 200 in 6.9s (compile: 991ms, proxy.ts: 41ms, render: 5.9s)
+[?25h

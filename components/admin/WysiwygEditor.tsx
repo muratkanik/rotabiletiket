@@ -23,7 +23,7 @@ export function WysiwygEditor({ value, onChange, placeholder }: WysiwygEditorPro
 
     return (
         <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-            {/* @ts-ignore - react-quill-new types may not exactly match legacy */}
+            {/* @ts-expect-error - react-quill-new types may not exactly match legacy */}
             <ReactQuill
                 theme="snow"
                 value={value}

@@ -27,7 +27,7 @@ export default async function ServiceAreasPage() {
                         {t('serviceAreas') || 'Hizmet Bölgelerimiz'}
                     </h1>
                     <p className="text-lg text-slate-600">
-                        Türkiye'nin dört bir yanındaki işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat ile yanınızdayız.
+                        Türkiye&apos;nin dört bir yanındaki işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat ile yanınızdayız.
                     </p>
                 </div>
 

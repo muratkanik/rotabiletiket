@@ -182,7 +182,7 @@ export function ImageGallery({ defaultBucket = 'product-images', onSelect, class
                 if (filteredFiles.length === 0) {
                     return (
                         <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-200 rounded-xl text-slate-500">
-                            {searchQuery ? <p>"{searchQuery}" aramasıyla eşleşen görsel bulunamadı.</p> : <p>Bu klasörde henüz görsel yok.</p>}
+                            {searchQuery ? <p>&quot;{searchQuery}&quot; aramasıyla eşleşen görsel bulunamadı.</p> : <p>Bu klasörde henüz görsel yok.</p>}
                         </div>
                     );
                 }

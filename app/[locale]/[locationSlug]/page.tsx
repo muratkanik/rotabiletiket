@@ -146,7 +146,7 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
                                 <Truck size={28} />
                             </div>
                             <h3 className="text-xl font-bold text-slate-900 mb-3">Hızlı Gönderim Ağı</h3>
-                            <p className="text-slate-600 leading-relaxed">Türkiye'nin her yerine olduğu gibi {name} bölgesine de siparişlerinizi en hızlı kargo ve lojistik yöntemleriyle ulaştırıyoruz.</p>
+                            <p className="text-slate-600 leading-relaxed">Türkiye&apos;nin her yerine olduğu gibi {name} bölgesine de siparişlerinizi en hızlı kargo ve lojistik yöntemleriyle ulaştırıyoruz.</p>
                         </div>
                     </div>
                 </div>
