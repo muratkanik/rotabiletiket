@@ -18,6 +18,7 @@ export interface Article {
     created_at: string;
     updated_at?: string;
     keywords?: string; // Add keywords
+    seo_description?: string | null;
 }
 
 export async function getArticles(locale: string = 'tr'): Promise<Article[]> {
@@ -115,6 +116,7 @@ export async function getArticle(slug: string, locale: string = 'tr'): Promise<A
             summary: translation.summary,
             content_html: translation.content_html,
             keywords: translation.keywords, // Add keywords
+            seo_description: translation.seo_description ?? article.seo_description,
             // Keep image_url from base
         } as Article;
     }
