@@ -406,23 +406,22 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
-            // Because users want drag-n-drop to reflect specifically the active SORT view,
-            // we should base the numbers strictly off the visual array's display orders.
-            const oldIndex = sortedProducts.findIndex(i => i.id === active.id);
-            const newIndex = sortedProducts.findIndex(i => i.id === over.id);
-            
-            // Move item visually
-            const visuallyMoved = arrayMove(sortedProducts, oldIndex, newIndex);
-            
-            // Re-assign display_order sequentially 1, 2, 3, 4... based on visual order
             setProducts((items) => {
-                return items.map(p => {
-                    const visualIndex = visuallyMoved.findIndex(v => v.id === p.id);
-                    if (visualIndex !== -1) {
-                        return { ...p, display_order: visualIndex + 1 };
-                    }
-                    return p; // Keep original display_order for products not in the visual filter
-                });
+                // Ensure we do a global re-sequencing for ALL items
+                const allItems = [...items].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
+                
+                const oldIndex = allItems.findIndex(i => i.id === active.id);
+                const newIndex = allItems.findIndex(i => i.id === over.id);
+                
+                if (oldIndex !== -1 && newIndex !== -1) {
+                    const movedItems = arrayMove(allItems, oldIndex, newIndex);
+                    // Re-assign display_order sequentially 1, 2, 3, 4... globally
+                    return movedItems.map((p, index) => ({
+                        ...p,
+                        display_order: index + 1
+                    }));
+                }
+                return items;
             });
             
             setHasUnsavedChanges(true);
@@ -432,8 +431,25 @@ export function ProductList({ initialProducts, categories, initialCategory }: Pr
     };
 
     const handleOrderChange = (id: string, newOrder: number) => {
-        setProducts(items => items.map(p => p.id === id ? { ...p, display_order: newOrder } : p));
+        setProducts(items => {
+            const allItems = [...items].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
+            const targetItem = allItems.find(p => p.id === id);
+            if (!targetItem) return items;
+
+            const otherItems = allItems.filter(p => p.id !== id);
+            // newOrder is 1-indexed, so we convert to 0-indexed for splice
+            const targetIndex = Math.max(0, Math.min(newOrder - 1, otherItems.length));
+            
+            otherItems.splice(targetIndex, 0, targetItem);
+            
+            // Re-assign globally
+            return otherItems.map((p, index) => ({
+                ...p,
+                display_order: index + 1
+            }));
+        });
         setHasUnsavedChanges(true);
+        setSortConfig({ key: 'display_order', direction: 'asc' });
     };
 
     const saveOrder = async () => {
