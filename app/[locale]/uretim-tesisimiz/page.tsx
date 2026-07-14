@@ -1,5 +1,5 @@
 import React from 'react';
-import { Factory, Zap, ShieldCheck, Clock, Settings, Users } from 'lucide-react';
+import { Factory, Clock, Settings, Users } from 'lucide-react';
 import Image from 'next/image';
 
 export const metadata = {

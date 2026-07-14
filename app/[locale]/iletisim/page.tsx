@@ -1,6 +1,5 @@
 
 import { getSiteSettings } from "@/lib/settings";
-import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 

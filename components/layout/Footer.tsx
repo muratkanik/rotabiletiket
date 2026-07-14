@@ -9,7 +9,6 @@ export async function Footer({ locale }: { locale: string }) {
     const footerContent = await getSiteSettings('footer_content');
 
     const t = await getTranslations('Navigation');
-    const common = await getTranslations('Common');
 
     // Helper to safety get localized string from JSONB
     const getLocStr = (obj: any, key: string) => {

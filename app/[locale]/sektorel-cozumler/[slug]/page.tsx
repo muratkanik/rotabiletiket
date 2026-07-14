@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/server';
-import { Navbar } from '@/components/layout/Navbar';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';

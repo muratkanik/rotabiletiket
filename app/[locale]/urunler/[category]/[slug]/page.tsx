@@ -1,10 +1,6 @@
-import { Navbar } from '@/components/layout/Navbar';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Link } from '@/src/i18n/routing'; // Use localized Link
 import { Breadcrumb } from '@/components/ui/breadcrumb';
-import { Check, Phone, Mail } from 'lucide-react';
 import { getLocalizedProduct } from '@/utils/supabase/queries';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ProductCTA } from '@/components/product/ProductCTA';

@@ -23,7 +23,7 @@ async function test() {
 
     // For all those that are display_order 0, set to 50
     const { data: allCats } = await supabase.from('categories').select('id, display_order');
-    for (let c of allCats) {
+    for (const c of allCats) {
         if (c.display_order === 0) {
             await supabase.from('categories').update({ display_order: 50 }).eq('id', c.id);
         }

@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { getSiteSettings } from "@/lib/settings";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata() {
     return {
         title: 'KVKK Aydınlatma Metni | Rotabil Etiket',
         description: 'Kişisel Verilerin Korunması Kanunu kapsamında aydınlatma metni.'

@@ -17,7 +17,7 @@ interface MobileMenuProps {
     categories?: Category[];
 }
 
-export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
+export function MobileMenu({ categories = [] }: MobileMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const tNav = useTranslations('Navigation');

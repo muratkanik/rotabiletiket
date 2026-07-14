@@ -53,7 +53,7 @@ export async function callAIFallback(
                 response_format: asJson ? { type: "json_object" } : undefined
             });
 
-            let result = completion.choices[0]?.message.content;
+            const result = completion.choices[0]?.message.content;
             if (result) {
                 if (asJson) {
                     let cleaned = result.trim();

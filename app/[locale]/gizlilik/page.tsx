@@ -1,10 +1,8 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { getSiteSettings } from "@/lib/settings";
-import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Common' });
     return {
         title: `Gizlilik Politikası | Rotabil Etiket`, // Should ideally be localized too
         description: 'Rotabil Etiket gizlilik politikası ve veri güvenliği ilkeleri.'

@@ -2,10 +2,8 @@
 
 import React from 'react';
 import { FileText, Phone, Send, Info } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 
 export function ProductCTA({ productName }: { productName?: string }) {
-    const t = useTranslations('Common');
 
     const handleWhatsApp = () => {
         const text = productName 

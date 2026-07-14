@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import locationsData from '../../../data/locations.json';
-import { MapPin, Phone, Mail, Clock, CheckCircle2, Truck, Star, ShieldCheck, Factory, Layers } from 'lucide-react';
+import { MapPin, Phone, Mail, Truck, Factory, Layers } from 'lucide-react';
 import Link from 'next/link';
 import { getSiteSettings } from "@/lib/settings";
 import { routing } from '@/src/i18n/routing';
@@ -38,7 +38,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locationS
     }
     
     const name = location.district || location.city;
-    const isCity = !location.district;
     
     return {
         title: `${name} Etiket Üreticisi ve İmalatı | Tüm Ölçülerde Hızlı Teslimat - Rotabil Etiket`,

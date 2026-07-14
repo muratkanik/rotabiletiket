@@ -1,9 +1,7 @@
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
 import { Tag, Printer, ScrollText, ArrowRight } from 'lucide-react';
 
 export async function QuickCategories({ locale }: { locale: string }) {
-    const t = await getTranslations('Common');
 
     const categories = [
         {

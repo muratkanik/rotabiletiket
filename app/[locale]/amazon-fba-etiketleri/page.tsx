@@ -1,6 +1,5 @@
 import React from 'react';
-import { PackageSearch, Printer, CheckCircle2, AlertTriangle, ArrowRight, Table2 } from 'lucide-react';
-import Image from 'next/image';
+import { PackageSearch, Printer, CheckCircle2, AlertTriangle, Table2 } from 'lucide-react';
 import { ProductCTA } from '@/components/product/ProductCTA';
 
 export const metadata = {
@@ -36,7 +35,7 @@ export default function AmazonFBAPage() {
                             </li>
                             <li className="flex items-start gap-2">
                                 <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                                <span><strong>Çözüm:</strong> Rotabil Etiket'in ısıya, neme ve sürtünmeye dayanıklı "Amazon Standart" Termal ve Kuşe etiketleri ile 100% okuma garantisi.</span>
+                                <span><strong>Çözüm:</strong> Rotabil Etiket&apos;in ısıya, neme ve sürtünmeye dayanıklı &quot;Amazon Standart&quot; Termal ve Kuşe etiketleri ile 100% okuma garantisi.</span>
                             </li>
                         </ul>
                     </div>
@@ -48,7 +47,7 @@ export default function AmazonFBAPage() {
                     
                     <h2 className="text-3xl font-bold text-slate-900 mb-6">Amazon FNSKU ve Koli Etiketi Standartları Nelerdir?</h2>
                     <p className="text-slate-600 mb-8 leading-relaxed text-lg">
-                        Amazon FBA (Fulfillment by Amazon) iş modeliyle global pazaryerlerinde satış yapan Türk ihracatçıların en sık karşılaştığı operasyonel sorun <strong>etiket reddidir</strong>. Depoya ulaşan koliler üzerindeki barkodlar okunmadığında, Amazon "Planlanmamış Hizmet Ücreti" (Unplanned Service Fee) keser.
+                        Amazon FBA (Fulfillment by Amazon) iş modeliyle global pazaryerlerinde satış yapan Türk ihracatçıların en sık karşılaştığı operasyonel sorun <strong>etiket reddidir</strong>. Depoya ulaşan koliler üzerindeki barkodlar okunmadığında, Amazon &quot;Planlanmamış Hizmet Ücreti&quot; (Unplanned Service Fee) keser.
                     </p>
 
                     {/* GEO Optimized Table */}
@@ -102,7 +101,7 @@ export default function AmazonFBAPage() {
                             <Printer className="w-8 h-8 text-orange-600 mb-4" />
                             <h3 className="font-bold text-lg mb-2">Direkt Termal Baskı</h3>
                             <p className="text-slate-600 text-sm">
-                                Uçak kargo ile hızlı gönderim yapılan küçük paket ve FNSKU barkodlarında Lamine Termal etiketlerimiz maliyet avantajı sağlar. Amazon'un istediği 300 DPI netliği fazlasıyla karşılar.
+                                Uçak kargo ile hızlı gönderim yapılan küçük paket ve FNSKU barkodlarında Lamine Termal etiketlerimiz maliyet avantajı sağlar. Amazon&apos;un istediği 300 DPI netliği fazlasıyla karşılar.
                             </p>
                         </div>
                     </div>

@@ -1,10 +1,10 @@
-import { getArticle, getArticles } from '@/lib/articles';
+import { getArticle } from '@/lib/articles';
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/src/i18n/routing';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, CalendarDays, Share2, Printer, Tag, Calendar, User, Hash } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Hash } from 'lucide-react';
 import { enhanceHtmlWithInternalLinks } from '@/utils/autoLinker';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
