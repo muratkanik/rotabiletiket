@@ -111,3 +111,39 @@ export async function getSolution(slug: string, locale: string): Promise<Solutio
         locale
     );
 }
+
+export async function getSolutionLocaleSlugs(slug: string, locale: string) {
+    let { data: page } = await supabase
+        .from('solution_pages')
+        .select('slug, solution_page_translations(language_code, slug)')
+        .eq('slug', slug)
+        .eq('is_published', true)
+        .maybeSingle();
+
+    if (!page) {
+        const { data: match } = await supabase
+            .from('solution_page_translations')
+            .select('solution_page_id')
+            .eq('language_code', locale)
+            .eq('slug', slug)
+            .maybeSingle();
+
+        if (match) {
+            const result = await supabase
+                .from('solution_pages')
+                .select('slug, solution_page_translations(language_code, slug)')
+                .eq('id', match.solution_page_id)
+                .eq('is_published', true)
+                .maybeSingle();
+            page = result.data;
+        }
+    }
+
+    if (!page) return {};
+
+    const slugs: Record<string, string> = { tr: page.slug };
+    for (const translation of (page.solution_page_translations || []) as SolutionTranslation[]) {
+        if (translation.slug) slugs[translation.language_code] = translation.slug;
+    }
+    return slugs;
+}

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { getLocale } from 'next-intl/server';
-import { getSolution } from '@/lib/solutions';
+import { getSolution, getSolutionLocaleSlugs } from '@/lib/solutions';
 
 export const revalidate = 3600;
 
@@ -15,10 +15,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!solution) return { title: 'Solution not found | Rotabil Etiket' };
 
+    const localeSlugs = await getSolutionLocaleSlugs(slug, locale);
+    const languages = Object.fromEntries(
+        Object.entries(localeSlugs).map(([language, localizedSlug]) => [
+            language,
+            `https://rotabiletiket.com/${language}/cozumler/${localizedSlug}`,
+        ])
+    );
+
     return {
         title: solution.seo_title || `${solution.title} | Rotabil Etiket`,
         description: solution.seo_description || solution.excerpt || solution.title,
         keywords: solution.keywords || undefined,
+        alternates: {
+            canonical: `https://rotabiletiket.com/${locale}/cozumler/${solution.slug}`,
+            languages,
+        },
     };
 }
 

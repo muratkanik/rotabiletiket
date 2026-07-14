@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import { getLocale } from 'next-intl/server';
 import { RfqForm } from '@/components/contact/RfqForm';
 
-export const metadata: Metadata = {
-    title: 'Technical Quote Request | Rotabil Etiket',
-    description: 'Send your industrial labeling, barcode or RFID requirements to Rotabil Etiket technical sales team.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const locale = await getLocale();
+    return locale === 'de'
+        ? { title: 'Technische Angebotsanfrage | Rotabil Etiket', description: 'Senden Sie Ihre Anforderungen an industrielle Etiketten, Barcodes oder RFID an das technische Team von Rotabil Etiket.' }
+        : { title: 'Technical Quote Request | Rotabil Etiket', description: 'Send your industrial labeling, barcode or RFID requirements to Rotabil Etiket technical sales team.' };
+}
 
 export default async function RfqPage({ searchParams }: { searchParams: Promise<{ solution?: string }> }) {
     const locale = await getLocale();
