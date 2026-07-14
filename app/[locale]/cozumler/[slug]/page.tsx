@@ -99,7 +99,7 @@ export default async function SolutionDetailPage({ params }: Props) {
                         </div>
                     )}
 
-                    <Link href={`/${locale}/iletisim`} className="block rounded-2xl bg-orange-600 p-6 text-center font-bold text-white transition hover:bg-orange-700">
+                    <Link href={`/${locale}/teklif-al?solution=${encodeURIComponent(solution.slug)}`} className="block rounded-2xl bg-orange-600 p-6 text-center font-bold text-white transition hover:bg-orange-700">
                         {locale === 'de' ? 'Angebot anfordern' : 'Request a quote'}
                     </Link>
                 </aside>
