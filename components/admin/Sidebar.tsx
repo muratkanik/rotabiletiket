@@ -18,6 +18,7 @@ import {
     Settings2,
     Cpu,
     Factory,
+    Mail,
     X
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -29,6 +30,7 @@ const MENU_ITEMS = [
     { name: 'Kategoriler', href: '/admin/categories', icon: Tags },
     { name: 'Sektörel Çözümler', href: '/admin/sectors', icon: BookOpen },
     { name: 'Teknik Çözümler', href: '/admin/solutions', icon: Factory },
+    { name: 'Teknik Talepler', href: '/admin/rfq', icon: Mail },
     { name: 'Bilgi Bankası', href: '/admin/articles', icon: BookOpen },
     { name: 'Görseller', href: '/admin/images', icon: ImageIcon },
     { name: 'Hero Slider', href: '/admin/hero', icon: LayoutDashboard },
