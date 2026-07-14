@@ -1,13 +1,22 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import { submitRfqForm } from '@/app/actions';
+import { trackConversion } from '@/app/actions/analytics';
 
 const initialState: { error?: string; success?: string } = {};
 
 export function RfqForm({ locale, solutionSlug = '' }: { locale: string; solutionSlug?: string }) {
     const [state, formAction, pending] = useActionState(submitRfqForm, initialState);
+    const trackedSuccess = useRef(false);
     const isGerman = locale === 'de';
+
+    useEffect(() => {
+        if (state.success && !trackedSuccess.current) {
+            trackedSuccess.current = true;
+            void trackConversion('rfq_submit', window.location.pathname, locale, solutionSlug);
+        }
+    }, [locale, solutionSlug, state.success]);
 
     const label = (de: string, en: string) => isGerman ? de : en;
 

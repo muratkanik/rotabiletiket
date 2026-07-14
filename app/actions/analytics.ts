@@ -29,3 +29,20 @@ export async function trackPageView(path: string) {
         // Fail silently to not impact user experience
     }
 }
+
+export async function trackConversion(eventName: string, path: string, locale?: string, solutionSlug?: string) {
+    const allowedEvents = ['rfq_submit', 'sample_request', 'quote_request', 'technical_support_request', 'datasheet_download'];
+    if (!allowedEvents.includes(eventName)) return;
+
+    try {
+        const supabase = await createClient();
+        await supabase.from('conversion_events').insert({
+            event_name: eventName,
+            path,
+            locale: locale || null,
+            solution_slug: solutionSlug || null,
+        });
+    } catch (error) {
+        console.error('Conversion tracking error:', error);
+    }
+}
