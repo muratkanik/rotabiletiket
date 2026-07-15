@@ -1,15 +1,16 @@
-import { MapPin, ArrowUpRight, Globe2 } from 'lucide-react';
+import Link from 'next/link';
+import { MapPin, ArrowUpRight, ArrowRight, Globe2 } from 'lucide-react';
 
 type Locale = 'tr' | 'en' | 'de' | 'fr' | 'ar' | 'es' | 'it';
 
-const copy: Record<Locale, { eyebrow: string; title: string; description: string; note: string; countries: string; exportFrom: string }> = {
-    tr: { eyebrow: 'DÜNYAYA AÇILAN ROTABİL', title: 'İhracat noktalarımız', description: 'Türkiye’de ürettiğimiz etiket çözümlerini farklı pazarlardaki iş ortaklarımıza ulaştırıyoruz.', note: 'Gösterilen noktalar şehir merkezlerinin koordinatları baz alınarak hazırlanmıştır.', countries: 'İhracat yaptığımız ülkeler', exportFrom: 'Türkiye’den' },
-    en: { eyebrow: 'ROTABIL GOES GLOBAL', title: 'Our export destinations', description: 'We deliver label solutions manufactured in Türkiye to business partners across different markets.', note: 'Locations are plotted using city-centre coordinates.', countries: 'Export destinations', exportFrom: 'From Türkiye' },
-    de: { eyebrow: 'ROTABIL WIRD GLOBAL', title: 'Unsere Exportziele', description: 'Wir liefern in Türkiye hergestellte Etikettenlösungen an Geschäftspartner in verschiedenen Märkten.', note: 'Die Punkte basieren auf den Koordinaten der Stadtzentren.', countries: 'Exportländer', exportFrom: 'Aus Türkiye' },
-    fr: { eyebrow: 'ROTABIL À L’INTERNATIONAL', title: 'Nos destinations d’exportation', description: 'Nous livrons des solutions d’étiquetage fabriquées en Türkiye à nos partenaires sur différents marchés.', note: 'Les points sont positionnés selon les coordonnées des centres-villes.', countries: 'Pays d’exportation', exportFrom: 'Depuis la Türkiye' },
-    ar: { eyebrow: 'روتابيل إلى العالم', title: 'وجهات التصدير لدينا', description: 'نقدم حلول الملصقات المصنّعة في تركيا لشركائنا في الأسواق المختلفة.', note: 'تم تحديد النقاط وفق إحداثيات مراكز المدن.', countries: 'دول التصدير', exportFrom: 'من تركيا' },
-    es: { eyebrow: 'ROTABIL EN EL MUNDO', title: 'Nuestros destinos de exportación', description: 'Llevamos soluciones de etiquetado fabricadas en Türkiye a nuestros socios en distintos mercados.', note: 'Los puntos se han colocado usando las coordenadas de los centros urbanos.', countries: 'Países de exportación', exportFrom: 'Desde Türkiye' },
-    it: { eyebrow: 'ROTABIL NEL MONDO', title: 'Le nostre destinazioni di export', description: 'Portiamo soluzioni di etichettatura prodotte in Türkiye ai nostri partner nei diversi mercati.', note: 'I punti sono posizionati in base alle coordinate dei centri cittadini.', countries: 'Paesi di esportazione', exportFrom: 'Dalla Türkiye' },
+const copy: Record<Locale, { eyebrow: string; title: string; description: string; note: string; countries: string; exportFrom: string; cta: string }> = {
+    tr: { eyebrow: 'DÜNYAYA AÇILAN ROTABİL', title: 'İhracat noktalarımız', description: 'Türkiye’de ürettiğimiz etiket çözümlerini farklı pazarlardaki iş ortaklarımıza ulaştırıyoruz.', note: 'Gösterilen noktalar şehir merkezlerinin koordinatları baz alınarak hazırlanmıştır.', countries: 'İhracat yaptığımız ülkeler', exportFrom: 'Türkiye’den', cta: 'Teknik çözümleri incele' },
+    en: { eyebrow: 'ROTABIL GOES GLOBAL', title: 'Our export destinations', description: 'We deliver label solutions manufactured in Türkiye to business partners across different markets.', note: 'Locations are plotted using city-centre coordinates.', countries: 'Export destinations', exportFrom: 'From Türkiye', cta: 'Explore technical solutions' },
+    de: { eyebrow: 'ROTABIL WIRD GLOBAL', title: 'Unsere Exportziele', description: 'Wir liefern in Türkiye hergestellte Etikettenlösungen an Geschäftspartner in verschiedenen Märkten.', note: 'Die Punkte basieren auf den Koordinaten der Stadtzentren.', countries: 'Exportländer', exportFrom: 'Aus Türkiye', cta: 'Technische Lösungen ansehen' },
+    fr: { eyebrow: 'ROTABIL À L’INTERNATIONAL', title: 'Nos destinations d’exportation', description: 'Nous livrons des solutions d’étiquetage fabriquées en Türkiye à nos partenaires sur différents marchés.', note: 'Les points sont positionnés selon les coordonnées des centres-villes.', countries: 'Pays d’exportation', exportFrom: 'Depuis la Türkiye', cta: 'Découvrir les solutions techniques' },
+    ar: { eyebrow: 'روتابيل إلى العالم', title: 'وجهات التصدير لدينا', description: 'نقدم حلول الملصقات المصنّعة في تركيا لشركائنا في الأسواق المختلفة.', note: 'تم تحديد النقاط وفق إحداثيات مراكز المدن.', countries: 'دول التصدير', exportFrom: 'من تركيا', cta: 'استكشف الحلول التقنية' },
+    es: { eyebrow: 'ROTABIL EN EL MUNDO', title: 'Nuestros destinos de exportación', description: 'Llevamos soluciones de etiquetado fabricadas en Türkiye a nuestros socios en distintos mercados.', note: 'Los puntos se han colocado usando las coordenadas de los centros urbanos.', countries: 'Países de exportación', exportFrom: 'Desde Türkiye', cta: 'Descubre las soluciones técnicas' },
+    it: { eyebrow: 'ROTABIL NEL MONDO', title: 'Le nostre destinazioni di export', description: 'Portiamo soluzioni di etichettatura prodotte in Türkiye ai nostri partner nei diversi mercati.', note: 'I punti sono posizionati in base alle coordinate dei centri cittadini.', countries: 'Paesi di esportazione', exportFrom: 'Dalla Türkiye', cta: 'Scopri le soluzioni tecniche' },
 };
 
 const destinations = [
@@ -88,6 +89,7 @@ export function ExportMap({ locale }: { locale: string }) {
                         <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-5 text-sm text-slate-300"><MapPin className="h-4 w-4 text-orange-400" />{text.exportFrom} {origin.city}</div>
                     </div>
                 </div>
+                <div className="mt-8"><Link href="/cozumler" className="inline-flex items-center rounded-full bg-orange-600 px-6 py-3 font-semibold text-white transition hover:bg-orange-500">{text.cta}<ArrowRight className="ml-2 h-4 w-4" /></Link></div>
             </div>
         </section>
     );
