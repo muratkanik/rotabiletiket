@@ -12,6 +12,44 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function QualityPolicyPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
     const isGerman = locale === 'de';
+    const certificateCopy = {
+        tr: {
+            title: 'ISO 9001:2015 Kalite Yönetim Sistemi',
+            description: 'Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi adına düzenlenen ISO 9001:2015 sertifikası. Kapsam: Etiket ve barkod baskı hizmetleri. Sertifika no: KY-29635; geçerlilik tarihi: 23.09.2026.',
+            trLabel: 'Türkçe sertifika', enLabel: 'İngilizce sertifika', download: 'Sertifika PDF dosyasını indir'
+        },
+        en: {
+            title: 'ISO 9001:2015 Quality Management System',
+            description: 'ISO 9001:2015 certificate issued to Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. Scope: label and barcode printing services. Certificate no.: KY-29635; valid until 23 September 2026.',
+            trLabel: 'Turkish certificate', enLabel: 'English certificate', download: 'Download the certificate PDF'
+        },
+        de: {
+            title: 'ISO 9001:2015 Qualitätsmanagementsystem',
+            description: 'ISO-9001:2015-Zertifikat für Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. Geltungsbereich: Etiketten- und Barcode-Druckdienstleistungen. Zertifikat Nr. KY-29635; gültig bis zum 23. September 2026.',
+            trLabel: 'Türkische Fassung', enLabel: 'Englische Fassung', download: 'Zertifikat als PDF herunterladen'
+        },
+        fr: {
+            title: 'Système de management de la qualité ISO 9001:2015',
+            description: 'Certificat ISO 9001:2015 délivré à Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. Périmètre : services d’impression d’étiquettes et de codes-barres. N° de certificat : KY-29635 ; valable jusqu’au 23 septembre 2026.',
+            trLabel: 'Version turque', enLabel: 'Version anglaise', download: 'Télécharger le certificat PDF'
+        },
+        es: {
+            title: 'Sistema de gestión de la calidad ISO 9001:2015',
+            description: 'Certificado ISO 9001:2015 emitido a Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. Alcance: servicios de impresión de etiquetas y códigos de barras. Nº de certificado: KY-29635; válido hasta el 23 de septiembre de 2026.',
+            trLabel: 'Versión turca', enLabel: 'Versión inglesa', download: 'Descargar el certificado en PDF'
+        },
+        it: {
+            title: 'Sistema di gestione della qualità ISO 9001:2015',
+            description: 'Certificato ISO 9001:2015 rilasciato a Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. Ambito: servizi di stampa di etichette e codici a barre. N. certificato: KY-29635; valido fino al 23 settembre 2026.',
+            trLabel: 'Versione turca', enLabel: 'Versione inglese', download: 'Scarica il certificato PDF'
+        },
+        ar: {
+            title: 'نظام إدارة الجودة ISO 9001:2015',
+            description: 'شهادة ISO 9001:2015 صادرة باسم Rotabil Mümessillik İthalat ve İhracat Sanayi Ticaret Limited Şirketi. النطاق: خدمات طباعة الملصقات والباركود. رقم الشهادة KY-29635؛ سارية حتى 23 سبتمبر 2026.',
+            trLabel: 'النسخة التركية', enLabel: 'النسخة الإنجليزية', download: 'تنزيل الشهادة بصيغة PDF'
+        }
+    } as const;
+    const copy = certificateCopy[locale as keyof typeof certificateCopy] || certificateCopy.en;
     return (
         <main className="min-h-screen bg-white">
             {/* Hero */}
@@ -91,6 +129,30 @@ export default async function QualityPolicyPage({ params }: { params: Promise<{ 
                         </div>
                     </div>
                 </div>
+
+                {/* ISO certification */}
+                <section className="mb-24 rounded-3xl border border-blue-100 bg-blue-50/50 p-8 md:p-12">
+                    <div className="mx-auto mb-10 max-w-3xl text-center">
+                        <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-600">ISO 9001:2015</p>
+                        <h2 className="mb-4 text-3xl font-bold text-slate-900">{copy.title}</h2>
+                        <p className="leading-relaxed text-slate-600">{copy.description}</p>
+                    </div>
+                    <div className="grid gap-8 md:grid-cols-2">
+                        <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                            <Image src="/certificates/rotabil-iso-9001-2015-tr.png" alt={copy.trLabel} width={595} height={842} className="h-auto w-full" />
+                            <figcaption className="p-4 text-center text-sm font-semibold text-slate-700">{copy.trLabel}</figcaption>
+                        </figure>
+                        <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                            <Image src="/certificates/rotabil-iso-9001-2015-en.png" alt={copy.enLabel} width={595} height={842} className="h-auto w-full" />
+                            <figcaption className="p-4 text-center text-sm font-semibold text-slate-700">{copy.enLabel}</figcaption>
+                        </figure>
+                    </div>
+                    <div className="mt-8 text-center">
+                        <a href="/certificates/rotabil-iso-9001-2015.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                            {copy.download}
+                        </a>
+                    </div>
+                </section>
 
                 {/* Test Processes */}
                 <div className="bg-slate-50 rounded-3xl p-8 md:p-16 mb-24">
