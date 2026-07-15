@@ -1,16 +1,17 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, ArrowUpRight, ArrowRight, Globe2 } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Globe2, MapPin } from 'lucide-react';
 
 type Locale = 'tr' | 'en' | 'de' | 'fr' | 'ar' | 'es' | 'it';
 
 const copy: Record<Locale, { eyebrow: string; title: string; description: string; note: string; countries: string; exportFrom: string; cta: string }> = {
-    tr: { eyebrow: 'DÜNYAYA AÇILAN ROTABİL', title: 'İhracat noktalarımız', description: 'Türkiye’de ürettiğimiz etiket çözümlerini farklı pazarlardaki iş ortaklarımıza ulaştırıyoruz.', note: 'Gösterilen noktalar şehir merkezlerinin koordinatları baz alınarak hazırlanmıştır.', countries: 'İhracat yaptığımız ülkeler', exportFrom: 'Türkiye’den', cta: 'Teknik çözümleri incele' },
-    en: { eyebrow: 'ROTABIL GOES GLOBAL', title: 'Our export destinations', description: 'We deliver label solutions manufactured in Türkiye to business partners across different markets.', note: 'Locations are plotted using city-centre coordinates.', countries: 'Export destinations', exportFrom: 'From Türkiye', cta: 'Explore technical solutions' },
-    de: { eyebrow: 'ROTABIL WIRD GLOBAL', title: 'Unsere Exportziele', description: 'Wir liefern in Türkiye hergestellte Etikettenlösungen an Geschäftspartner in verschiedenen Märkten.', note: 'Die Punkte basieren auf den Koordinaten der Stadtzentren.', countries: 'Exportländer', exportFrom: 'Aus Türkiye', cta: 'Technische Lösungen ansehen' },
-    fr: { eyebrow: 'ROTABIL À L’INTERNATIONAL', title: 'Nos destinations d’exportation', description: 'Nous livrons des solutions d’étiquetage fabriquées en Türkiye à nos partenaires sur différents marchés.', note: 'Les points sont positionnés selon les coordonnées des centres-villes.', countries: 'Pays d’exportation', exportFrom: 'Depuis la Türkiye', cta: 'Découvrir les solutions techniques' },
-    ar: { eyebrow: 'روتابيل إلى العالم', title: 'وجهات التصدير لدينا', description: 'نقدم حلول الملصقات المصنّعة في تركيا لشركائنا في الأسواق المختلفة.', note: 'تم تحديد النقاط وفق إحداثيات مراكز المدن.', countries: 'دول التصدير', exportFrom: 'من تركيا', cta: 'استكشف الحلول التقنية' },
-    es: { eyebrow: 'ROTABIL EN EL MUNDO', title: 'Nuestros destinos de exportación', description: 'Llevamos soluciones de etiquetado fabricadas en Türkiye a nuestros socios en distintos mercados.', note: 'Los puntos se han colocado usando las coordenadas de los centros urbanos.', countries: 'Países de exportación', exportFrom: 'Desde Türkiye', cta: 'Descubre las soluciones técnicas' },
-    it: { eyebrow: 'ROTABIL NEL MONDO', title: 'Le nostre destinazioni di export', description: 'Portiamo soluzioni di etichettatura prodotte in Türkiye ai nostri partner nei diversi mercati.', note: 'I punti sono posizionati in base alle coordinate dei centri cittadini.', countries: 'Paesi di esportazione', exportFrom: 'Dalla Türkiye', cta: 'Scopri le soluzioni tecniche' },
+    tr: { eyebrow: 'DÜNYAYA AÇILAN ROTABİL', title: 'İhracat noktalarımız', description: 'Türkiye’de ürettiğimiz etiket çözümlerini farklı pazarlardaki iş ortaklarımıza ulaştırıyoruz.', note: 'Noktalar şehir merkezlerinin gerçek koordinatlarıyla, equirectangular dünya projeksiyonu üzerinde gösterilir.', countries: 'İhracat yaptığımız ülkeler', exportFrom: 'Çıkış noktası: Türkiye', cta: 'Teknik çözümleri incele' },
+    en: { eyebrow: 'ROTABIL GOES GLOBAL', title: 'Our export destinations', description: 'We deliver label solutions manufactured in Türkiye to business partners across different markets.', note: 'Locations use real city-centre coordinates on an equirectangular world projection.', countries: 'Export destinations', exportFrom: 'Origin: Türkiye', cta: 'Explore technical solutions' },
+    de: { eyebrow: 'ROTABIL WIRD GLOBAL', title: 'Unsere Exportziele', description: 'Wir liefern in Türkiye hergestellte Etikettenlösungen an Geschäftspartner in verschiedenen Märkten.', note: 'Die Punkte verwenden echte Stadtkoordinaten auf einer equirektangularen Weltkarte.', countries: 'Exportländer', exportFrom: 'Ausgangsort: Türkiye', cta: 'Technische Lösungen ansehen' },
+    fr: { eyebrow: 'ROTABIL À L’INTERNATIONAL', title: 'Nos destinations d’exportation', description: 'Nous livrons des solutions d’étiquetage fabriquées en Türkiye à nos partenaires sur différents marchés.', note: 'Les points utilisent les coordonnées réelles des villes sur une projection équirectangulaire.', countries: 'Pays d’exportation', exportFrom: 'Origine : Türkiye', cta: 'Découvrir les solutions techniques' },
+    ar: { eyebrow: 'روتابيل إلى العالم', title: 'وجهات التصدير لدينا', description: 'نقدم حلول الملصقات المصنّعة في تركيا لشركائنا في الأسواق المختلفة.', note: 'تستخدم النقاط إحداثيات المدن الحقيقية على إسقاط عالمي متساوي المستطيلات.', countries: 'دول التصدير', exportFrom: 'نقطة الانطلاق: تركيا', cta: 'استكشف الحلول التقنية' },
+    es: { eyebrow: 'ROTABIL EN EL MUNDO', title: 'Nuestros destinos de exportación', description: 'Llevamos soluciones de etiquetado fabricadas en Türkiye a nuestros socios en distintos mercados.', note: 'Los puntos usan las coordenadas reales de las ciudades sobre una proyección equirectangular.', countries: 'Países de exportación', exportFrom: 'Origen: Türkiye', cta: 'Descubre las soluciones técnicas' },
+    it: { eyebrow: 'ROTABIL NEL MONDO', title: 'Le nostre destinazioni di export', description: 'Portiamo soluzioni di etichettatura prodotte in Türkiye ai nostri partner nei diversi mercati.', note: 'I punti usano le coordinate reali delle città su una proiezione equirettangolare.', countries: 'Paesi di esportazione', exportFrom: 'Origine: Türkiye', cta: 'Scopri le soluzioni tecniche' },
 };
 
 const destinations = [
@@ -32,16 +33,20 @@ const localizedDestinations: Record<Locale, Record<string, [string, string]>> = 
     it: { qatar: ['Qatar', 'Doha'], uae: ['Emirati Arabi Uniti', 'Dubai'], saudi: ['Arabia Saudita', 'Riyad'], egypt: ['Egitto', 'Il Cairo'], cameroon: ['Camerun', 'Yaoundé'], albania: ['Albania', 'Tirana'] },
 };
 
-const origin = { country: 'Türkiye', city: 'Ankara', lat: 39.9334, lon: 32.8597 };
-const WIDTH = 1000;
-const HEIGHT = 500;
-const project = (lat: number, lon: number) => ({ x: ((lon + 180) / 360) * WIDTH, y: ((90 - lat) / 180) * HEIGHT });
+// The asset is an equirectangular map. Its source SVG has a small vertical
+// margin around the 180° latitude range, hence MAP_TOP_MARGIN.
+const MAP_WIDTH = 2752.766;
+const MAP_HEIGHT = 1537.631;
+const MAP_SCALE = MAP_WIDTH / 360;
+const MAP_TOP_MARGIN = (MAP_HEIGHT - MAP_SCALE * 180) / 2;
+const origin = { city: 'Ankara', lat: 39.9334, lon: 32.8597 };
+const project = (lat: number, lon: number) => ({ x: (lon + 180) * MAP_SCALE, y: MAP_TOP_MARGIN + (90 - lat) * MAP_SCALE });
 
 export function ExportMap({ locale }: { locale: string }) {
-    const text = copy[(locale as Locale) in copy ? locale as Locale : 'tr'];
-    const language = (locale as Locale) in localizedDestinations ? locale as Locale : 'tr';
-    const destinationText = (key: string) => localizedDestinations[language][key];
+    const language = (locale as Locale) in copy ? locale as Locale : 'tr';
+    const text = copy[language];
     const originPoint = project(origin.lat, origin.lon);
+    const destinationText = (key: string) => localizedDestinations[language][key];
 
     return (
         <section className="overflow-hidden bg-[#071d36] py-20 text-white">
@@ -54,39 +59,24 @@ export function ExportMap({ locale }: { locale: string }) {
 
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_330px]">
                     <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#0b3555] p-2 shadow-2xl md:p-4">
-                        <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={text.title} className="h-auto min-h-[300px] w-full rounded-2xl bg-[#0b4169]">
-                            <defs>
-                                <pattern id="export-grid" width="100" height="62.5" patternUnits="userSpaceOnUse">
-                                    <path d="M 100 0 L 0 0 0 62.5" fill="none" stroke="#9fd8ed" strokeOpacity=".12" strokeWidth="1" />
-                                </pattern>
-                                <radialGradient id="export-glow" cx="52%" cy="38%" r="75%"><stop offset="0" stopColor="#2d7897" stopOpacity=".7" /><stop offset="1" stopColor="#082c4d" stopOpacity=".2" /></radialGradient>
-                            </defs>
-                            <rect width={WIDTH} height={HEIGHT} fill="url(#export-glow)" />
-                            <rect width={WIDTH} height={HEIGHT} fill="url(#export-grid)" />
-                            <path d="M220 104C260 78 316 73 357 92l27 29 51-11 47 20 40-9 39 22 73-7 50 24 94-6 38 33-57 28-88-9-31 29-84-8-45-29-70 19-60-26-78 5-61-29z" fill="#d4dfc4" fillOpacity=".52" />
-                            <path d="M392 199l50-20 48 23 29 48-12 57-30 53-32 63-38-23-16-57-25-48 18-46-18-34z" fill="#cbd8bc" fillOpacity=".55" />
-                            <path d="M708 65l69 13 40 30 80 3 53 38-35 35-65-5-37 28-62-20-29-37-50-17 21-39z" fill="#d4dfc4" fillOpacity=".45" />
-                            <path d="M101 270l71-21 50 29 25 50-35 62-60 25-65-39-30-50z" fill="#cbd8bc" fillOpacity=".38" />
-                            {destinations.map((destination) => {
-                                const point = project(destination.lat, destination.lon);
-                                return <path key={`route-${destination.country}`} d={`M ${originPoint.x} ${originPoint.y} Q ${(originPoint.x + point.x) / 2} ${(originPoint.y + point.y) / 2 - 28} ${point.x} ${point.y}`} fill="none" stroke="#fff" strokeOpacity=".72" strokeWidth="2.2" />;
-                            })}
-                            <circle cx={originPoint.x} cy={originPoint.y} r="12" fill="#dc2626" stroke="white" strokeWidth="3" />
-                            <text x={originPoint.x + 16} y={originPoint.y - 14} fill="white" fontSize="16" fontWeight="700">Türkiye</text>
-                            {destinations.map((destination, index) => {
-                                const point = project(destination.lat, destination.lon);
-                                return <g key={destination.country}><circle cx={point.x} cy={point.y} r="11" fill={destination.color} stroke="white" strokeWidth="3" /><text x={point.x + 15} y={point.y + 5} fill="white" fontSize="14" fontWeight="700">{index + 1}</text></g>;
-                            })}
-                        </svg>
+                        <div className="relative aspect-[1.8] overflow-hidden rounded-2xl bg-[#0b3555]">
+                            <Image src="/world-map.svg" alt="" fill priority unoptimized aria-hidden className="object-fill opacity-75" />
+                            <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} role="img" aria-label={text.title} className="absolute inset-0 h-full w-full">
+                                <defs><filter id="marker-shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#020617" floodOpacity=".8" /></filter></defs>
+                                {destinations.map((destination) => { const point = project(destination.lat, destination.lon); return <path key={`route-${destination.key}`} d={`M ${originPoint.x} ${originPoint.y} Q ${(originPoint.x + point.x) / 2} ${(originPoint.y + point.y) / 2 - 35} ${point.x} ${point.y}`} fill="none" stroke="#f8fafc" strokeOpacity=".9" strokeWidth="4" strokeDasharray="12 10" />; })}
+                                <circle cx={originPoint.x} cy={originPoint.y} r="18" fill="#dc2626" stroke="white" strokeWidth="6" filter="url(#marker-shadow)" />
+                                <circle cx={originPoint.x} cy={originPoint.y} r="6" fill="white" />
+                                {destinations.map((destination, index) => { const point = project(destination.lat, destination.lon); return <g key={destination.key} filter="url(#marker-shadow)"><circle cx={point.x} cy={point.y} r="17" fill={destination.color} stroke="white" strokeWidth="5" /><text x={point.x} y={point.y + 7} textAnchor="middle" fill="white" fontSize="22" fontWeight="800">{index + 1}</text></g>; })}
+                            </svg>
+                            <div className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-slate-950/75 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">{text.exportFrom} · {origin.city}</div>
+                        </div>
                         <p className="px-2 pt-3 text-xs text-slate-300">{text.note}</p>
                     </div>
 
                     <div className="rounded-3xl border border-white/15 bg-white/10 p-6 backdrop-blur-sm">
                         <p className="mb-5 text-sm font-semibold uppercase tracking-wider text-slate-300">{text.countries}</p>
-                        <div className="space-y-3">
-                            {destinations.map((destination, index) => { const [country, city] = destinationText(destination.key); return <div key={destination.country} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"><span className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold" style={{ backgroundColor: destination.color }}>{index + 1}</span><span className="text-2xl" aria-hidden="true">{destination.flag}</span><div className="min-w-0"><p className="truncate font-semibold">{country}</p><p className="text-sm text-slate-300">{city}</p></div><ArrowUpRight className="ml-auto h-4 w-4 text-slate-400" /></div>; })}
-                        </div>
-                        <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-5 text-sm text-slate-300"><MapPin className="h-4 w-4 text-orange-400" />{text.exportFrom} {origin.city}</div>
+                        <div className="space-y-3">{destinations.map((destination, index) => { const [country, city] = destinationText(destination.key); return <div key={destination.key} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"><span className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold" style={{ backgroundColor: destination.color }}>{index + 1}</span><span className="text-2xl" aria-hidden="true">{destination.flag}</span><div className="min-w-0"><p className="truncate font-semibold">{country}</p><p className="text-sm text-slate-300">{city}</p></div><ArrowUpRight className="ml-auto h-4 w-4 text-slate-400" /></div>; })}</div>
+                        <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-5 text-sm text-slate-300"><MapPin className="h-4 w-4 text-orange-400" />{text.exportFrom} · {origin.city}</div>
                     </div>
                 </div>
                 <div className="mt-8"><Link href="/cozumler" className="inline-flex items-center rounded-full bg-orange-600 px-6 py-3 font-semibold text-white transition hover:bg-orange-500">{text.cta}<ArrowRight className="ml-2 h-4 w-4" /></Link></div>
