@@ -2,7 +2,6 @@ import { Hero } from '@/components/home/Hero';
 import { QuickCategories } from '@/components/home/QuickCategories';
 import { FeatureCards } from '@/components/home/FeatureCards';
 import { SectorsSection } from '@/components/home/SectorsSection';
-import { ExportMap } from '@/components/home/ExportMap';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -11,7 +10,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <Hero locale={locale} />
             <QuickCategories locale={locale} />
             <FeatureCards locale={locale} />
-            <ExportMap locale={locale} />
             <SectorsSection locale={locale} />
 
             {/* Footer Placeholder (Using layout usually, but for now explicitly here or in layout) */}

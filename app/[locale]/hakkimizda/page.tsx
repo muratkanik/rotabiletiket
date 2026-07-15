@@ -2,6 +2,7 @@
 import { getSiteSettings } from "@/lib/settings";
 import Image from "next/image";
 import { CheckCircle2, Factory, ShieldCheck, Users, TrendingUp, History, LucideIcon } from "lucide-react";
+import { ExportMap } from '@/components/home/ExportMap';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -218,6 +219,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                     </div>
                 </div>
             </div>
+
+            <ExportMap locale={locale} />
         </main>
     )
 }
