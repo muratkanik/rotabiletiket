@@ -28,19 +28,34 @@ function text(formData: FormData, key: string) {
 }
 
 const targetLanguages = ['en', 'de', 'fr', 'ar', 'es', 'it'];
+const supportedLanguages = ['tr', ...targetLanguages];
 
-async function autoTranslateSolution(supabase: any, solutionId: string, source: Record<string, any>) {
+async function autoTranslateSolution(supabase: any, solutionId: string, source: Record<string, any>, sourceLanguage: string) {
     const { data: settings } = await supabase.from('meta_settings').select('openai_api_key, gemini_api_key, xai_api_key').single();
     if (!settings?.openai_api_key && !process.env.OPENROUTER_API_KEY) return;
-    const schema = targetLanguages.map((language) => `"${language}": {"title":"","slug":"","excerpt":"","content_html":"","technical_specs":{},"seo_title":"","seo_description":"","keywords":""}`).join(',');
+    const schema = supportedLanguages.map((language) => `"${language}": {"title":"","slug":"","excerpt":"","content_html":"","technical_specs":{},"seo_title":"","seo_description":"","keywords":""}`).join(',');
     const raw = await callAIFallback(
-        'You are a professional B2B technical SEO translator. Translate the Turkish source into every requested language. Preserve HTML tags and technical meaning. Do not invent certifications, test results or product claims. Return valid JSON only.',
-        `Translate this Turkish technical solution into English, German, French, Arabic, Spanish and Italian. Keep each translation natural for industrial label buyers. Use short lowercase Latin slugs. JSON schema: {${schema}}\nSOURCE: ${JSON.stringify(source)}`,
+        'You are a professional B2B technical SEO translator. Preserve HTML tags and technical meaning. Do not invent certifications, test results or product claims. Return valid JSON only.',
+        `The source language is ${sourceLanguage}. Translate this technical solution into Turkish, English, German, French, Arabic, Spanish and Italian. Keep each translation natural for industrial label buyers. Use short lowercase Latin slugs. JSON schema: {${schema}}\nSOURCE: ${JSON.stringify(source)}`,
         true,
         settings,
     );
     if (!raw) return;
     const translations = JSON.parse(raw);
+    if (sourceLanguage !== 'tr' && translations.tr?.title && translations.tr?.slug) {
+        const canonical = translations.tr;
+        const updateResult = await supabase.from('solution_pages').update({
+            slug: canonical.slug,
+            title: canonical.title,
+            excerpt: canonical.excerpt || null,
+            content_html: canonical.content_html || null,
+            technical_specs: canonical.technical_specs || {},
+            seo_title: canonical.seo_title || null,
+            seo_description: canonical.seo_description || null,
+            keywords: canonical.keywords || null,
+        }).eq('id', solutionId);
+        if (updateResult.error) console.error('Turkish canonical solution update failed', updateResult.error);
+    }
     for (const language of targetLanguages) {
         const value = translations[language];
         if (!value?.title || !value?.slug) continue;
@@ -66,6 +81,8 @@ export async function saveSolution(_previousState: unknown, formData: FormData) 
     const id = text(formData, 'id');
     const slug = text(formData, 'slug');
     const title = text(formData, 'title');
+    const requestedSourceLanguage = text(formData, 'source_language');
+    const sourceLanguage = supportedLanguages.includes(requestedSourceLanguage) ? requestedSourceLanguage : 'tr';
 
     if (!slug || !title) return { error: 'Slug and Turkish/base title are required.' };
 
@@ -104,7 +121,7 @@ export async function saveSolution(_previousState: unknown, formData: FormData) 
                 seo_title: text(formData, 'seo_title'),
                 seo_description: text(formData, 'seo_description'),
                 keywords: text(formData, 'keywords'),
-            });
+            }, sourceLanguage);
         } catch (error) {
             console.error('Automatic solution translation failed', error);
         }
