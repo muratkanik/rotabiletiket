@@ -37,6 +37,7 @@ export function SolutionForm({ solution }: { solution: any }) {
                 <div className="flex flex-col gap-3 sm:flex-row"><input value={aiKeywords} onChange={(event) => setAiKeywords(event.target.value)} placeholder="Örn. gıda uyumlu termal etiket çözümleri" className="min-w-0 flex-1 rounded-lg border border-orange-300 bg-white px-3 py-2 text-slate-900" /><button type="button" onClick={generateWithAI} disabled={aiPending} className="rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white disabled:opacity-50">{aiPending ? 'Analiz ediliyor…' : 'Öneri oluştur'}</button></div>
                 {aiError && <p className="mt-2 text-sm text-red-700">{aiError}</p>}
             </div>
+            <label className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950"><input type="checkbox" name="auto_translate" defaultChecked className="mt-1" /><span><strong>Kaydederken tüm dillere otomatik çevir</strong><br /><span className="text-blue-900/75">Türkçe temel içerik; İngilizce, Almanca, Fransızca, Arapça, İspanyolca ve İtalyancaya AI ile çevrilir.</span></span></label>
             <div className="grid gap-5 md:grid-cols-3">
                 <Input name="title" label="Temel başlık" defaultValue={solution?.title} required />
                 <Input name="slug" label="Temel slug" defaultValue={solution?.slug} required />

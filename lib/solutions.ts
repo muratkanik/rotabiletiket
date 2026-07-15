@@ -33,8 +33,9 @@ function mergeTranslation(
     translations: SolutionTranslation[] | null,
     locale: string
 ): SolutionPage {
-    const translation = translations?.find((item) => item.language_code === locale)
-        || translations?.find((item) => item.language_code === 'en');
+    // The base record is Turkish. Never use English as the Turkish fallback;
+    // doing so made /tr/cozumler render English when a TR translation row was absent.
+    const translation = translations?.find((item) => item.language_code === locale);
 
     if (!translation) return page;
 
