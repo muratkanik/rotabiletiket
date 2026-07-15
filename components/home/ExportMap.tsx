@@ -39,7 +39,8 @@ const MAP_WIDTH = 2752.766;
 const MAP_HEIGHT = 1537.631;
 const MAP_SCALE = MAP_WIDTH / 360;
 const MAP_TOP_MARGIN = (MAP_HEIGHT - MAP_SCALE * 180) / 2;
-const origin = { city: 'Ankara', lat: 39.9334, lon: 32.8597 };
+// Rotabil export origin: Istanbul, Türkiye.
+const origin = { city: 'İstanbul', lat: 41.0082, lon: 28.9784 };
 const project = (lat: number, lon: number) => ({ x: (lon + 180) * MAP_SCALE, y: MAP_TOP_MARGIN + (90 - lat) * MAP_SCALE });
 
 export function ExportMap({ locale }: { locale: string }) {
