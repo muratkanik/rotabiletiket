@@ -1,8 +1,14 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+// This helper runs while public knowledge-base pages are statically rendered.
+// It only reads published public data, so it must not use the cookie-backed
+// server client: reading cookies would opt the page into dynamic rendering.
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function enhanceHtmlWithInternalLinks(html: string, currentSlug: string, locale: string): Promise<string> {
-    const supabase = await createClient();
-    
     // Fetch all articles
     const { data: articles } = await supabase
         .from('articles')
