@@ -101,3 +101,23 @@ export async function deleteSolutionAction(formData: FormData) {
     if (result.error) throw new Error(result.error);
     redirect('/admin/solutions');
 }
+
+export async function bulkUpdateSolutions(ids: string[], isPublished: boolean) {
+    const supabase = createAdminClient();
+    if (!supabase) return { error: 'Supabase admin configuration is missing.' };
+
+    const validIds = ids.filter(Boolean);
+    if (validIds.length === 0) return { error: 'En az bir sayfa seçmelisiniz.' };
+
+    const { error } = await supabase
+        .from('solution_pages')
+        .update({ is_published: isPublished })
+        .in('id', validIds);
+
+    if (error) return { error: error.message };
+
+    revalidatePath('/admin/solutions');
+    revalidatePath('/[locale]/cozumler', 'page');
+    revalidatePath('/[locale]/cozumler/[slug]', 'page');
+    return { success: true, count: validIds.length };
+}

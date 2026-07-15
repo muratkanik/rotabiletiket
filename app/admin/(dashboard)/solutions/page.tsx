@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { createAdminClient } from '@/utils/supabase/admin';
-import { deleteSolutionAction } from './actions';
 import { SolutionForm } from './SolutionForm';
+import { SolutionList } from './SolutionList';
 
 export default async function AdminSolutionsPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
     const { id } = await searchParams;
@@ -31,27 +31,12 @@ export default async function AdminSolutionsPage({ searchParams }: { searchParam
 
             <SolutionForm solution={selected} />
 
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                <div className="border-b border-slate-200 px-6 py-4 font-semibold">Mevcut sayfalar</div>
-                <div className="divide-y divide-slate-100">
-                    {(solutions || []).map((solution: any) => (
-                        <div key={solution.id} className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <div className="font-semibold text-slate-900">{solution.title}</div>
-                                <div className="text-sm text-slate-500">/{solution.slug} · {solution.is_published ? 'Yayında' : 'Taslak'}</div>
-                            </div>
-                            <div className="flex gap-2">
-                                <Link href={`/admin/solutions?id=${solution.id}`} className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">Düzenle</Link>
-                                <form action={deleteSolutionAction}>
-                                    <input type="hidden" name="id" value={solution.id} />
-                                    <button className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50">Sil</button>
-                                </form>
-                            </div>
-                        </div>
-                    ))}
-                    {(!solutions || solutions.length === 0) && <p className="px-6 py-8 text-slate-500">Henüz çözüm sayfası oluşturulmadı.</p>}
-                </div>
-            </div>
+            <SolutionList solutions={(solutions || []).map((solution: any) => ({
+                id: solution.id,
+                title: solution.title,
+                slug: solution.slug,
+                is_published: solution.is_published,
+            }))} />
         </div>
     );
 }
