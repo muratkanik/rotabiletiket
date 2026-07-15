@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download, ChevronDown, Shield, Droplets, ThermometerSun } from 'lucide-react';
+import { TechnicalDisclaimer } from '@/components/legal/TechnicalDisclaimer';
 
 export function ProductDurability({ durability, locale = 'tr' }: { durability: any; locale?: string }) {
     if (!durability || Object.keys(durability).length === 0) return null;
@@ -32,28 +33,25 @@ export function ProductDocuments({ documents, locale = 'tr' }: { documents: any[
     if (!documents || documents.length === 0) return null;
 
     return (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8 shadow-sm">
-            <h3 className="font-bold text-slate-900 mb-4">{locale === 'de' ? 'Technische Dokumente und Zertifikate' : 'Teknik Dökümanlar & Sertifikalar'}</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {documents.map((doc, idx) => (
-                    <a 
-                        key={idx}
-                        href={doc.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-blue-300 hover:bg-blue-50 transition-colors group"
-                    >
-                        <div className="bg-blue-100 text-blue-600 p-2 rounded-md group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                            <Download className="w-4 h-4" />
-                        </div>
-                        <div>
-                            <p className="font-medium text-slate-800 text-sm group-hover:text-blue-700">{doc.title}</p>
-                            <p className="text-xs text-slate-500">{doc.type || 'PDF Document'}</p>
-                        </div>
-                    </a>
-                ))}
+        <>
+            <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8 shadow-sm">
+                <h3 className="font-bold text-slate-900 mb-4">{locale === 'de' ? 'Technische Dokumente und Zertifikate' : 'Teknik Dökümanlar & Sertifikalar'}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {documents.map((doc, idx) => (
+                        <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-blue-300 hover:bg-blue-50 transition-colors group">
+                            <div className="bg-blue-100 text-blue-600 p-2 rounded-md group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <Download className="w-4 h-4" />
+                            </div>
+                            <div>
+                                <p className="font-medium text-slate-800 text-sm group-hover:text-blue-700">{doc.title}</p>
+                                <p className="text-xs text-slate-500">{doc.type || 'PDF Document'}</p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
             </div>
-        </div>
+            <TechnicalDisclaimer locale={locale} />
+        </>
     );
 }
 

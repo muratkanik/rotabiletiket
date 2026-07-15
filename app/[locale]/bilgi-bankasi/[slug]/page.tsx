@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, User, Hash } from 'lucide-react';
 import { enhanceHtmlWithInternalLinks } from '@/utils/autoLinker';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { TechnicalDisclaimer } from '@/components/legal/TechnicalDisclaimer';
 
 export const revalidate = 3600;
 
@@ -160,6 +161,7 @@ export default async function ArticlePage({ params }: Props) {
                     )}
 
                     <div dangerouslySetInnerHTML={{ __html: enhancedContent }} />
+                    <TechnicalDisclaimer locale={locale} />
                     
                     {/* Tags / Hashtags */}
                     {article.keywords && (

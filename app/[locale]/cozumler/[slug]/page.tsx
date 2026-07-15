@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { getLocale } from 'next-intl/server';
 import { getSolution, getSolutionLocaleSlugs } from '@/lib/solutions';
+import { TechnicalDisclaimer } from '@/components/legal/TechnicalDisclaimer';
 
 export const revalidate = 3600;
 
@@ -87,6 +88,7 @@ export default async function SolutionDetailPage({ params }: Props) {
                     ) : (
                         <p>{copy.preparing}</p>
                     )}
+                    <TechnicalDisclaimer locale={locale} />
                 </article>
 
                 <aside className="space-y-6">
