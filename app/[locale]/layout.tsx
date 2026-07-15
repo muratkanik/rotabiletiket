@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import '../globals.css';
 import { SEOScripts, SEOBodyScripts } from '@/components/layout/SEOScripts';
 import { OrganizationSchema } from '@/components/layout/OrganizationSchema';
@@ -14,8 +13,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
 import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
@@ -77,7 +74,7 @@ export default async function RootLayout({
                 <OrganizationSchema locale={locale} />
                 <SEOScripts />
             </head>
-            <body className={`${inter.className} antialiased overflow-x-hidden`}>
+            <body className="font-sans antialiased overflow-x-hidden">
                 <SEOBodyScripts />
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />

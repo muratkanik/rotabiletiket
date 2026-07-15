@@ -3,6 +3,10 @@
         {
             "path": "/api/cron/publish-story",
             "schedule": "0 10 * * *"
+        },
+        {
+            "path": "/api/cron/generate-solution-draft",
+            "schedule": "0 7 * * *"
         }
     ]
 }

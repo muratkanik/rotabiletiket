@@ -1,19 +1,42 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useRef, useState } from 'react';
 import { saveSolution } from './actions';
 
 export function SolutionForm({ solution }: { solution: any }) {
     const [state, formAction, pending] = useActionState(saveSolution, null);
+    const [aiKeywords, setAiKeywords] = useState(solution?.title || '');
+    const [aiPending, setAiPending] = useState(false);
+    const [aiError, setAiError] = useState('');
+    const formRef = useRef<HTMLFormElement>(null);
     const translation = (language: string) => solution?.solution_page_translations?.find((item: any) => item.language_code === language) || {};
     const de = translation('de');
     const en = translation('en');
     const specs = Object.entries(solution?.technical_specs || {}).map(([key, value]) => `${key}: ${value}`).join('\n');
     const proofPoints = (solution?.proof_points || []).join('\n');
 
+    async function generateWithAI() {
+        setAiPending(true); setAiError('');
+        try {
+            const response = await fetch('/api/ai/generate-solution', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ keywords: aiKeywords }) });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'AI önerisi oluşturulamadı.');
+            const values: Record<string, any> = { ...result.base, de: result.de, en: result.en };
+            const setField = (name: string, value: any) => { const field = formRef.current?.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null; if (field) field.value = value == null ? '' : String(value); };
+            Object.entries(result.base || {}).forEach(([key, value]) => setField(key, key === 'technical_specs' ? Object.entries((value || {}) as Record<string, unknown>).map(([k, v]) => `${k}: ${v}`).join('\n') : key === 'proof_points' ? (Array.isArray(value) ? value : []).join('\n') : value));
+            for (const language of ['de', 'en']) Object.entries(values[language] || {}).forEach(([key, value]) => setField(`${language}_${key}`, value));
+        } catch (error: any) { setAiError(error.message || 'AI önerisi oluşturulamadı.'); }
+        finally { setAiPending(false); }
+    }
+
     return (
-        <form action={formAction} className="space-y-6 rounded-xl border border-slate-200 bg-white p-6">
+        <form ref={formRef} action={formAction} className="space-y-6 rounded-xl border border-slate-200 bg-white p-6">
             <input type="hidden" name="id" value={solution?.id || ''} />
+            <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+                <div className="mb-3"><p className="font-semibold text-orange-950">SERP + yapay zekâ içerik önerisi</p><p className="text-sm text-orange-900/80">Rakip sonuçlarını konu analizi için tarar, özgün bir taslak üretir ve aşağıdaki alanları doldurur.</p></div>
+                <div className="flex flex-col gap-3 sm:flex-row"><input value={aiKeywords} onChange={(event) => setAiKeywords(event.target.value)} placeholder="Örn. gıda uyumlu termal etiket çözümleri" className="min-w-0 flex-1 rounded-lg border border-orange-300 bg-white px-3 py-2 text-slate-900" /><button type="button" onClick={generateWithAI} disabled={aiPending} className="rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white disabled:opacity-50">{aiPending ? 'Analiz ediliyor…' : 'Öneri oluştur'}</button></div>
+                {aiError && <p className="mt-2 text-sm text-red-700">{aiError}</p>}
+            </div>
             <div className="grid gap-5 md:grid-cols-3">
                 <Input name="title" label="Temel başlık" defaultValue={solution?.title} required />
                 <Input name="slug" label="Temel slug" defaultValue={solution?.slug} required />

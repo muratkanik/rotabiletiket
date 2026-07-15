@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 
 export interface AISettings {
     openai_api_key?: string | null;
+    serper_api_key?: string | null;
     gemini_api_key?: string | null;
     xai_api_key?: string | null;
 }

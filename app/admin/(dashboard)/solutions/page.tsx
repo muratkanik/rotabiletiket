@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { createAdminClient } from '@/utils/supabase/admin';
-import { SolutionForm } from './SolutionForm';
+import { SolutionEditorModal } from './SolutionEditorModal';
 import { SolutionList } from './SolutionList';
 
 export default async function AdminSolutionsPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
@@ -24,12 +23,10 @@ export default async function AdminSolutionsPage({ searchParams }: { searchParam
                     <h1 className="text-3xl font-bold text-slate-900">Teknik Çözüm Sayfaları</h1>
                     <p className="mt-2 text-slate-500">Almanya ve Avrupa B2B içeriklerini taslak veya yayın olarak yönetin.</p>
                 </div>
-                <Link href="/admin/solutions" className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-700">
-                    Yeni sayfa
-                </Link>
+                <SolutionEditorModal solution={null} />
             </div>
 
-            <SolutionForm solution={selected} />
+            {selected && <SolutionEditorModal solution={selected} startOpen />}
 
             <SolutionList solutions={(solutions || []).map((solution: any) => ({
                 id: solution.id,
