@@ -3,24 +3,12 @@ import locationsData from '../../../data/locations.json';
 import { MapPin, Phone, Mail, Truck, Factory, Layers } from 'lucide-react';
 import Link from 'next/link';
 import { getSiteSettings } from "@/lib/settings";
-import { routing } from '@/src/i18n/routing';
 
 export const revalidate = 3600;
-
-export async function generateStaticParams() {
-    const params: { locationSlug: string, locale: string }[] = [];
-    
-    for (const locale of routing.locales) {
-        for (const loc of locationsData) {
-            params.push({
-                locationSlug: `${loc.slug}-etiket`,
-                locale: locale,
-            });
-        }
-    }
-    
-    return params;
-}
+// Render location pages on demand and cache them with ISR. Pre-rendering every
+// location in every locale creates thousands of serverless output files and
+// can exceed Vercel's build disk quota.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: Promise<{ locationSlug: string, locale: string }> }) {
     const resolvedParams = await params;
