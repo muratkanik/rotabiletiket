@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const product = await getLocalizedProduct(slug, locale);
 
     if (!product) return {
-        title: 'Ürün Bulunamadı | Rotabil Etiket',
-        description: 'Aradığınız ürün bulunamadı.'
+        title: locale === 'de' ? 'Produkt nicht gefunden | Rotabil Etiket' : 'Ürün Bulunamadı | Rotabil Etiket',
+        description: locale === 'de' ? 'Das gesuchte Produkt wurde nicht gefunden.' : 'Aradığınız ürün bulunamadı.'
     };
 
     return {
@@ -113,13 +113,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             {
                 '@type': 'ListItem',
                 position: 1,
-                name: 'Anasayfa',
+                name: locale === 'de' ? 'Startseite' : 'Anasayfa',
                 item: `https://rotabiletiket.com/${locale}`
             },
             {
                 '@type': 'ListItem',
                 position: 2,
-                name: 'Ürünler',
+                name: locale === 'de' ? 'Produkte' : 'Ürünler',
                 item: `https://rotabiletiket.com/${locale}/urunler`
             },
             {
@@ -151,8 +151,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="container px-4 md:px-6 py-12">
                 {/* Breadcrumb */}
                 <Breadcrumb items={[
-                    { label: t('Navigation.home') || 'Anasayfa', href: `/${locale}` },
-                    { label: t('Navigation.products') || 'Ürünler', href: `/${locale}/urunler` },
+                    { label: t('Navigation.home'), href: `/${locale}` },
+                    { label: t('Navigation.products'), href: `/${locale}/urunler` },
                     { label: product.categories?.title || category, href: `/${locale}/urunler/${category}` },
                     { label: product.title }
                 ]} />
@@ -208,7 +208,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                         <div className="prose prose-slate max-w-none mb-8 text-slate-600 space-y-4">
                             <div dangerouslySetInnerHTML={{ __html: product.description_html }} />
                         </div>
-                        <ProductCTA productName={product.title} />
+                        <ProductCTA productName={product.title} locale={locale} />
 
                         {/* Specs Table */}
                         {Object.keys(product.specs || {}).length > 0 && (
@@ -225,9 +225,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                             </div>
                         )}
 
-                        <ProductDurability durability={product.durability} />
-                        <ProductDocuments documents={product.documents} />
-                        <ProductFAQ faqs={product.faqs} />
+                        <ProductDurability durability={product.durability} locale={locale} />
+                        <ProductDocuments documents={product.documents} locale={locale} />
+                        <ProductFAQ faqs={product.faqs} locale={locale} />
 
                     </div>
                 </div>

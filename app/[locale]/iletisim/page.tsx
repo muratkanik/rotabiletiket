@@ -3,9 +3,11 @@ import { getSiteSettings } from "@/lib/settings";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 
-export const metadata = {
-    title: 'İletişim | Rotabil Etiket',
-    description: 'Rotabil Etiket iletişim bilgileri. Adres, telefon ve e-posta.'
+export async function generateMetadata() {
+    const locale = await (await import('next-intl/server')).getLocale();
+    return locale === 'de'
+        ? { title: 'Kontakt | Rotabil Etiket', description: 'Kontaktinformationen von Rotabil Etiket: Adresse, Telefon und E-Mail.' }
+        : { title: 'İletişim | Rotabil Etiket', description: 'Rotabil Etiket iletişim bilgileri. Adres, telefon ve e-posta.' };
 }
 
 import { getTranslations } from "next-intl/server";

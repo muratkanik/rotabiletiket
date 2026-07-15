@@ -5,8 +5,8 @@ export async function QuickCategories({ locale }: { locale: string }) {
 
     const categories = [
         {
-            title: 'Etiketler',
-            subtitle: 'Rulo, Kuşe, Lamine',
+            title: locale === 'de' ? 'Etiketten' : 'Etiketler',
+            subtitle: locale === 'de' ? 'Rollen-, gestrichene und laminierte Etiketten' : 'Rulo, Kuşe, Lamine',
             slug: 'etiketler', 
             icon: Tag,
             color: 'bg-blue-600',
@@ -15,8 +15,8 @@ export async function QuickCategories({ locale }: { locale: string }) {
             textColor: 'text-blue-600'
         },
         {
-            title: 'Barkod Yazıcılar',
-            subtitle: 'Endüstriyel & Masaüstü',
+            title: locale === 'de' ? 'Barcode-Drucker' : 'Barkod Yazıcılar',
+            subtitle: locale === 'de' ? 'Industrie und Desktop' : 'Endüstriyel & Masaüstü',
             slug: 'barkod-yazici-cozumleri-i-sletmenize-deger-katin',
             icon: Printer,
             color: 'bg-orange-500',
@@ -25,7 +25,7 @@ export async function QuickCategories({ locale }: { locale: string }) {
             textColor: 'text-orange-500'
         },
         {
-            title: 'Ribonlar',
+            title: locale === 'de' ? 'Farbbänder' : 'Ribonlar',
             subtitle: 'Wax, Resin, Wax-Resin',
             slug: 'ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin',
             icon: ScrollText,

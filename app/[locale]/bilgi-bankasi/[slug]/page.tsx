@@ -123,7 +123,7 @@ export default async function ArticlePage({ params }: Props) {
                         </div>
                         <div className="flex items-center gap-2">
                             <User size={16} />
-                            <span>Rotabil Editör</span>
+                            <span>{locale === 'de' ? 'Rotabil-Redaktion' : 'Rotabil Editör'}</span>
                         </div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ export default async function ArticlePage({ params }: Props) {
                     {article.seo_description && (
                         <div className="bg-orange-50 border-l-4 border-orange-500 rounded-r-xl p-6 mb-10 not-prose">
                             <h2 className="text-sm font-bold text-orange-600 mb-2 flex items-center gap-2 uppercase tracking-wide">
-                                ⚡ Hızlı Özet (TL;DR)
+                                ⚡ {locale === 'de' ? 'Kurzfassung (TL;DR)' : 'Hızlı Özet (TL;DR)'}
                             </h2>
                             <p className="text-slate-700 font-medium leading-relaxed">
                                 {article.seo_description}
@@ -164,7 +164,7 @@ export default async function ArticlePage({ params }: Props) {
                     {/* Tags / Hashtags */}
                     {article.keywords && (
                         <div className="mt-12 pt-8 border-t border-slate-100 not-prose">
-                            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">İlgili Etiketler</h3>
+                            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">{locale === 'de' ? 'Verwandte Schlagwörter' : 'İlgili Etiketler'}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {article.keywords.split(',').map((keyword, idx) => {
                                     const cleanKeyword = keyword.trim();

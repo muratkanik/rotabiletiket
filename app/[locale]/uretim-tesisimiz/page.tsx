@@ -2,12 +2,16 @@ import React from 'react';
 import { Factory, Clock, Settings, Users } from 'lucide-react';
 import Image from 'next/image';
 
-export const metadata = {
-    title: 'Üretim Tesisimiz ve Kapasitemiz | Rotabil Etiket',
-    description: 'Rotabil Etiket olarak günlük 5 Milyon+ etiket üretim kapasitesi, ileri teknoloji makine parkuru ve uzman kadromuzla hizmet veriyoruz.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    return locale === 'de'
+        ? { title: 'Produktionsstätte und Kapazität | Rotabil Etiket', description: 'Moderne Produktionsanlagen, erfahrene Fachkräfte und hohe Kapazitäten für industrielle Etiketten.' }
+        : { title: 'Üretim Tesisimiz ve Kapasitemiz | Rotabil Etiket', description: 'Rotabil Etiket olarak günlük 5 Milyon+ etiket üretim kapasitesi, ileri teknoloji makine parkuru ve uzman kadromuzla hizmet veriyoruz.' };
+}
 
-export default function ProductionFacilityPage() {
+export default async function ProductionFacilityPage({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const isGerman = locale === 'de';
     return (
         <main className="min-h-screen bg-white">
             {/* Hero */}
@@ -15,7 +19,7 @@ export default function ProductionFacilityPage() {
                 <div className="absolute inset-0 z-0 opacity-30">
                     <Image 
                         src="/img/about/production.png" 
-                        alt="Üretim Tesisi" 
+                        alt={isGerman ? 'Produktionsstätte' : 'Üretim Tesisi'}
                         fill 
                         className="object-cover"
                     />
@@ -25,9 +29,9 @@ export default function ProductionFacilityPage() {
                     <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform -rotate-3 shadow-lg">
                         <Factory className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6">Üretim Tesisimiz</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold mb-6">{isGerman ? 'Unsere Produktionsstätte' : 'Üretim Tesisimiz'}</h1>
                     <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-                        İleri teknoloji makine parkuru, alanında uzman operatörler ve yüksek kapasiteli üretim bandı.
+                        {isGerman ? 'Moderne Maschinen, erfahrene Fachkräfte und eine leistungsfähige Produktionslinie.' : 'İleri teknoloji makine parkuru, alanında uzman operatörler ve yüksek kapasiteli üretim bandı.'}
                     </p>
                 </div>
             </div>
@@ -36,10 +40,10 @@ export default function ProductionFacilityPage() {
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24">
                     {[
-                        { label: 'Günlük Kapasite', value: '5M+', desc: 'Adet Etiket Üretimi' },
-                        { label: 'Makine Parkuru', value: '10+', desc: 'İleri Teknoloji Baskı Makinesi' },
-                        { label: 'Kalite Kontrol', value: '%100', desc: 'Sıfır Hata Politikası' },
-                        { label: 'Hızlı Teslimat', value: '24s', desc: 'Maksimum Hızda Sevkiyat' },
+                        { label: isGerman ? 'Tageskapazität' : 'Günlük Kapasite', value: '5M+', desc: isGerman ? 'Produzierte Etiketten' : 'Adet Etiket Üretimi' },
+                        { label: isGerman ? 'Maschinenpark' : 'Makine Parkuru', value: '10+', desc: isGerman ? 'Moderne Druckmaschinen' : 'İleri Teknoloji Baskı Makinesi' },
+                        { label: isGerman ? 'Qualitätskontrolle' : 'Kalite Kontrol', value: '%100', desc: isGerman ? 'Null-Fehler-Prinzip' : 'Sıfır Hata Politikası' },
+                        { label: isGerman ? 'Schnelle Lieferung' : 'Hızlı Teslimat', value: '24h', desc: isGerman ? 'Schneller Versand' : 'Maksimum Hızda Sevkiyat' },
                     ].map((stat, i) => (
                         <div key={i} className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100">
                             <h3 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">{stat.value}</h3>
@@ -55,7 +59,7 @@ export default function ProductionFacilityPage() {
                             <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative cursor-pointer hover:scale-105 transition-transform duration-500">
                                 <Image
                                     src="/img/about/production.png"
-                                    alt="Modern Etiket Üretim Tesisi 1"
+                                    alt={isGerman ? 'Moderne Etikettenproduktionsanlage 1' : 'Modern Etiket Üretim Tesisi 1'}
                                     fill
                                     className="object-cover"
                                 />
@@ -65,7 +69,7 @@ export default function ProductionFacilityPage() {
                             <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden shadow-lg relative cursor-pointer hover:scale-105 transition-transform duration-500">
                                 <Image
                                     src="/img/about/quality.png"
-                                    alt="Modern Etiket Üretim Tesisi 2"
+                                    alt={isGerman ? 'Moderne Etikettenproduktionsanlage 2' : 'Modern Etiket Üretim Tesisi 2'}
                                     fill
                                     className="object-cover"
                                 />
@@ -74,9 +78,9 @@ export default function ProductionFacilityPage() {
                     </div>
                     
                     <div className="order-1 lg:order-2">
-                        <h2 className="text-3xl font-bold text-slate-900 mb-6">Teknoloji ve Tecrübenin Buluşma Noktası</h2>
+                        <h2 className="text-3xl font-bold text-slate-900 mb-6">{isGerman ? 'Wo Technologie und Erfahrung zusammenkommen' : 'Teknoloji ve Tecrübenin Buluşma Noktası'}</h2>
                         <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                            Rotabil Etiket üretim tesisleri, sektördeki en son teknoloji baskı makineleri ve tam otomatik kalite kontrol sistemleriyle donatılmıştır. Kuşe, Termal, Silvermat, PP ve özel endüstriyel etiketlerin tamamı kendi bünyemizde üretilmektedir.
+                            {isGerman ? 'Die Produktionsstätten von Rotabil Etiket sind mit modernen Druckmaschinen und vollautomatischen Qualitätskontrollsystemen ausgestattet. Gestrichene, Thermo-, Silvermat-, PP- und spezielle Industrieetiketten werden vollständig in unserem eigenen Werk produziert.' : 'Rotabil Etiket üretim tesisleri, sektördeki en son teknoloji baskı makineleri ve tam otomatik kalite kontrol sistemleriyle donatılmıştır. Kuşe, Termal, Silvermat, PP ve özel endüstriyel etiketlerin tamamı kendi bünyemizde üretilmektedir.'}
                         </p>
                         
                         <div className="space-y-6 mt-8">
@@ -85,8 +89,8 @@ export default function ProductionFacilityPage() {
                                     <Settings className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-slate-900 mb-1">Geniş Makine Parkuru</h4>
-                                    <p className="text-sm text-slate-600">Farklı ölçü ve özelliklerdeki siparişlere aynı anda yanıt verebilen esnek üretim hattı.</p>
+                                    <h4 className="font-bold text-slate-900 mb-1">{isGerman ? 'Leistungsfähiger Maschinenpark' : 'Geniş Makine Parkuru'}</h4>
+                                    <p className="text-sm text-slate-600">{isGerman ? 'Flexible Produktionslinien für Aufträge mit unterschiedlichen Größen und Eigenschaften.' : 'Farklı ölçü ve özelliklerdeki siparişlere aynı anda yanıt verebilen esnek üretim hattı.'}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4 items-start">
@@ -94,8 +98,8 @@ export default function ProductionFacilityPage() {
                                     <Clock className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-slate-900 mb-1">Kesintisiz Üretim</h4>
-                                    <p className="text-sm text-slate-600">Müşterilerimizin acil ihtiyaçları için optimize edilmiş, durmaksızın çalışan vardiya sistemi.</p>
+                                    <h4 className="font-bold text-slate-900 mb-1">{isGerman ? 'Kontinuierliche Produktion' : 'Kesintisiz Üretim'}</h4>
+                                    <p className="text-sm text-slate-600">{isGerman ? 'Ein optimiertes Schichtsystem für dringende Kundenanforderungen.' : 'Müşterilerimizin acil ihtiyaçları için optimize edilmiş, durmaksızın çalışan vardiya sistemi.'}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4 items-start">
@@ -103,8 +107,8 @@ export default function ProductionFacilityPage() {
                                     <Users className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-slate-900 mb-1">Uzman Operatörler</h4>
-                                    <p className="text-sm text-slate-600">Sektörde yılların tecrübesine sahip baskı ustaları ve kalite kontrol mühendisleri.</p>
+                                    <h4 className="font-bold text-slate-900 mb-1">{isGerman ? 'Erfahrene Fachkräfte' : 'Uzman Operatörler'}</h4>
+                                    <p className="text-sm text-slate-600">{isGerman ? 'Druckspezialisten und Qualitätsingenieure mit langjähriger Branchenerfahrung.' : 'Sektörde yılların tecrübesine sahip baskı ustaları ve kalite kontrol mühendisleri.'}</p>
                                 </div>
                             </div>
                         </div>

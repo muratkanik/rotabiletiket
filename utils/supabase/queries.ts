@@ -83,5 +83,25 @@ export async function getLocalizedProduct(slug: string, locale: string) {
         };
     }
 
+    if (locale !== 'tr') {
+        const { data: englishTranslation } = await supabase
+            .from('product_translations')
+            .select('*')
+            .eq('product_id', productId)
+            .eq('language_code', 'en')
+            .maybeSingle();
+        if (englishTranslation) {
+            return {
+                ...product,
+                title: englishTranslation.title || product.title,
+                description_html: englishTranslation.description_html || product.description_html,
+                seo_title: englishTranslation.seo_title || product.seo_title,
+                seo_description: englishTranslation.seo_description || product.seo_description,
+                keywords: englishTranslation.keywords || '',
+                slug: englishTranslation.slug || product.slug
+            };
+        }
+    }
+
     return product;
 }

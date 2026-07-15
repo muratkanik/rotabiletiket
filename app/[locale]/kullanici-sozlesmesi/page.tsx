@@ -2,10 +2,12 @@ import { Navbar } from "@/components/layout/Navbar";
 import { getSiteSettings } from "@/lib/settings";
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-    title: 'Kullanıcı Sözleşmesi - Rotabil Etiket',
-    description: 'Rotabil Etiket web sitesi kullanıcı sözleşmesi ve hizmet şartları.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+    const { locale } = await params;
+    return locale === 'de'
+        ? { title: 'Nutzungsvereinbarung - Rotabil Etiket', description: 'Nutzungsvereinbarung und Servicebedingungen der Rotabil-Etiketten-Website.' }
+        : { title: 'Kullanıcı Sözleşmesi - Rotabil Etiket', description: 'Rotabil Etiket web sitesi kullanıcı sözleşmesi ve hizmet şartları.' };
+}
 
 export default async function UserAgreementPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -36,8 +38,8 @@ export default async function UserAgreementPage({ params }: { params: Promise<{ 
                         />
                     ) : (
                         <div className="text-center text-slate-500 py-12">
-                            <p className="mb-4">İçerik henüz eklenmemiş.</p>
-                            <p className="text-sm">Admin panelinden içerik ekleyebilirsiniz.</p>
+                            <p className="mb-4">{locale === 'de' ? 'Inhalt wurde noch nicht hinzugefügt.' : 'İçerik henüz eklenmemiş.'}</p>
+                            <p className="text-sm">{locale === 'de' ? 'Sie können Inhalte im Administrationsbereich hinzufügen.' : 'Admin panelinden içerik ekleyebilirsiniz.'}</p>
                         </div>
                     )}
                 </div>

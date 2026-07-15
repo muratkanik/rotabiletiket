@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         || {};
 
     const title = trans.seo_title || trans.title || sector.title;
-    const description = trans.seo_description || `${title} için özel etiketleme çözümleri ve endüstriyel uygulamalar.`;
+    const description = trans.seo_description || (locale === 'de' ? `Industrielle Etikettenlösungen und Anwendungen für ${title}.` : `${title} için özel etiketleme çözümleri ve endüstriyel uygulamalar.`);
     const keywords = trans.keywords || '';
 
     return {
@@ -95,11 +95,11 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
     if (!sector) notFound();
 
     const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
-        || sector.sector_translations?.find((t: any) => t.language_code === 'tr')
+        || sector.sector_translations?.find((t: any) => t.language_code === 'en')
         || {};
 
     const displayTitle = trans.title || sector.title;
-    const displayContent = trans.content_html || '<p>İçerik hazırlanıyor...</p>';
+    const displayContent = trans.content_html || (locale === 'de' ? '<p>Inhalte werden derzeit vorbereitet.</p>' : '<p>İçerik hazırlanıyor...</p>');
 
     return (
         <main className="min-h-screen bg-white">
@@ -116,7 +116,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                 </div>
                 <div className="relative z-10 text-center text-white px-4">
                     <h1 className="text-3xl md:text-6xl font-bold mb-4">{displayTitle}</h1>
-                    <p className="text-lg md:text-xl text-slate-200">Endüstriyel Özel Çözümler</p>
+                    <p className="text-lg md:text-xl text-slate-200">{locale === 'de' ? 'Industrielle Sonderlösungen' : 'Endüstriyel Özel Çözümler'}</p>
                 </div>
             </div>
 
@@ -145,13 +145,13 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                         }} />
                     </div>
                     
-                    <ProductCTA productName={displayTitle} />
+                    <ProductCTA productName={displayTitle} locale={locale} />
 
                     {/* Linked Products */}
                     {sector.sector_products && sector.sector_products.length > 0 && (
                         <div className="mb-12 md:mb-16">
                             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8 border-b pb-4">
-                                {locale === 'en' ? 'Most Used Solutions in this Sector' : 'Bu Sektörde En Çok Kullanılan Çözümlerimiz'}
+                                {locale === 'de' ? 'Häufig eingesetzte Lösungen in dieser Branche' : locale === 'en' ? 'Most Used Solutions in this Sector' : 'Bu Sektörde En Çok Kullanılan Çözümlerimiz'}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {sector.sector_products
@@ -159,7 +159,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                                     .map((sp: any) => {
                                     const p = sp.products;
                                     if(!p) return null;
-                                    const pTrans = p.product_translations?.find((t: any) => t.language_code === locale) || p.product_translations?.find((t: any) => t.language_code === 'tr') || {};
+                                    const pTrans = p.product_translations?.find((t: any) => t.language_code === locale) || p.product_translations?.find((t: any) => t.language_code === 'en') || {};
                                     const mainImageObj = p.product_images?.find((img: any) => img.is_primary) || p.product_images?.[0];
                                     const mainImageUrl = mainImageObj 
                                         ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${mainImageObj.storage_path}`
@@ -170,15 +170,15 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                                             <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-slate-50 shrink-0">
                                                 <Image 
                                                     src={mainImageUrl} 
-                                                    alt={pTrans.title || 'Ürün'} 
+                                                    alt={pTrans.title || (locale === 'de' ? 'Produkt' : 'Ürün')}
                                                     fill 
                                                     className="object-cover group-hover:scale-110 transition-transform duration-500" 
                                                 />
                                             </div>
                                             <div className="flex flex-col justify-center">
-                                                <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">{pTrans.title || 'İsimsiz Ürün'}</h3>
+                                                <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">{pTrans.title || (locale === 'de' ? 'Produkt' : 'İsimsiz Ürün')}</h3>
                                                 <span className="text-sm font-medium text-blue-600 group-hover:underline">
-                                                    {locale === 'en' ? 'View Details' : 'Ürünü İncele'} &rarr;
+                                                    {locale === 'de' ? 'Details ansehen' : locale === 'en' ? 'View Details' : 'Ürünü İncele'} &rarr;
                                                 </span>
                                             </div>
                                         </Link>
@@ -190,15 +190,17 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
 
                     <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 md:p-8 text-center mt-8">
                         <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4">
-                            {locale === 'en' ? 'Looking for a Solution?' : 'Bu Sektör İçin Çözüm Mü Arıyorsunuz?'}
+                            {locale === 'de' ? 'Suchen Sie eine Lösung?' : locale === 'en' ? 'Looking for a Solution?' : 'Bu Sektör İçin Çözüm Mü Arıyorsunuz?'}
                         </h2>
                         <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
-                            {locale === 'en' 
+                            {locale === 'de'
+                                ? 'Unser Expertenteam ermittelt Ihren branchenspezifischen Bedarf und bietet die passende Kennzeichnungslösung.'
+                                : locale === 'en'
                                 ? 'Let our expert team determine your industry-specific needs and offer the right labeling solution.' 
                                 : 'Uzman ekibimizle sektörünüze özel ihtiyaçları belirleyip en doğru etiketleme çözümünü sunalım.'}
                         </p>
                         <Button size="lg" className="bg-orange-600 hover:bg-orange-700" asChild>
-                            <Link href={`/${locale}/iletisim`}>{locale === 'en' ? 'Get a Quote Now' : 'Hemen Teklif Alın'}</Link>
+                            <Link href={`/${locale}/iletisim`}>{locale === 'de' ? 'Jetzt Angebot anfordern' : locale === 'en' ? 'Get a Quote Now' : 'Hemen Teklif Alın'}</Link>
                         </Button>
                     </div>
                 </div>

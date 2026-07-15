@@ -17,12 +17,14 @@ import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+    const { locale } = await params;
     const seo = await getSiteSettings('global_seo');
+    const isGerman = locale === 'de';
     return {
         metadataBase: new URL('https://rotabiletiket.com'),
-        title: seo?.default_title || 'Rotabil Etiket | Endüstriyel Barkod ve Etiket Çözümleri',
-        description: seo?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
+        title: isGerman ? 'Rotabil Etiket | Industrielle Etiketten- und Barcodelösungen' : seo?.default_title || 'Rotabil Etiket | Endüstriyel Barkod ve Etiket Çözümleri',
+        description: isGerman ? 'Hochwertige Etiketten, Barcode-Drucker und Farbbänder für industrielle Anwendungen.' : seo?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
         openGraph: {
             images: [seo?.og_image_url || '/logo.png']
         },
@@ -72,7 +74,7 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
-                <OrganizationSchema />
+                <OrganizationSchema locale={locale} />
                 <SEOScripts />
             </head>
             <body className={`${inter.className} antialiased overflow-x-hidden`}>
@@ -83,7 +85,7 @@ export default async function RootLayout({
                     {children}
                     <Footer locale={locale} />
                     <CookieBanner locale={locale} />
-                    <WhatsAppButton phoneNumber={whatsappNumber} />
+                    <WhatsAppButton phoneNumber={whatsappNumber} locale={locale} />
                     <Toaster />
                 </NextIntlClientProvider>
             </body>
