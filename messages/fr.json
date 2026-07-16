@@ -24,6 +24,10 @@
         "seeAllCategories": "Voir toutes les catégories",
         "seeAllSectors": "Voir tous les secteurs",
         "serviceAreas": "Zones de Service"
+        ,"qualityPolicy": "Politique qualité"
+        ,"productionFacility": "Site de production"
+        ,"spareParts": "Pièces de rechange"
+        ,"amazonLabels": "Étiquettes Amazon FBA"
     },
     "Hero": {
         "badge": "Solutions d'étiquetage et de codes-barres industriels",

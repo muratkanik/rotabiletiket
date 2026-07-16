@@ -24,6 +24,10 @@
         "seeAllCategories": "See All Categories",
         "seeAllSectors": "See All Sectors",
         "serviceAreas": "Service Areas"
+        ,"qualityPolicy": "Quality Policy"
+        ,"productionFacility": "Production Facility"
+        ,"spareParts": "Spare Parts"
+        ,"amazonLabels": "Amazon FBA Labels"
     },
     "Hero": {
         "badge": "Industrial Label & Barcode Solutions",

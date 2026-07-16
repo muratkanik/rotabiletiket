@@ -24,6 +24,10 @@
         "seeAllCategories": "عرض جميع الفئات",
         "seeAllSectors": "عرض جميع القطاعات",
         "serviceAreas": "مناطق الخدمة"
+        ,"qualityPolicy": "سياسة الجودة"
+        ,"productionFacility": "منشأة الإنتاج"
+        ,"spareParts": "قطع الغيار"
+        ,"amazonLabels": "ملصقات Amazon FBA"
     },
     "Hero": {
         "badge": "حلول الملصقات والباركود الصناعية",

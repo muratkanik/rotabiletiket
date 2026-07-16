@@ -9,6 +9,7 @@ export async function Footer({ locale }: { locale: string }) {
     const footerContent = await getSiteSettings('footer_content');
 
     const t = await getTranslations('Navigation');
+    const common = await getTranslations('Common');
 
     // Helper to safety get localized string from JSONB
     const getLocStr = (obj: any, key: string) => {
@@ -67,8 +68,8 @@ export async function Footer({ locale }: { locale: string }) {
                         <ul className="space-y-4 text-slate-400">
                             <li><Link href="/" className="hover:text-white transition-colors">{t('home')}</Link></li>
                             <li><Link href="/hakkimizda" className="hover:text-white transition-colors">{t('about')}</Link></li>
-                            <li><Link href="/kalite-politikamiz" className="hover:text-white transition-colors">{locale === 'de' ? 'Qualitätspolitik' : locale === 'en' ? 'Quality Policy' : 'Kalite Politikamız'}</Link></li>
-                            <li><Link href="/uretim-tesisimiz" className="hover:text-white transition-colors">{locale === 'de' ? 'Produktionsstätte' : locale === 'en' ? 'Production Facility' : 'Üretim Tesisimiz'}</Link></li>
+                            <li><Link href="/kalite-politikamiz" className="hover:text-white transition-colors">{common('qualityPolicy')}</Link></li>
+                            <li><Link href="/uretim-tesisimiz" className="hover:text-white transition-colors">{common('productionFacility')}</Link></li>
                             <li><Link href="/sektorel-cozumler" className="hover:text-white transition-colors">{t('sectoral')}</Link></li>
                             <li><Link href="/bilgi-bankasi" className="hover:text-white transition-colors">{t('blog')}</Link></li>
                             <li><Link href="/iletisim" className="hover:text-white transition-colors">{t('contact')}</Link></li>
@@ -83,9 +84,9 @@ export async function Footer({ locale }: { locale: string }) {
                             <li><Link href="/urunler/ribonlar" className="hover:text-white transition-colors">{t('ribbons')}</Link></li>
                             <li><Link href="/urunler/barkod-yazicilar" className="hover:text-white transition-colors">{t('printers')}</Link></li>
                             <li><Link href="/urunler/barkod-yazici-kafalari-ile-kaliteyi-artirma-cozumleri" className="hover:text-white transition-colors">{t('printheads')}</Link></li>
-                            <li><Link href="/urunler/yedek-parca" className="hover:text-white transition-colors">{locale === 'de' ? 'Ersatzteile' : 'Yedek Parça'}</Link></li>
-                            <li><Link href="/amazon-fba-etiketleri" className="hover:text-orange-400 text-orange-400 font-bold transition-colors">{locale === 'de' ? 'Amazon-FBA-Etiketten' : 'Amazon FBA Etiketleri'}</Link></li>
-                            <li className="pt-2 mt-2 border-t border-slate-800"><Link href="/hizmet-bolgelerimiz" className="hover:text-orange-400 text-slate-300 transition-colors">{locale === 'de' ? 'Servicegebiete 📍' : 'Hizmet Bölgelerimiz 📍'}</Link></li>
+                            <li><Link href="/urunler/yedek-parca" className="hover:text-white transition-colors">{common('spareParts')}</Link></li>
+                            <li><Link href="/amazon-fba-etiketleri" className="hover:text-orange-400 text-orange-400 font-bold transition-colors">{common('amazonLabels')}</Link></li>
+                            <li className="pt-2 mt-2 border-t border-slate-800"><Link href="/hizmet-bolgelerimiz" className="hover:text-orange-400 text-slate-300 transition-colors">{common('serviceAreas')} 📍</Link></li>
                         </ul>
                     </div>
 

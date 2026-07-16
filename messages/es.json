@@ -24,6 +24,10 @@
         "seeAllCategories": "Ver todas las categorías",
         "seeAllSectors": "Ver todos los sectores",
         "serviceAreas": "Áreas de Servicio"
+        ,"qualityPolicy": "Política de calidad"
+        ,"productionFacility": "Planta de producción"
+        ,"spareParts": "Piezas de repuesto"
+        ,"amazonLabels": "Etiquetas Amazon FBA"
     },
     "Hero": {
         "badge": "Soluciones Industriales de Etiquetas",
