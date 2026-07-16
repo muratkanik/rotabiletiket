@@ -7,12 +7,34 @@ import Link from 'next/link';
 // Simple helper to get dates
 function getLast7Days() {
     const dates = [];
+    const todayKey = getDateKey(new Date());
+    const base = new Date(`${todayKey}T12:00:00Z`);
     for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        dates.push(d.toISOString().split('T')[0]);
+        const d = new Date(base);
+        d.setUTCDate(d.getUTCDate() - i);
+        dates.push(getDateKey(d));
     }
     return dates;
+}
+
+function getDateKey(value: string | Date) {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Istanbul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(new Date(value));
+    const part = (type: string) => parts.find(item => item.type === type)?.value || '';
+    return `${part('year')}-${part('month')}-${part('day')}`;
+}
+
+function getReferrerSource(value: string | null) {
+    if (!value) return 'Doğrudan / bilinmiyor';
+    try {
+        return new URL(value).hostname.replace(/^www\./, '').toLowerCase();
+    } catch {
+        return 'Bilinmeyen kaynak';
+    }
 }
 
 export const dynamic = 'force-dynamic';
@@ -54,7 +76,7 @@ export default async function AdminDashboard() {
     // Process data for chart
     const last7Days = getLast7Days();
     const chartData = last7Days.map(date => {
-        const dayViews = views?.filter(v => v.visited_at.startsWith(date)).length || 0;
+        const dayViews = views?.filter(v => getDateKey(v.visited_at) === date).length || 0;
         return {
             name: new Date(date).toLocaleDateString('tr-TR', { weekday: 'short' }),
             total: dayViews
@@ -62,8 +84,8 @@ export default async function AdminDashboard() {
     });
 
     const totalViews = views?.length || 0;
-    const today = new Date().toISOString().split('T')[0];
-    const todayViews = views?.filter(v => v.visited_at.startsWith(today)).length || 0;
+    const today = getDateKey(new Date());
+    const todayViews = views?.filter(v => getDateKey(v.visited_at) === today).length || 0;
 
     const stats = [
         { title: 'Toplam Ürün', value: productsCount || 0, icon: LayoutGrid, href: '/admin/products', color: 'text-blue-600' },
@@ -146,18 +168,19 @@ export default async function AdminDashboard() {
                     <CardHeader><CardTitle>Ziyaret Kaynakları (Referrer)</CardTitle></CardHeader>
                     <CardContent>
                         <div className="space-y-2">
-                            {views?.filter(v => v.referrer).length === 0 ? (
+                            {views?.length === 0 ? (
                                 <p className="text-sm text-slate-500">Henüz kaynak verisi yok.</p>
                             ) : (
                                 Object.entries(
-                                    views?.filter(v => v.referrer).reduce((acc: any, curr) => {
-                                        try {
-                                            const domain = new URL(curr.referrer).hostname.replace('www.', '');
-                                            // Ignore internal traffic
-                                            if (!domain.includes('rotabiletiket.com') && !domain.includes('localhost')) {
-                                                acc[domain] = (acc[domain] || 0) + 1;
-                                            }
-                                        } catch (e) { }
+                                    views?.reduce((acc: any, curr) => {
+                                        const domain = getReferrerSource(curr.referrer);
+                                        // Internal navigation is represented as direct traffic;
+                                        // only external hosts are counted as referral sources.
+                                        if (domain.includes('rotabiletiket.com') || domain === 'localhost') {
+                                            acc['Doğrudan / bilinmiyor'] = (acc['Doğrudan / bilinmiyor'] || 0) + 1;
+                                        } else {
+                                            acc[domain] = (acc[domain] || 0) + 1;
+                                        }
                                         return acc;
                                     }, {}) || {}
                                 )
