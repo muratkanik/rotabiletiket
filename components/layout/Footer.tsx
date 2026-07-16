@@ -11,13 +11,23 @@ export async function Footer({ locale }: { locale: string }) {
     const t = await getTranslations('Navigation');
     const common = await getTranslations('Common');
 
+    const localizedFallback = (values: Record<string, string>) => values[locale] || values.en;
+
     // Helper to safety get localized string from JSONB
     const getLocStr = (obj: any, key: string) => {
         if (!obj || !obj[key]) return '';
-        return obj[key][locale] || obj[key]['tr'] || ''; // Fallback to TR
+        return obj[key][locale] || (locale !== 'tr' ? obj[key]['en'] : obj[key]['tr']) || '';
     };
 
-    const motto = getLocStr(footerContent, 'motto');
+    const motto = getLocStr(footerContent, 'motto') || localizedFallback({
+        tr: '2000 yılından beri endüstriyel etiket, ribon ve barkod çözümlerinde güvenilir çözüm ortağınız.',
+        en: 'Your reliable solution partner in industrial labels, ribbons and barcode solutions since 2000.',
+        de: 'Ihr zuverlässiger Partner für Industrieetiketten, Farbbänder und Barcode-Lösungen seit 2000.',
+        fr: 'Votre partenaire de confiance pour les étiquettes industrielles, les rubans et les solutions de codes-barres depuis 2000.',
+        ar: 'شريككم الموثوق في حلول الملصقات الصناعية والأشرطة والباركود منذ عام 2000.',
+        es: 'Su socio de confianza en etiquetas industriales, cintas y soluciones de códigos de barras desde 2000.',
+        it: 'Il vostro partner affidabile per etichette industriali, nastri e soluzioni per codici a barre dal 2000.',
+    });
     const facebookLink = footerContent?.social_links?.facebook || '#';
     const instagramLink = footerContent?.social_links?.instagram || '#';
     const linkedinLink = footerContent?.social_links?.linkedin || '#';
@@ -38,7 +48,7 @@ export async function Footer({ locale }: { locale: string }) {
                             />
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed">
-                            {motto || '2000 yılından beri endüstriyel etiket, ribon ve barkod çözümlerinde güvenilir çözüm ortağınız.'}
+                            {motto}
                         </p>
                         <div className="flex gap-4">
                             {facebookLink && (
@@ -96,7 +106,7 @@ export async function Footer({ locale }: { locale: string }) {
                         <ul className="space-y-4 text-slate-400">
                             <li className="flex items-start gap-3">
                                 <MapPin className="text-orange-500 shrink-0 mt-1" size={18} />
-                                <span className="text-sm">{contactInfo?.address || 'İstanbul, Türkiye'}</span>
+                                <span className="text-sm">{contactInfo?.address || localizedFallback({ tr: 'İstanbul, Türkiye', en: 'Istanbul, Türkiye', de: 'Istanbul, Türkei', fr: 'Istanbul, Turquie', ar: 'إسطنبول، تركيا', es: 'Estambul, Turquía', it: 'Istanbul, Turchia' })}</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="text-orange-500 shrink-0" size={18} />
@@ -112,7 +122,7 @@ export async function Footer({ locale }: { locale: string }) {
 
                 <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-slate-500 text-sm">
-                        &copy; {new Date().getFullYear()} Rotabil Etiket. {getLocStr(footerContent, 'copyright_text') || 'Tüm hakları saklıdır.'}
+                        &copy; {new Date().getFullYear()} Rotabil Etiket. {getLocStr(footerContent, 'copyright_text') || localizedFallback({ tr: 'Tüm hakları saklıdır.', en: 'All rights reserved.', de: 'Alle Rechte vorbehalten.', fr: 'Tous droits réservés.', ar: 'جميع الحقوق محفوظة.', es: 'Todos los derechos reservados.', it: 'Tutti i diritti riservati.' })}
                         <span className="mx-2">|</span>
                         <a href="https://www.muratkanik.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                             by MK Studio
@@ -120,10 +130,7 @@ export async function Footer({ locale }: { locale: string }) {
                     </p>
                     <div className="flex gap-6 text-sm text-slate-500">
                         <Link href="/gizlilik" className="hover:text-white transition-colors">
-                            {locale === 'en' ? 'Privacy Policy' :
-                             locale === 'de' ? 'Datenschutzrichtlinie' :
-                             locale === 'fr' ? 'Politique de confidentialité' :
-                             locale === 'ar' ? 'سياسة الخصوصية' : 'Gizlilik Politikası'}
+                            {localizedFallback({ tr: 'Gizlilik Politikası', en: 'Privacy Policy', de: 'Datenschutzrichtlinie', fr: 'Politique de confidentialité', ar: 'سياسة الخصوصية', es: 'Política de privacidad', it: 'Informativa sulla privacy' })}
                         </Link>
                         <Link href="/kvkk" className="hover:text-white">KVKK</Link>
                     </div>
