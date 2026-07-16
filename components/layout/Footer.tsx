@@ -83,6 +83,7 @@ export async function Footer({ locale }: { locale: string }) {
                             <li><Link href="/sektorel-cozumler" className="hover:text-white transition-colors">{t('sectoral')}</Link></li>
                             <li><Link href="/bilgi-bankasi" className="hover:text-white transition-colors">{t('blog')}</Link></li>
                             <li><Link href="/iletisim" className="hover:text-white transition-colors">{t('contact')}</Link></li>
+                            <li><Link href="/teklif-al" className="hover:text-white transition-colors">{localizedFallback({ tr: 'Teknik Talep', en: 'Technical Request', de: 'Technische Anfrage', fr: 'Demande technique', ar: 'طلب فني', es: 'Solicitud técnica', it: 'Richiesta tecnica' })}</Link></li>
                         </ul>
                     </div>
 

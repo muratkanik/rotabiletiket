@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { FileText, Phone, Send, Info } from 'lucide-react';
+import { Link } from '@/src/i18n/routing';
 
 export function ProductCTA({ productName, locale = 'tr' }: { productName?: string; locale?: string }) {
     const copy = {
@@ -22,11 +23,6 @@ export function ProductCTA({ productName, locale = 'tr' }: { productName?: strin
         window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
     };
 
-    const handleMail = () => {
-        const subject = productName ? `${productName} request` : 'Product request';
-        window.location.href = `mailto:info@rotabiletiket.com?subject=${encodeURIComponent(subject)}`;
-    };
-
     return (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-8">
             <h3 className="text-lg font-bold text-slate-800 mb-4">{copy.title}</h3>
@@ -39,29 +35,29 @@ export function ProductCTA({ productName, locale = 'tr' }: { productName?: strin
                     <span>WhatsApp</span>
                 </button>
                 
-                <button 
-                    onClick={handleMail}
+                <Link
+                    href="/teklif-al?requestType=quote"
                     className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium transition-colors"
                 >
                     <FileText className="w-5 h-5" />
                     <span>{copy.quote}</span>
-                </button>
+                </Link>
 
-                <button 
-                    onClick={handleMail}
+                <Link
+                    href="/teklif-al?requestType=sample"
                     className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-colors"
                 >
                     <Send className="w-5 h-5" />
                     <span>{copy.sample}</span>
-                </button>
+                </Link>
 
-                <button 
-                    onClick={handleMail}
+                <Link
+                    href="/teklif-al?requestType=technical_support"
                     className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white py-3 px-4 rounded-xl font-medium transition-colors"
                 >
                     <Info className="w-5 h-5" />
                     <span>{copy.support}</span>
-                </button>
+                </Link>
             </div>
         </div>
     );

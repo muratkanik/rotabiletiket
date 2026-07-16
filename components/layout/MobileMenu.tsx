@@ -103,7 +103,7 @@ export function MobileMenu({ categories = [] }: MobileMenuProps) {
 
                         <div className="pt-4">
                             <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 text-lg" asChild>
-                                <Link href="/iletisim" onClick={toggleMenu}>
+                                <Link href="/teklif-al" onClick={toggleMenu}>
                                     <Phone className="mr-2 h-5 w-5" /> {tCommon('getQuote')}
                                 </Link>
                             </Button>

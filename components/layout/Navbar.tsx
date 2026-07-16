@@ -91,7 +91,7 @@ export async function Navbar() {
                 <div className="hidden md:flex items-center gap-2">
                     <LanguageSwitcher />
                     <Button className="bg-orange-600 hover:bg-orange-700 text-white" asChild>
-                        <Link href="/iletisim">{tCommon('getQuote')}</Link>
+                        <Link href="/teklif-al">{tCommon('getQuote')}</Link>
                     </Button>
                 </div>
 

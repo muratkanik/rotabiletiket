@@ -37,9 +37,14 @@ export async function submitRfqForm(_previousState: unknown, formData: FormData)
     const fullName = String(formData.get('full_name') || '').trim();
     const email = String(formData.get('email') || '').trim();
     const message = String(formData.get('message') || '').trim();
+    const locale = String(formData.get('locale') || 'en').trim();
+    const requestedType = String(formData.get('request_type') || 'technical_support').trim();
+    const requestType = ['quote', 'sample', 'technical_support'].includes(requestedType)
+        ? requestedType
+        : 'technical_support';
 
     if (!fullName || !email || !message) {
-        return { error: 'Please complete your name, email and request details.' };
+        return { error: locale === 'tr' ? 'Lütfen ad, e-posta ve talep detaylarını doldurun.' : 'Please complete your name, email and request details.' };
     }
 
     const { error } = await supabase.from('rfq_requests').insert({
@@ -57,13 +62,13 @@ export async function submitRfqForm(_previousState: unknown, formData: FormData)
         technology: String(formData.get('technology') || '').trim() || null,
         solution_slug: String(formData.get('solution_slug') || '').trim() || null,
         message,
-        request_type: String(formData.get('request_type') || 'quote').trim(),
+        request_type: requestType,
     });
 
     if (error) {
         console.error('RFQ form error:', error);
-        return { error: 'We could not submit your request. Please try again.' };
+        return { error: locale === 'tr' ? 'Talebiniz gönderilemedi. Lütfen tekrar deneyin.' : 'We could not submit your request. Please try again.' };
     }
 
-    return { success: 'Thank you. Our technical team will contact you shortly.' };
+    return { success: locale === 'tr' ? 'Teşekkürler. Teknik ekibimiz kısa süre içinde sizinle iletişime geçecek.' : 'Thank you. Our technical team will contact you shortly.' };
 }
