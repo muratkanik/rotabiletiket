@@ -16,7 +16,7 @@ export async function Footer({ locale }: { locale: string }) {
     // Helper to safety get localized string from JSONB
     const getLocStr = (obj: any, key: string) => {
         if (!obj || !obj[key]) return '';
-        return obj[key][locale] || (locale !== 'tr' ? obj[key]['en'] : obj[key]['tr']) || '';
+        return obj[key][locale] || (locale === 'tr' ? obj[key]['tr'] : '') || '';
     };
 
     const motto = getLocStr(footerContent, 'motto') || localizedFallback({
@@ -73,7 +73,7 @@ export async function Footer({ locale }: { locale: string }) {
                     <div>
                         {/* Assuming 'Corporate' translation exists or hardcode localized logic */}
                         <h3 className="font-bold text-lg mb-6">
-                            {locale === 'en' ? 'Corporate' : locale === 'ar' ? 'الشركة' : locale === 'fr' ? 'Entreprise' : locale === 'de' ? 'Unternehmen' : 'Kurumsal'}
+                            {localizedFallback({ tr: 'Kurumsal', en: 'Corporate', de: 'Unternehmen', fr: 'Entreprise', ar: 'الشركة', es: 'Empresa', it: 'Azienda' })}
                         </h3>
                         <ul className="space-y-4 text-slate-400">
                             <li><Link href="/" className="hover:text-white transition-colors">{t('home')}</Link></li>
