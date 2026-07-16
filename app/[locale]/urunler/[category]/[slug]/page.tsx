@@ -208,7 +208,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                         <div className="prose prose-slate max-w-none mb-8 text-slate-600 space-y-4">
                             <div dangerouslySetInnerHTML={{ __html: product.description_html }} />
                         </div>
-                        <ProductCTA productName={product.title} locale={locale} />
+                        <ProductCTA
+                            productName={product.title}
+                            locale={locale}
+                            sampleRequestEnabled={Boolean(product.category?.sample_request_enabled || product.categories?.sample_request_enabled)}
+                        />
 
                         {/* Specs Table */}
                         {Object.keys(product.specs || {}).length > 0 && (

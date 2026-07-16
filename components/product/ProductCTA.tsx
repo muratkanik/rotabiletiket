@@ -4,7 +4,7 @@ import React from 'react';
 import { FileText, Phone, Send, Info } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 
-export function ProductCTA({ productName, locale = 'tr' }: { productName?: string; locale?: string }) {
+export function ProductCTA({ productName, locale = 'tr', sampleRequestEnabled = false }: { productName?: string; locale?: string; sampleRequestEnabled?: boolean }) {
     const copy = {
         tr: { title: 'Bu Ürün İçin Hemen Aksiyon Alın', quote: 'Teklif Al', sample: 'Numune İste', support: 'Teknik Destek', greeting: 'Merhaba' },
         en: { title: 'Take the Next Step for This Product', quote: 'Request a Quote', sample: 'Request a Sample', support: 'Technical Support', greeting: 'Hello' },
@@ -43,13 +43,15 @@ export function ProductCTA({ productName, locale = 'tr' }: { productName?: strin
                     <span>{copy.quote}</span>
                 </Link>
 
-                <Link
-                    href="/teklif-al?requestType=sample"
-                    className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-colors"
-                >
-                    <Send className="w-5 h-5" />
-                    <span>{copy.sample}</span>
-                </Link>
+                {sampleRequestEnabled && (
+                    <Link
+                        href="/teklif-al?requestType=sample"
+                        className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-colors"
+                    >
+                        <Send className="w-5 h-5" />
+                        <span>{copy.sample}</span>
+                    </Link>
+                )}
 
                 <Link
                     href="/teklif-al?requestType=technical_support"
