@@ -14,14 +14,45 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
 import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 
+const localizedMeta: Record<string, { title: string; description: string }> = {
+    tr: {
+        title: 'Rotabil Etiket | Üreticiden Doğrudan Barkod ve Etiket Çözümleri',
+        description: 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
+    },
+    en: {
+        title: 'Rotabil Etiket | Industrial Barcode and Label Solutions',
+        description: 'High-quality labels, barcode printers and ribbon solutions for industrial applications.',
+    },
+    de: {
+        title: 'Rotabil Etiket | Industrielle Etiketten- und Barcodelösungen',
+        description: 'Hochwertige Etiketten, Barcode-Drucker und Farbbänder für industrielle Anwendungen.',
+    },
+    fr: {
+        title: 'Rotabil Etiket | Solutions industrielles d’étiquetage et de codes-barres',
+        description: 'Étiquettes, imprimantes de codes-barres et rubans de haute qualité pour les applications industrielles.',
+    },
+    ar: {
+        title: 'روتابيل إتيكيت | حلول الملصقات والباركود الصناعية',
+        description: 'ملصقات عالية الجودة وطابعات باركود وأشرطة نقل حراري للتطبيقات الصناعية.',
+    },
+    es: {
+        title: 'Rotabil Etiket | Soluciones industriales de etiquetas y códigos de barras',
+        description: 'Etiquetas, impresoras de códigos de barras y cintas de alta calidad para aplicaciones industriales.',
+    },
+    it: {
+        title: 'Rotabil Etiket | Soluzioni industriali per etichette e codici a barre',
+        description: 'Etichette, stampanti per codici a barre e nastri di alta qualità per applicazioni industriali.',
+    },
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
     const seo = await getSiteSettings('global_seo');
-    const isGerman = locale === 'de';
+    const meta = localizedMeta[locale] || localizedMeta.en;
     return {
         metadataBase: new URL('https://rotabiletiket.com'),
-        title: isGerman ? 'Rotabil Etiket | Industrielle Etiketten- und Barcodelösungen' : seo?.default_title || 'Rotabil Etiket | Endüstriyel Barkod ve Etiket Çözümleri',
-        description: isGerman ? 'Hochwertige Etiketten, Barcode-Drucker und Farbbänder für industrielle Anwendungen.' : seo?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
+        title: locale === 'tr' ? seo?.default_title || meta.title : meta.title,
+        description: locale === 'tr' ? seo?.default_description || meta.description : meta.description,
         openGraph: {
             images: [seo?.og_image_url || '/logo.png']
         },
@@ -32,7 +63,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
                 'en': '/en',
                 'de': '/de',
                 'fr': '/fr',
-                'ar': '/ar'
+                'ar': '/ar',
+                'es': '/es',
+                'it': '/it'
             }
         },
         icons: {
