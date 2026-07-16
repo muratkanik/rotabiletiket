@@ -3,10 +3,22 @@ import { Tag, Printer, ScrollText, ArrowRight } from 'lucide-react';
 
 export async function QuickCategories({ locale }: { locale: string }) {
 
+    const copy = {
+        tr: { labels: 'Etiketler', labelsSub: 'Rulo, Kuşe, Lamine', printers: 'Barkod Yazıcılar', printersSub: 'Endüstriyel & Masaüstü', ribbons: 'Ribonlar' },
+        en: { labels: 'Labels', labelsSub: 'Roll, coated and laminated', printers: 'Barcode Printers', printersSub: 'Industrial & desktop', ribbons: 'Ribbons' },
+        de: { labels: 'Etiketten', labelsSub: 'Rollen-, gestrichene und laminierte Etiketten', printers: 'Barcode-Drucker', printersSub: 'Industrie und Desktop', ribbons: 'Farbbänder' },
+        fr: { labels: 'Étiquettes', labelsSub: 'En rouleau, couchées et laminées', printers: 'Imprimantes code-barres', printersSub: 'Industrielles et de bureau', ribbons: 'Rubans' },
+        ar: { labels: 'الملصقات', labelsSub: 'لفائف ومطلية ومصفحة', printers: 'طابعات الباركود', printersSub: 'صناعية ومكتبية', ribbons: 'الأشرطة' },
+        es: { labels: 'Etiquetas', labelsSub: 'En rollo, estucadas y laminadas', printers: 'Impresoras de códigos', printersSub: 'Industriales y de escritorio', ribbons: 'Cintas' },
+        it: { labels: 'Etichette', labelsSub: 'In rotolo, patinate e laminate', printers: 'Stampanti di codici a barre', printersSub: 'Industriali e desktop', ribbons: 'Nastri' },
+    }[locale as 'tr' | 'en' | 'de' | 'fr' | 'ar' | 'es' | 'it'] || {
+        labels: 'Labels', labelsSub: 'Roll, coated and laminated', printers: 'Barcode Printers', printersSub: 'Industrial & desktop', ribbons: 'Ribbons'
+    };
+
     const categories = [
         {
-            title: locale === 'de' ? 'Etiketten' : 'Etiketler',
-            subtitle: locale === 'de' ? 'Rollen-, gestrichene und laminierte Etiketten' : 'Rulo, Kuşe, Lamine',
+            title: copy.labels,
+            subtitle: copy.labelsSub,
             slug: 'etiketler', 
             icon: Tag,
             color: 'bg-blue-600',
@@ -15,8 +27,8 @@ export async function QuickCategories({ locale }: { locale: string }) {
             textColor: 'text-blue-600'
         },
         {
-            title: locale === 'de' ? 'Barcode-Drucker' : 'Barkod Yazıcılar',
-            subtitle: locale === 'de' ? 'Industrie und Desktop' : 'Endüstriyel & Masaüstü',
+            title: copy.printers,
+            subtitle: copy.printersSub,
             slug: 'barkod-yazici-cozumleri-i-sletmenize-deger-katin',
             icon: Printer,
             color: 'bg-orange-500',
@@ -25,7 +37,7 @@ export async function QuickCategories({ locale }: { locale: string }) {
             textColor: 'text-orange-500'
         },
         {
-            title: locale === 'de' ? 'Farbbänder' : 'Ribonlar',
+            title: copy.ribbons,
             subtitle: 'Wax, Resin, Wax-Resin',
             slug: 'ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin',
             icon: ScrollText,
