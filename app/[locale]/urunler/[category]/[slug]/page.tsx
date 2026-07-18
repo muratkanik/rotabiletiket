@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { getLocalizedProduct } from '@/utils/supabase/queries';
@@ -20,11 +20,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description: locale === 'de' ? 'Das gesuchte Produkt wurde nicht gefunden.' : 'Aradığınız ürün bulunamadı.'
     };
 
+    const canonicalCategorySlug = product.localized_category_slug || product.categories?.slug;
+    const canonicalUrl = `https://www.rotabiletiket.com/${locale}/urunler/${canonicalCategorySlug}/${product.slug}`;
+
     return {
         title: product.seo_title || `${product.title} | Rotabil Etiket`,
         description: product.seo_description || product.description_html?.replace(/<[^>]*>?/gm, '').substring(0, 160) || product.title,
-        keywords: product.keywords || ''
+        keywords: product.keywords || '',
+        alternates: {
+            canonical: canonicalUrl,
+            languages: {
+                'tr': `https://www.rotabiletiket.com/tr/urunler/${canonicalCategorySlug}/${baseProductSlug(product)}`,
+            }
+        }
     }
+}
+
+// helper since we don't have base slug directly if overridden, but Google handles alternates.
+function baseProductSlug(product: any) {
+    return product.slug;
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string, category: string }> }) {
@@ -36,6 +50,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     const product = await getLocalizedProduct(slug, locale);
 
     if (!product) notFound();
+
+    const canonicalCategorySlug = product.localized_category_slug || product.categories?.slug;
+    if (canonicalCategorySlug && category !== canonicalCategorySlug) {
+        permanentRedirect(`/${locale}/urunler/${canonicalCategorySlug}/${product.slug}`);
+    }
 
     // Sort images (primary first)
     const images = product.images?.sort((a: any, b: any) => (b.is_primary ? 1 : -1)) || [];
