@@ -43,7 +43,10 @@
         "title": "Knowledge Base",
         "headerSubtitle": "Sectoral Guide and Technical Insights",
         "headerDescription": "Comprehensive articles, guides, and technical information about industrial labeling, barcode systems, and sectoral solutions.",
-        "readMore": "Read More"
+        "readMore": "Read More",
+        "description": "A knowledge base for industrial labeling, barcodes and technical solutions.",
+        "noContentTitle": "No content yet",
+        "noContentDescription": "New technical content is being prepared."
     },
     "Contact": {
         "title": "Contact",

@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -36,14 +35,8 @@ export default async function ReferencesPage({ params }: { params: Promise<{ loc
                                 src={`https://logo.clearbit.com/${ref.domain}`}
                                 alt={`${ref.name} Logo`}
                                 className="max-h-16 object-contain grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100"
-                                onError={(e) => {
-                                    // Fallback text if logo fails to load
-                                    e.currentTarget.style.display = 'none';
-                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                    if(nextSibling) nextSibling.style.display = 'block';
-                                }}
                             />
-                            <div className="hidden font-semibold text-slate-700 text-center">{ref.name}</div>
+                            <div className="mt-3 font-semibold text-slate-700 text-center">{ref.name}</div>
                         </div>
                     ))}
                 </div>

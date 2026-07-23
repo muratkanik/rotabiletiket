@@ -62,7 +62,10 @@
         "title": "Wissensdatenbank",
         "headerSubtitle": "Sektorale Leitfaden und technische Einblicke",
         "headerDescription": "Umfassende Artikel, Leitfäden und technische Informationen zu industrieller Kennzeichnung, Barcodesystemen und branchenspezifischen Lösungen.",
-        "readMore": "Weiterlesen"
+        "readMore": "Weiterlesen",
+        "description": "Wissensdatenbank für industrielle Kennzeichnung, Barcodes und technische Lösungen.",
+        "noContentTitle": "Noch keine Inhalte",
+        "noContentDescription": "Neue technische Inhalte werden vorbereitet."
     },
     "Contact": {
         "title": "Kontakt",

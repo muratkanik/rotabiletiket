@@ -45,6 +45,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     const { slug, category } = await params;
     const locale = await getLocale();
     const t = await getTranslations('Common');
+    const tNavigation = await getTranslations('Navigation');
     const tProducts = await getTranslations('Products');
 
     const product = await getLocalizedProduct(slug, locale);
@@ -176,8 +177,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="container px-4 md:px-6 py-12">
                 {/* Breadcrumb */}
                 <Breadcrumb items={[
-                    { label: t('Navigation.home'), href: `/${locale}` },
-                    { label: t('Navigation.products'), href: `/${locale}/urunler` },
+                    { label: tNavigation('home'), href: `/${locale}` },
+                    { label: tNavigation('products'), href: `/${locale}/urunler` },
                     { label: product.categories?.title || category, href: `/${locale}/urunler/${category}` },
                     { label: product.title }
                 ]} />
