@@ -17,8 +17,7 @@ type AnnouncementCopy = {
   pastDeadline: string;
   note: string;
   articleCta: string;
-  guideCta: string;
-  complianceCta: string;
+  documentsCta: string;
   close: string;
   articleSlug: string;
 };
@@ -35,8 +34,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'Tedarikçi yazısında yer alan 20 Temmuz 2026 belge iletim tarihi geçmiştir; bu tarih Rotabil tarafından belirlenmiş yeni bir son tarih değildir.',
     note: 'Bu içerik genel bilgilendirme amacı taşır; hukuki danışmanlık veya tek başına uygunluk belgesi değildir. Nihai değerlendirme, güncel mevzuat, ürün bileşimi ve kullanım koşullarına göre yapılmalıdır.',
     articleCta: 'PPWR makalesini incele',
-    guideCta: 'Geri dönüştürülebilirlik rehberi',
-    complianceCta: 'Güvenlik ve uyumluluk özeti',
+    documentsCta: 'Çevrilmiş teknik içerikleri oku',
     close: 'Duyuruyu kapat',
     articleSlug: 'ppwr-ab-2025-40-karton-ambalaj-uyum-yaklasimimiz',
   },
@@ -51,8 +49,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'The 20 July 2026 document date stated in the supplier letter has passed; it is not a new deadline set by Rotabil.',
     note: 'This content is for general information only; it is not legal advice or a standalone certificate of compliance. Final assessment depends on current legislation, product composition and conditions of use.',
     articleCta: 'Read the PPWR article',
-    guideCta: 'Recyclability guide',
-    complianceCta: 'Safety and compliance summary',
+    documentsCta: 'Read the translated technical content',
     close: 'Close announcement',
     articleSlug: 'ppwr-eu-2025-40-rotabil-carton-packaging-compliance',
   },
@@ -67,8 +64,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'Das im Lieferantenschreiben genannte Datum 20. Juli 2026 ist verstrichen; es handelt sich nicht um eine von Rotabil gesetzte neue Frist.',
     note: 'Diese Informationen dienen ausschließlich der allgemeinen Orientierung und sind keine Rechtsberatung oder eigenständige Konformitätsbescheinigung. Die abschließende Bewertung hängt von aktueller Gesetzgebung, Produktzusammensetzung und Verwendungsbedingungen ab.',
     articleCta: 'PPWR-Artikel lesen',
-    guideCta: 'Leitfaden zur Recyclingfähigkeit',
-    complianceCta: 'Sicherheits- und Compliance-Zusammenfassung',
+    documentsCta: 'Übersetzte technische Inhalte lesen',
     close: 'Mitteilung schließen',
     articleSlug: 'ppwr-eu-2025-40-rotabil-kartonverpackungs-konformitaet',
   },
@@ -83,8 +79,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'La date du 20 juillet 2026 indiquée dans la lettre fournisseur est dépassée ; il ne s’agit pas d’une nouvelle échéance fixée par Rotabil.',
     note: 'Ces informations sont générales et ne constituent ni un conseil juridique ni un certificat de conformité autonome. L’évaluation finale dépend de la législation en vigueur, de la composition du produit et des conditions d’utilisation.',
     articleCta: 'Lire l’article PPWR',
-    guideCta: 'Guide de recyclabilité',
-    complianceCta: 'Résumé sécurité et conformité',
+    documentsCta: 'Lire le contenu technique traduit',
     close: 'Fermer l’avis',
     articleSlug: 'ppwr-ue-2025-40-conformite-emballage-carton-rotabil',
   },
@@ -99,8 +94,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'La fecha del 20 de julio de 2026 indicada en la carta del proveedor ya ha pasado; no es un nuevo plazo establecido por Rotabil.',
     note: 'Este contenido es meramente informativo; no constituye asesoramiento jurídico ni un certificado de conformidad independiente. La evaluación final depende de la legislación vigente, la composición del producto y las condiciones de uso.',
     articleCta: 'Leer el artículo PPWR',
-    guideCta: 'Guía de reciclabilidad',
-    complianceCta: 'Resumen de seguridad y cumplimiento',
+    documentsCta: 'Leer el contenido técnico traducido',
     close: 'Cerrar aviso',
     articleSlug: 'ppwr-ue-2025-40-enfoque-envases-carton-rotabil',
   },
@@ -115,8 +109,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'La data del 20 luglio 2026 indicata nella lettera del fornitore è trascorsa; non è una nuova scadenza stabilita da Rotabil.',
     note: 'Queste informazioni sono di carattere generale e non costituiscono consulenza legale né un certificato di conformità autonomo. La valutazione finale dipende dalla normativa vigente, dalla composizione del prodotto e dalle condizioni d’uso.',
     articleCta: 'Leggi l’articolo PPWR',
-    guideCta: 'Guida alla riciclabilità',
-    complianceCta: 'Riepilogo sicurezza e conformità',
+    documentsCta: 'Leggi i contenuti tecnici tradotti',
     close: 'Chiudi avviso',
     articleSlug: 'ppwr-ue-2025-40-approccio-imballaggi-cartone-rotabil',
   },
@@ -131,8 +124,7 @@ const copy: Record<string, AnnouncementCopy> = {
     pastDeadline: 'لقد انقضى تاريخ 20 يوليو 2026 المذكور في خطاب المورد؛ وهو ليس موعداً نهائياً جديداً تحدده روتابيل.',
     note: 'هذه المعلومات عامة وليست استشارة قانونية أو شهادة مطابقة مستقلة. يعتمد التقييم النهائي على التشريعات السارية وتركيبة المنتج وشروط الاستخدام.',
     articleCta: 'قراءة مقال PPWR',
-    guideCta: 'دليل قابلية إعادة التدوير',
-    complianceCta: 'ملخص السلامة والامتثال',
+    documentsCta: 'قراءة المحتوى الفني المترجم',
     close: 'إغلاق الإشعار',
     articleSlug: 'ppwr-eu-2025-40-rotabil-carton-packaging-compliance-ar',
   },
@@ -185,12 +177,9 @@ export default function PPWRAnnouncement({ locale }: { locale: string }) {
             <Link href={`/bilgi-bankasi/${item.articleSlug}`} className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-orange-400">
               {item.articleCta}<ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0" />
             </Link>
-            <a href="/docs/packaging-recyclability-guide.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold text-[#092845] transition hover:bg-slate-50">
-              <FileText className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />{item.guideCta}
-            </a>
-            <a href="/docs/product-safety-compliance-label-materials.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold text-[#092845] transition hover:bg-slate-50">
-              <FileText className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />{item.complianceCta}
-            </a>
+            <Link href={`/bilgi-bankasi/${item.articleSlug}#translated-source-documents`} className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold text-[#092845] transition hover:bg-slate-50">
+              <FileText className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />{item.documentsCta}
+            </Link>
           </div>
           <button type="button" onClick={dismiss} className="mt-5 text-sm font-medium text-slate-500 underline underline-offset-4 hover:text-[#092845]">{item.close}</button>
         </div>

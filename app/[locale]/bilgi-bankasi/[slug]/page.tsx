@@ -9,6 +9,7 @@ import { enhanceHtmlWithInternalLinks } from '@/utils/autoLinker';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { TechnicalDisclaimer } from '@/components/legal/TechnicalDisclaimer';
+import { PPWRDocumentContent } from '@/components/content/PPWRDocumentContent';
 
 export const revalidate = 3600;
 
@@ -97,7 +98,11 @@ export default async function ArticlePage({ params }: Props) {
             '@id': `https://rotabiletiket.com/${locale}/bilgi-bankasi/${article.slug}`,
         },
     };
+    const isPpwrArticle = article.slug.includes('ppwr-') || article.slug.includes('ppwr_');
     const enhancedContent = await enhanceHtmlWithInternalLinks(article.content_html || '', article.slug, locale);
+    const contentWithoutPdfLinks = isPpwrArticle
+        ? enhancedContent.replace(/<p>\s*<a[^>]+href=["']\/docs\/[^"']+\.pdf[^>]*>[\s\S]*?<\/a>\s*<\/p>/gi, '')
+        : enhancedContent;
 
     return (
         <article className="min-h-screen bg-white">
@@ -160,7 +165,8 @@ export default async function ArticlePage({ params }: Props) {
                         </div>
                     )}
 
-                    <div dangerouslySetInnerHTML={{ __html: enhancedContent }} />
+                    <div dangerouslySetInnerHTML={{ __html: contentWithoutPdfLinks }} />
+                    {isPpwrArticle && <PPWRDocumentContent locale={locale} />}
                     <TechnicalDisclaimer locale={locale} />
                     
                     {/* Tags / Hashtags */}
