@@ -79,6 +79,7 @@ export async function Footer({ locale }: { locale: string }) {
                             <li><Link href="/" className="hover:text-white transition-colors">{t('home')}</Link></li>
                             <li><Link href="/hakkimizda" className="hover:text-white transition-colors">{t('about')}</Link></li>
                             <li><Link href="/kalite-politikamiz" className="hover:text-white transition-colors">{common('qualityPolicy')}</Link></li>
+                            <li><Link href="/referanslar" className="hover:text-white transition-colors">{localizedFallback({ tr: 'Referanslarımız', en: 'References', de: 'Referenzen', fr: 'Références', ar: 'مراجعنا', es: 'Referencias', it: 'Referenze' })}</Link></li>
                             <li><Link href="/uretim-tesisimiz" className="hover:text-white transition-colors">{common('productionFacility')}</Link></li>
                             <li><Link href="/sektorel-cozumler" className="hover:text-white transition-colors">{t('sectoral')}</Link></li>
                             <li><Link href="/bilgi-bankasi" className="hover:text-white transition-colors">{t('blog')}</Link></li>

@@ -130,7 +130,7 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
                                 <Factory size={28} />
                             </div>
                             <h3 className="text-xl font-bold text-slate-900 mb-3">{isGerman ? 'Direkte Herstellerpreise' : 'Tam Üretici Fiyatları'}</h3>
-                            <p className="text-slate-600 leading-relaxed">{isGerman ? `Wir liefern direkt ab Werk in die Region ${name} und schaffen so einen Kostenvorteil.` : `Aracı kullanmadan dogrudan fabrikadan ${name} bölgesine gönderim sağlıyor ve maliyet avantajı yaratıyoruz.`}</p>
+                            <p className="text-slate-600 leading-relaxed">{isGerman ? `Wir liefern direkt ab Werk in die Region ${name} und schaffen so einen Kostenvorteil.` : `Aracı kullanmadan fabrikadan işletmelere doğrudan satış ile ${name} bölgesine gönderim sağlıyor ve maliyet avantajı yaratıyoruz.`}</p>
                         </div>
                         <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 transition-all hover:shadow-md hover:border-blue-100 group">
                             <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">

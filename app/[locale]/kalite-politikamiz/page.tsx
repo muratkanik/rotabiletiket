@@ -148,7 +148,7 @@ export default async function QualityPolicyPage({ params }: { params: Promise<{ 
                         </figure>
                     </div>
                     <div className="mt-8 text-center">
-                        <a href="/certificates/rotabil-iso-9001-2015.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                        <a href="/certificates/iso-certificates.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
                             {copy.download}
                         </a>
                     </div>
