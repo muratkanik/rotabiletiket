@@ -8,9 +8,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     };
 }
 
-const references = [
+const references: { name: string; domain: string; logo?: string }[] = [
     { name: 'Kardemir Demir Çelik', domain: 'kardemir.com' },
     { name: 'Coca Cola', domain: 'coca-colacompany.com' },
+    { name: 'Pepsi Cola', domain: 'pepsi.com', logo: 'https://digitalassets.pepsico.com/transform/47a5ae69-928c-44bd-b3cf-eab35bdc943e/pepsi-logo-fullcolor-RGB?q=75&w=3840' },
     { name: "Levi's", domain: 'levi.com' },
     { name: 'Kenton Gıda', domain: 'kenton.com.tr' },
     { name: 'Diler Demir Çelik', domain: 'dilerhld.com' }
@@ -30,9 +31,9 @@ export default async function ReferencesPage({ params }: { params: Promise<{ loc
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                     {references.map((ref, idx) => (
-                        <div key={idx} className="bg-white rounded-2xl p-8 shadow-sm flex items-center justify-center border border-slate-100 hover:shadow-md transition-shadow">
+                        <div key={idx} className="bg-white rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition-shadow">
                             <img
-                                src={`https://logo.clearbit.com/${ref.domain}`}
+                                src={ref.logo || `https://logo.clearbit.com/${ref.domain}`}
                                 alt={`${ref.name} Logo`}
                                 className="max-h-16 object-contain grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100"
                             />
