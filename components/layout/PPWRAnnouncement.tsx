@@ -19,6 +19,7 @@ type AnnouncementCopy = {
   articleCta: string;
   documentsCta: string;
   close: string;
+  dontShowAgain: string;
   articleSlug: string;
 };
 
@@ -36,6 +37,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'PPWR makalesini incele',
     documentsCta: 'Çevrilmiş teknik içerikleri oku',
     close: 'Duyuruyu kapat',
+    dontShowAgain: 'Bir daha gösterme',
     articleSlug: 'ppwr-ab-2025-40-karton-ambalaj-uyum-yaklasimimiz',
   },
   en: {
@@ -51,6 +53,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'Read the PPWR article',
     documentsCta: 'Read the translated technical content',
     close: 'Close announcement',
+    dontShowAgain: 'Do not show again',
     articleSlug: 'ppwr-eu-2025-40-rotabil-carton-packaging-compliance',
   },
   de: {
@@ -66,6 +69,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'PPWR-Artikel lesen',
     documentsCta: 'Übersetzte technische Inhalte lesen',
     close: 'Mitteilung schließen',
+    dontShowAgain: 'Nicht mehr anzeigen',
     articleSlug: 'ppwr-eu-2025-40-rotabil-kartonverpackungs-konformitaet',
   },
   fr: {
@@ -81,6 +85,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'Lire l’article PPWR',
     documentsCta: 'Lire le contenu technique traduit',
     close: 'Fermer l’avis',
+    dontShowAgain: 'Ne plus afficher',
     articleSlug: 'ppwr-ue-2025-40-conformite-emballage-carton-rotabil',
   },
   es: {
@@ -96,6 +101,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'Leer el artículo PPWR',
     documentsCta: 'Leer el contenido técnico traducido',
     close: 'Cerrar aviso',
+    dontShowAgain: 'No volver a mostrar',
     articleSlug: 'ppwr-ue-2025-40-enfoque-envases-carton-rotabil',
   },
   it: {
@@ -111,6 +117,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'Leggi l’articolo PPWR',
     documentsCta: 'Leggi i contenuti tecnici tradotti',
     close: 'Chiudi avviso',
+    dontShowAgain: 'Non mostrare più',
     articleSlug: 'ppwr-ue-2025-40-approccio-imballaggi-cartone-rotabil',
   },
   ar: {
@@ -126,6 +133,7 @@ const copy: Record<string, AnnouncementCopy> = {
     articleCta: 'قراءة مقال PPWR',
     documentsCta: 'قراءة المحتوى الفني المترجم',
     close: 'إغلاق الإشعار',
+    dontShowAgain: 'عدم العرض مرة أخرى',
     articleSlug: 'ppwr-eu-2025-40-rotabil-carton-packaging-compliance-ar',
   },
 };
@@ -144,11 +152,13 @@ export default function PPWRAnnouncement({ locale }: { locale: string }) {
 
   if (!open) return null;
 
-  const dismiss = () => {
-    try {
-      window.localStorage.setItem(ANNOUNCEMENT_VERSION, 'dismissed');
-    } catch {
-      // The announcement can still be dismissed for the current render.
+  const dismiss = (remember = false) => {
+    if (remember) {
+      try {
+        window.localStorage.setItem(ANNOUNCEMENT_VERSION, 'dismissed');
+      } catch {
+        // The announcement can still be dismissed for the current render.
+      }
     }
     setOpen(false);
   };
@@ -156,7 +166,7 @@ export default function PPWRAnnouncement({ locale }: { locale: string }) {
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/65 p-4" role="dialog" aria-modal="true" aria-labelledby="ppwr-announcement-title" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 text-slate-800 shadow-2xl md:p-8">
-        <button type="button" onClick={dismiss} aria-label={item.close} className="absolute right-4 top-4 rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 rtl:left-4 rtl:right-auto">
+        <button type="button" onClick={() => dismiss()} aria-label={item.close} className="absolute right-4 top-4 rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 rtl:left-4 rtl:right-auto">
           <X className="h-5 w-5" />
         </button>
         <div className="pr-8 rtl:pl-8 rtl:pr-0">
@@ -181,7 +191,10 @@ export default function PPWRAnnouncement({ locale }: { locale: string }) {
               <FileText className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />{item.documentsCta}
             </Link>
           </div>
-          <button type="button" onClick={dismiss} className="mt-5 text-sm font-medium text-slate-500 underline underline-offset-4 hover:text-[#092845]">{item.close}</button>
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <button type="button" onClick={() => dismiss()} className="text-sm font-medium text-slate-500 underline underline-offset-4 hover:text-[#092845]">{item.close}</button>
+            <button type="button" onClick={() => dismiss(true)} className="text-sm font-semibold text-[#092845] underline underline-offset-4 hover:text-orange-600">{item.dontShowAgain}</button>
+          </div>
         </div>
       </div>
     </div>
