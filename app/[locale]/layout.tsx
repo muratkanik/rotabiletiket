@@ -13,6 +13,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
 import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
+import PPWRAnnouncement from '@/components/layout/PPWRAnnouncement';
 
 const localizedMeta: Record<string, { title: string; description: string }> = {
     tr: {
@@ -112,6 +113,7 @@ export default async function RootLayout({
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />
                     <Navbar />
+                    <PPWRAnnouncement locale={locale} />
                     {children}
                     <Footer locale={locale} />
                     <CookieBanner locale={locale} />
