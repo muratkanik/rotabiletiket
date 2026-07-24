@@ -12,7 +12,7 @@ const references: { name: string; domain: string; logo?: string }[] = [
     { name: 'Kardemir Demir Çelik', domain: 'kardemir.com' },
     { name: 'Coca Cola', domain: 'coca-colacompany.com' },
     { name: 'Pepsi Cola', domain: 'pepsi.com', logo: 'https://digitalassets.pepsico.com/transform/47a5ae69-928c-44bd-b3cf-eab35bdc943e/pepsi-logo-fullcolor-RGB?q=75&w=3840' },
-    { name: 'A101', domain: 'a101.com.tr', logo: 'https://logo.clearbit.com/a101.com.tr' },
+    { name: 'A101', domain: 'a101.com.tr' },
     { name: "Levi's", domain: 'levi.com' },
     { name: 'Kenton Gıda', domain: 'kenton.com.tr' },
     { name: 'Diler Demir Çelik', domain: 'dilerhld.com' }
@@ -34,7 +34,7 @@ export default async function ReferencesPage({ params }: { params: Promise<{ loc
                     {references.map((ref, idx) => (
                         <div key={idx} className="bg-white rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition-shadow">
                             <img
-                                src={ref.logo || `https://logo.clearbit.com/${ref.domain}`}
+                                src={ref.logo || `https://www.google.com/s2/favicons?domain=${encodeURIComponent(ref.domain)}&sz=128`}
                                 alt={`${ref.name} Logo`}
                                 className="max-h-16 object-contain grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100"
                             />
