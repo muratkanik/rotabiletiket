@@ -12,6 +12,7 @@ const references: { name: string; domain: string; logo?: string }[] = [
     { name: 'Kardemir Demir Çelik', domain: 'kardemir.com' },
     { name: 'Coca Cola', domain: 'coca-colacompany.com' },
     { name: 'Pepsi Cola', domain: 'pepsi.com', logo: 'https://digitalassets.pepsico.com/transform/47a5ae69-928c-44bd-b3cf-eab35bdc943e/pepsi-logo-fullcolor-RGB?q=75&w=3840' },
+    { name: 'A101', domain: 'a101.com.tr', logo: 'https://logo.clearbit.com/a101.com.tr' },
     { name: "Levi's", domain: 'levi.com' },
     { name: 'Kenton Gıda', domain: 'kenton.com.tr' },
     { name: 'Diler Demir Çelik', domain: 'dilerhld.com' }
