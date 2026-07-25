@@ -5,7 +5,7 @@
             "schedule": "0 10 * * *"
         },
         {
-            "path": "/api/cron/generate-solution-draft",
+            "path": "/api/cron/daily-article-draft",
             "schedule": "0 7 * * *"
         },
         {
