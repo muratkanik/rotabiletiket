@@ -25,6 +25,8 @@ export async function callAIFallback(
     };
     let lastError: any = null;
 
+    const geminiKey = process.env.GEMINI_API_KEY || settings?.gemini_api_key;
+    const directOpenAIKey = process.env.OPENAI_API_KEY || (settings?.openai_api_key && !settings.openai_api_key.startsWith('sk-or-') ? settings.openai_api_key : undefined);
     const openRouterKey = process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || (settings?.openai_api_key?.startsWith('sk-or-') ? settings.openai_api_key : undefined);
     const compatible = async (key: string, models: string[], baseURL?: string) => {
         const client = new OpenAI({ apiKey: key.trim(), ...(baseURL ? { baseURL } : {}), ...(baseURL?.includes('openrouter') ? { defaultHeaders: { 'HTTP-Referer': 'https://rotabiletiket.com', 'X-Title': 'Rotabil Etiket AI' } } : {}) });
@@ -42,15 +44,11 @@ export async function callAIFallback(
         return null;
     };
 
-    if (openRouterKey) {
-        const result = await compatible(openRouterKey, ['google/gemini-2.5-flash', 'deepseek/deepseek-chat', 'meta-llama/llama-3.1-8b-instruct'], 'https://openrouter.ai/api/v1');
-        if (result) return result;
-    }
-
-    if (settings?.gemini_api_key) {
+    // Google AI is the default provider because it is configured for this project.
+    if (geminiKey) {
         try {
-            log('Gemini yedek sağlayıcısı deneniyor...');
-            const gemini = new GoogleGenerativeAI(settings.gemini_api_key);
+            log('Google AI (Gemini) varsayılan sağlayıcı olarak deneniyor...');
+            const gemini = new GoogleGenerativeAI(geminiKey);
             const model = gemini.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction: systemPrompt, generationConfig: asJson ? { responseMimeType: 'application/json' } : undefined });
             const result = await model.generateContent(userPrompt);
             const text = result.response.text();
@@ -61,14 +59,18 @@ export async function callAIFallback(
         }
     }
 
+    if (directOpenAIKey) {
+        const result = await compatible(directOpenAIKey, ['gpt-4o-mini', 'gpt-4o']);
+        if (result) return result;
+    }
+
     if (settings?.xai_api_key) {
         const result = await compatible(settings.xai_api_key, ['grok-3-mini', 'grok-3'], 'https://api.x.ai/v1');
         if (result) return result;
     }
 
-    const directOpenAIKey = settings?.openai_api_key && !settings.openai_api_key.startsWith('sk-or-') ? settings.openai_api_key : undefined;
-    if (directOpenAIKey) {
-        const result = await compatible(directOpenAIKey, ['gpt-4o-mini', 'gpt-4o']);
+    if (openRouterKey) {
+        const result = await compatible(openRouterKey, ['google/gemini-2.5-flash', 'deepseek/deepseek-chat', 'meta-llama/llama-3.1-8b-instruct'], 'https://openrouter.ai/api/v1');
         if (result) return result;
     }
 
