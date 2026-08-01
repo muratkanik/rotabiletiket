@@ -138,19 +138,23 @@ const copy: Record<string, AnnouncementCopy> = {
   },
 };
 
-export default function PPWRAnnouncement({ locale }: { locale: string }) {
+export default function PPWRAnnouncement({ locale, enabled = false }: { locale: string; enabled?: boolean }) {
   const item = copy[locale] ?? copy.en;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!enabled) {
+      setOpen(false);
+      return;
+    }
     try {
       setOpen(window.localStorage.getItem(ANNOUNCEMENT_VERSION) !== 'dismissed');
     } catch {
       setOpen(true);
     }
-  }, []);
+  }, [enabled]);
 
-  if (!open) return null;
+  if (!enabled || !open) return null;
 
   const dismiss = (remember = false) => {
     if (remember) {

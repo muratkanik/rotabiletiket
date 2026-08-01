@@ -101,6 +101,8 @@ export default async function RootLayout({
     // Fetch contact info for WhatsApp
     const contactInfo = await getSiteSettings('contact_info');
     const whatsappNumber = contactInfo?.whatsapp || '+90 555 965 89 18';
+    const homepagePopup = await getSiteSettings('homepage_popup');
+    const homepagePopupEnabled = homepagePopup?.enabled === true;
 
     return (
         <html lang={locale}>
@@ -113,7 +115,7 @@ export default async function RootLayout({
                 <NextIntlClientProvider messages={messages}>
                     <AnalyticsTracker />
                     <Navbar />
-                    <PPWRAnnouncement locale={locale} />
+                    <PPWRAnnouncement locale={locale} enabled={homepagePopupEnabled} />
                     {children}
                     <Footer locale={locale} />
                     <CookieBanner locale={locale} />
