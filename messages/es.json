@@ -24,6 +24,10 @@
         "seeAllCategories": "Ver todas las categorías",
         "seeAllSectors": "Ver todos los sectores",
         "serviceAreas": "Áreas de Servicio"
+        ,"qualityPolicy": "Política de calidad"
+        ,"productionFacility": "Planta de producción"
+        ,"spareParts": "Piezas de repuesto"
+        ,"amazonLabels": "Etiquetas Amazon FBA"
     },
     "Hero": {
         "badge": "Soluciones Industriales de Etiquetas",
@@ -39,7 +43,10 @@
         "title": "Base de Conocimientos",
         "headerSubtitle": "Guía Sectorial e Información Técnica",
         "headerDescription": "Artículos completos, guías e información técnica sobre etiquetado industrial y sistemas de códigos de barras.",
-        "readMore": "Leer más"
+        "readMore": "Leer más",
+        "description": "Base de conocimientos sobre etiquetado industrial, códigos de barras y soluciones técnicas.",
+        "noContentTitle": "Aún no hay contenido",
+        "noContentDescription": "Se está preparando nuevo contenido técnico."
     },
     "Contact": {
         "title": "Contacto",

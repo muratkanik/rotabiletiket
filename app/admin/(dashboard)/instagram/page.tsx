@@ -242,7 +242,7 @@ export default function InstagramPage() {
                         <div className="flex-1 p-6 flex flex-col items-center bg-slate-100 min-h-[500px]">
                             {imageUrl ? (
                                 <div className="w-full max-w-[280px] aspect-[9/16] bg-slate-200 rounded-xl overflow-hidden shadow-lg border-2 border-slate-800 relative">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    { }
                                     {generating ? (
                                         <div className="absolute inset-0 flex items-center justify-center bg-slate-900/10 backdrop-blur-sm z-10">
                                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800"></div>

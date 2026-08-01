@@ -47,7 +47,7 @@ export async function FeatureCards({ locale }: { locale: string }) {
 
     const localizedCategories = categories?.map((cat: any) => {
         const trans = cat.category_translations?.find((t: any) => t.language_code === locale)
-            || cat.category_translations?.find((t: any) => t.language_code === 'tr')
+            || cat.category_translations?.find((t: any) => t.language_code === 'en')
             || {};
 
         return {
@@ -109,7 +109,7 @@ export async function FeatureCards({ locale }: { locale: string }) {
                 <div className="mt-16 text-center">
                     <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 shadow-lg shadow-blue-200">
                         <Link href="/urunler" className="flex items-center">
-                            {t('seeAllCategories') || 'Tüm Kategorileri Gör'} <ArrowRight className="ml-2 w-5 h-5" />
+                                        {t('seeAllCategories')} <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                     </Button>
                 </div>

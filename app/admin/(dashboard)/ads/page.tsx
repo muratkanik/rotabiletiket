@@ -265,7 +265,7 @@ export default function MetaAdsPage() {
                             </div>
                         </div>
                         <div className="bg-slate-100 aspect-[1.91/1] w-full relative overflow-hidden">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            { }
                             {generating ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/10 backdrop-blur-sm z-10">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800"></div>

@@ -47,7 +47,7 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
     }, [articles]);
 
     const sortedArticles = useMemo(() => {
-        let sortable = [...processedArticles];
+        const sortable = [...processedArticles];
         if (sortConfig !== null) {
             sortable.sort((a, b) => {
                 let aVal, bVal;
@@ -388,7 +388,6 @@ export default function ClientArticlesPage({ initialArticles }: { initialArticle
                                         <div className="relative h-12 w-16 bg-slate-100 rounded overflow-hidden">
                                             {article.image_url ? (
                                                 <Image
-                                                    // eslint-disable-next-line @next/next/no-img-element
                                                     src={article.image_url.startsWith('http') || article.image_url.startsWith('/') ? article.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`}
                                                     alt={article.title}
                                                     fill

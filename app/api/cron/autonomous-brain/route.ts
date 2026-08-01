@@ -42,9 +42,9 @@ export async function GET(req: Request) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                keyword: selectedKeyword,
+                keywords: selectedKeyword,
                 generateImage: true,
-                autoPublish: true 
+                autoPublish: false
             }),
         });
 

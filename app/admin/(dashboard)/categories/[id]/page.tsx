@@ -52,6 +52,7 @@ export default function CategoryFormPage() {
     const [parentCategories, setParentCategories] = useState<any[]>([]);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [videoUrl, setVideoUrl] = useState<string>('');
+    const [sampleRequestEnabled, setSampleRequestEnabled] = useState(false);
 
     // Localized Data
     const [originalTrTitle, setOriginalTrTitle] = useState<string>('');
@@ -101,6 +102,7 @@ export default function CategoryFormPage() {
 
             // Common fields
             setParentId(category.parent_id);
+            setSampleRequestEnabled(Boolean(category.sample_request_enabled));
             if (category.image_url) {
                 // Determine if it's already an absolute URL or just a filename
                 setImageUrl(category.image_url.startsWith('http') || category.image_url.startsWith('/') ? category.image_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/category-images/${category.image_url}`);
@@ -222,6 +224,7 @@ export default function CategoryFormPage() {
             const commonData = {
                 parent_id: parentId === 'null' || parentId === '' ? null : parentId,
                 video_url: videoUrl,
+                sample_request_enabled: sampleRequestEnabled,
             };
 
             const contentData = {
@@ -404,6 +407,25 @@ export default function CategoryFormPage() {
                                         ))}
                                     </select>
                                     {selectedLang !== 'tr' && <p className="text-xs text-amber-600 mt-1">Sadece ana dilde değiştirilebilir.</p>}
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader><CardTitle>Numune Talebi</CardTitle></CardHeader>
+                                <CardContent>
+                                    <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-4 hover:bg-slate-50">
+                                        <input
+                                            type="checkbox"
+                                            checked={sampleRequestEnabled}
+                                            onChange={(event) => setSampleRequestEnabled(event.target.checked)}
+                                            disabled={selectedLang !== 'tr'}
+                                            className="mt-1 h-4 w-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500"
+                                        />
+                                        <span>
+                                            <span className="block text-sm font-semibold text-slate-800">Bu kategoride numune istenebilir</span>
+                                            <span className="mt-1 block text-xs text-slate-500">İşaretlendiğinde bu kategorideki ürünlerde “Numune İste” butonu görünür.</span>
+                                        </span>
+                                    </label>
+                                    {selectedLang !== 'tr' && <p className="mt-2 text-xs text-amber-600">Bu ayar yalnızca ana dilde değiştirilebilir.</p>}
                                 </CardContent>
                             </Card>
                         </div>

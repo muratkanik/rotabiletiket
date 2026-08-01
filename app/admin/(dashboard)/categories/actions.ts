@@ -211,7 +211,7 @@ export async function reorderCategory(activeId: string, overId: string, position
         const { data: siblings } = await query;
         if (!siblings) return { success: false, error: 'Failed to fetch siblings' };
 
-        let newSequence = siblings.filter((c: any) => c.id !== activeId);
+        const newSequence = siblings.filter((c: any) => c.id !== activeId);
         const overIndex = newSequence.findIndex((c: any) => c.id === overId);
         
         if (overIndex === -1) {
@@ -250,7 +250,7 @@ export async function reorderCategoryToLastRoot(activeId: string) {
             .order('display_order', { ascending: true })
             .order('created_at', { ascending: true });
             
-        let newSequence = (rootCats || []).filter((c: any) => c.id !== activeId);
+        const newSequence = (rootCats || []).filter((c: any) => c.id !== activeId);
         newSequence.push({ id: activeId, display_order: 0 });
         
         for (let i = 0; i < newSequence.length; i++) {

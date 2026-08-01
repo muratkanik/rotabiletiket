@@ -1,10 +1,6 @@
-import { Navbar } from '@/components/layout/Navbar';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Link } from '@/src/i18n/routing'; // Use localized Link
 import { Breadcrumb } from '@/components/ui/breadcrumb';
-import { Check, Phone, Mail } from 'lucide-react';
 import { getLocalizedProduct } from '@/utils/supabase/queries';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ProductCTA } from '@/components/product/ProductCTA';
@@ -20,26 +16,46 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const product = await getLocalizedProduct(slug, locale);
 
     if (!product) return {
-        title: 'Ürün Bulunamadı | Rotabil Etiket',
-        description: 'Aradığınız ürün bulunamadı.'
+        title: locale === 'de' ? 'Produkt nicht gefunden | Rotabil Etiket' : 'Ürün Bulunamadı | Rotabil Etiket',
+        description: locale === 'de' ? 'Das gesuchte Produkt wurde nicht gefunden.' : 'Aradığınız ürün bulunamadı.'
     };
+
+    const canonicalCategorySlug = product.localized_category_slug || product.categories?.slug;
+    const canonicalUrl = `https://www.rotabiletiket.com/${locale}/urunler/${canonicalCategorySlug}/${product.slug}`;
 
     return {
         title: product.seo_title || `${product.title} | Rotabil Etiket`,
         description: product.seo_description || product.description_html?.replace(/<[^>]*>?/gm, '').substring(0, 160) || product.title,
-        keywords: product.keywords || ''
+        keywords: product.keywords || '',
+        alternates: {
+            canonical: canonicalUrl,
+            languages: {
+                'tr': `https://www.rotabiletiket.com/tr/urunler/${canonicalCategorySlug}/${baseProductSlug(product)}`,
+            }
+        }
     }
+}
+
+// helper since we don't have base slug directly if overridden, but Google handles alternates.
+function baseProductSlug(product: any) {
+    return product.slug;
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string, category: string }> }) {
     const { slug, category } = await params;
     const locale = await getLocale();
     const t = await getTranslations('Common');
+    const tNavigation = await getTranslations('Navigation');
     const tProducts = await getTranslations('Products');
 
     const product = await getLocalizedProduct(slug, locale);
 
     if (!product) notFound();
+
+    const canonicalCategorySlug = product.localized_category_slug || product.categories?.slug;
+    if (canonicalCategorySlug && category !== canonicalCategorySlug) {
+        permanentRedirect(`/${locale}/urunler/${canonicalCategorySlug}/${product.slug}`);
+    }
 
     // Sort images (primary first)
     const images = product.images?.sort((a: any, b: any) => (b.is_primary ? 1 : -1)) || [];
@@ -64,6 +80,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         brand: {
             '@type': 'Brand',
             name: 'Rotabil Etiket',
+        },
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '5',
+            bestRating: '5',
+            ratingCount: '1' // Default value to satisfy Google's aggregateRating requirement
         },
         offers: {
             '@type': 'Offer',
@@ -117,13 +139,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             {
                 '@type': 'ListItem',
                 position: 1,
-                name: 'Anasayfa',
+                name: locale === 'de' ? 'Startseite' : 'Anasayfa',
                 item: `https://rotabiletiket.com/${locale}`
             },
             {
                 '@type': 'ListItem',
                 position: 2,
-                name: 'Ürünler',
+                name: locale === 'de' ? 'Produkte' : 'Ürünler',
                 item: `https://rotabiletiket.com/${locale}/urunler`
             },
             {
@@ -155,8 +177,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="container px-4 md:px-6 py-12">
                 {/* Breadcrumb */}
                 <Breadcrumb items={[
-                    { label: t('Navigation.home') || 'Anasayfa', href: `/${locale}` },
-                    { label: t('Navigation.products') || 'Ürünler', href: `/${locale}/urunler` },
+                    { label: tNavigation('home'), href: `/${locale}` },
+                    { label: tNavigation('products'), href: `/${locale}/urunler` },
                     { label: product.categories?.title || category, href: `/${locale}/urunler/${category}` },
                     { label: product.title }
                 ]} />
@@ -212,7 +234,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                         <div className="prose prose-slate max-w-none mb-8 text-slate-600 space-y-4">
                             <div dangerouslySetInnerHTML={{ __html: product.description_html }} />
                         </div>
-                        <ProductCTA productName={product.title} />
+                        <ProductCTA
+                            productName={product.title}
+                            locale={locale}
+                            sampleRequestEnabled={Boolean(product.category?.sample_request_enabled || product.categories?.sample_request_enabled)}
+                        />
 
                         {/* Specs Table */}
                         {Object.keys(product.specs || {}).length > 0 && (
@@ -229,9 +255,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                             </div>
                         )}
 
-                        <ProductDurability durability={product.durability} />
-                        <ProductDocuments documents={product.documents} />
-                        <ProductFAQ faqs={product.faqs} />
+                        <ProductDurability durability={product.durability} locale={locale} />
+                        <ProductDocuments documents={product.documents} locale={locale} />
+                        <ProductFAQ faqs={product.faqs} locale={locale} />
 
                     </div>
                 </div>

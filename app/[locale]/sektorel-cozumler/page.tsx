@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 export const revalidate = 3600;
-export const metadata = {
-    title: 'Sektörel Çözümler | Rotabil Etiket',
-    description: 'Farklı sektörlere özel endüstriyel etiketleme çözümlerimiz.'
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    return locale === 'de'
+        ? { title: 'Branchenlösungen | Rotabil Etiket', description: 'Industrielle Etikettenlösungen für unterschiedliche Branchen.' }
+        : { title: 'Sektörel Çözümler | Rotabil Etiket', description: 'Farklı sektörlere özel endüstriyel etiketleme çözümlerimiz.' };
 }
 
 export default async function SectorsPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -48,7 +50,7 @@ export default async function SectorsPage({ params }: { params: Promise<{ locale
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {sectors?.map((sector: any) => {
                         const trans = sector.sector_translations?.find((t: any) => t.language_code === locale)
-                            || sector.sector_translations?.find((t: any) => t.language_code === 'tr')
+                            || sector.sector_translations?.find((t: any) => t.language_code === 'en')
                             || {};
                         const title = trans.title || sector.title;
                         const description = trans.description || '';
