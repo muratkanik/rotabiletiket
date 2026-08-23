@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     const seo = await getSiteSettings('global_seo');
     const meta = localizedMeta[locale] || localizedMeta.en;
     return {
-        metadataBase: new URL('https://rotabiletiket.com'),
+        metadataBase: new URL('https://www.rotabiletiket.com'),
         title: locale === 'tr' ? seo?.default_title || meta.title : meta.title,
         description: locale === 'tr' ? seo?.default_description || meta.description : meta.description,
         openGraph: {

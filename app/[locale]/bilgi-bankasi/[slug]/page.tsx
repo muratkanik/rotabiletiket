@@ -76,26 +76,26 @@ export default async function ArticlePage({ params }: Props) {
         headline: article.title,
         description: article.summary,
         image: article.image_url
-            ? [article.image_url.startsWith('http') ? article.image_url : (article.image_url.startsWith('/') ? `https://rotabiletiket.com${article.image_url}` : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`)]
+            ? [article.image_url.startsWith('http') ? article.image_url : (article.image_url.startsWith('/') ? `https://www.rotabiletiket.com${article.image_url}` : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}`)]
             : [],
         datePublished: article.created_at,
         dateModified: article.updated_at || article.created_at,
         author: {
             '@type': 'Organization',
             name: 'Rotabil Etiket',
-            url: 'https://rotabiletiket.com',
+            url: 'https://www.rotabiletiket.com',
         },
         publisher: {
             '@type': 'Organization',
             name: 'Rotabil Etiket',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://rotabiletiket.com/logo.png',
+                url: 'https://www.rotabiletiket.com/logo.png',
             },
         },
         mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://rotabiletiket.com/${locale}/bilgi-bankasi/${article.slug}`,
+                '@id': `https://www.rotabiletiket.com/${locale}/bilgi-bankasi/${article.slug}`,
         },
     };
     const isPpwrArticle = article.slug.includes('ppwr-') || article.slug.includes('ppwr_');

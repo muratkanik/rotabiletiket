@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/admin/',
         },
-        sitemap: 'https://rotabiletiket.com/sitemap.xml',
+        sitemap: 'https://www.rotabiletiket.com/sitemap.xml',
     };
 }

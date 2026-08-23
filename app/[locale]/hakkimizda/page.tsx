@@ -53,7 +53,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             name: 'Rotabil Etiket',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://rotabiletiket.com/logo.png'
+                url: 'https://www.rotabiletiket.com/logo.png'
             }
         },
         mainEntity: {

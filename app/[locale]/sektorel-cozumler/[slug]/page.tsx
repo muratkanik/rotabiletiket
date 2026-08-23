@@ -141,7 +141,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
                         <div dangerouslySetInnerHTML={{
                             __html: displayContent
                                 .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
-                                .replace(/src="img\//g, 'src="https://rotabiletiket.com/img/')
+                                .replace(/src="img\//g, 'src="https://www.rotabiletiket.com/img/')
                         }} />
                     </div>
                     

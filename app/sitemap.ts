@@ -3,7 +3,9 @@ import { createClient } from '@/utils/supabase/server';
 import { routing } from '@/src/i18n/routing';
 import locationsData from '../data/locations.json';
 
-const baseUrl = 'https://rotabiletiket.com';
+// The production site is canonical on www. Every sitemap URL must already be
+// canonical; submitting the non-www host makes Google crawl an extra redirect.
+const baseUrl = 'https://www.rotabiletiket.com';
 const now = () => new Date().toISOString();
 
 function localizedValue(items: any[] | null | undefined, locale: string, key: string, fallback: string) {
@@ -90,12 +92,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const { data: sectors } = await supabase
         .from('sectors')
-        .select('slug, updated_at, sector_translations(language_code, slug)');
+        .select('slug, updated_at, content_html, sector_translations(language_code, slug, content_html)')
+        .eq('is_published', true);
     const sectorRoutes = (sectors || []).flatMap((sector: any) =>
-        locales.map((locale) => {
-            const slug = localizedValue(sector.sector_translations, locale, 'slug', sector.slug);
-            return route(`/${locale}/sektorel-cozumler/${slug}`, 0.7, 'monthly', sector.updated_at);
-        })
+        (sector.content_html?.replace(/<[^>]*>/g, '').trim() || sector.sector_translations?.some((translation: any) =>
+            translation.content_html?.replace(/<[^>]*>/g, '').trim()
+        ))
+            ? locales.map((locale) => {
+                const slug = localizedValue(sector.sector_translations, locale, 'slug', sector.slug);
+                return route(`/${locale}/sektorel-cozumler/${slug}`, 0.7, 'monthly', sector.updated_at);
+            })
+            : []
     );
 
     const { data: articles } = await supabase

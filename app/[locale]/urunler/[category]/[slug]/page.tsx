@@ -89,7 +89,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         },
         offers: {
             '@type': 'Offer',
-            url: `https://rotabiletiket.com/${locale}/urunler/${category}/${product.slug}`, // Update URL to include locale
+            url: `https://www.rotabiletiket.com/${locale}/urunler/${category}/${product.slug}`, // Update URL to include locale
             priceCurrency: 'TRY',
             price: '0.00',
             availability: 'https://schema.org/InStock',
@@ -140,25 +140,25 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 '@type': 'ListItem',
                 position: 1,
                 name: locale === 'de' ? 'Startseite' : 'Anasayfa',
-                item: `https://rotabiletiket.com/${locale}`
+                item: `https://www.rotabiletiket.com/${locale}`
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: locale === 'de' ? 'Produkte' : 'Ürünler',
-                item: `https://rotabiletiket.com/${locale}/urunler`
+                item: `https://www.rotabiletiket.com/${locale}/urunler`
             },
             {
                 '@type': 'ListItem',
                 position: 3,
                 name: product.categories?.title || category,
-                item: `https://rotabiletiket.com/${locale}/urunler/${category}`
+                item: `https://www.rotabiletiket.com/${locale}/urunler/${category}`
             },
             {
                 '@type': 'ListItem',
                 position: 4,
                 name: product.title,
-                item: `https://rotabiletiket.com/${locale}/urunler/${category}/${product.slug}`
+                item: `https://www.rotabiletiket.com/${locale}/urunler/${category}/${product.slug}`
             }
         ]
     };
