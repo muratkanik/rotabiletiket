@@ -3,6 +3,23 @@ import { QuickCategories } from '@/components/home/QuickCategories';
 import { FeatureCards } from '@/components/home/FeatureCards';
 import { SectorsSection } from '@/components/home/SectorsSection';
 import { PPWRBanner } from '@/components/home/PPWRBanner';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    alternates: {
+        canonical: './',
+        languages: {
+            'x-default': '/tr',
+            'tr': '/tr',
+            'en': '/en',
+            'de': '/de',
+            'fr': '/fr',
+            'ar': '/ar',
+            'es': '/es',
+            'it': '/it'
+        }
+    }
+};
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
