@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const languages = Object.fromEntries(
         Object.entries(localeSlugs).map(([language, localizedSlug]) => [
             language,
-            `https://rotabiletiket.com/${language}/cozumler/${localizedSlug}`,
+            `https://www.rotabiletiket.com/${language}/cozumler/${localizedSlug}`,
         ])
     );
 
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: solution.seo_description || solution.excerpt || solution.title,
         keywords: solution.keywords || undefined,
         alternates: {
-            canonical: `https://rotabiletiket.com/${locale}/cozumler/${solution.slug}`,
+            canonical: `https://www.rotabiletiket.com/${locale}/cozumler/${solution.slug}`,
             languages,
         },
     };
@@ -61,10 +61,10 @@ export default async function SolutionDetailPage({ params }: Props) {
         provider: {
             '@type': 'Organization',
             name: 'Rotabil Etiket',
-            url: 'https://rotabiletiket.com',
+            url: 'https://www.rotabiletiket.com',
         },
         areaServed: ['Germany', 'Europe'],
-        url: `https://rotabiletiket.com/${locale}/cozumler/${solution.slug}`,
+        url: `https://www.rotabiletiket.com/${locale}/cozumler/${solution.slug}`,
     };
 
     return (

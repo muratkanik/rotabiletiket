@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/:locale(tr|en|de|ar|fr)/urunler/etiketler',
+        source: '/:locale(tr|en|de|ar|fr|es|it)/urunler/etiketler',
         destination: '/:locale/urunler/etiket-cozumleri-ile-marka-bilinirliginizi-artirin',
         permanent: true,
       },
@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/:locale(tr|en|de|ar|fr)/urunler/ribonlar',
+        source: '/:locale(tr|en|de|ar|fr|es|it)/urunler/ribonlar',
         destination: '/:locale/urunler/ribon-fiyatlari-ve-cesitleri-ile-kaliteyi-yakalayin',
         permanent: true,
       },
@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/:locale(tr|en|de|ar|fr)/urunler/barkod-yazicilar',
+        source: '/:locale(tr|en|de|ar|fr|es|it)/urunler/barkod-yazicilar',
         destination: '/:locale/urunler/barkod-yazici-cozumleri-i-sletmenize-deger-katin',
         permanent: true,
       },
@@ -68,7 +68,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/:locale(tr|en|de|ar|fr)/urunler/yedek-parca',
+        source: '/:locale(tr|en|de|ar|fr|es|it)/urunler/yedek-parca',
         destination: '/:locale/urunler/yedek-parca-kalite-ve-guvenilirlik-saglayin',
         permanent: true,
       },

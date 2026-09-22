@@ -58,8 +58,8 @@ export default async function LocationSEOPage({ params }: { params: Promise<{ lo
         '@context': 'https://schema.org',
         '@type': 'LocalBusiness',
         name: `Rotabil Etiket - ${name}`,
-        image: 'https://rotabiletiket.com/logo.png',
-        url: `https://rotabiletiket.com/${locale}/${locationSlug}`,
+        image: 'https://www.rotabiletiket.com/logo.png',
+        url: `https://www.rotabiletiket.com/${locale}/${locationSlug}`,
         telephone: contactInfo?.phone || '+90 216 595 03 23',
         address: {
             '@type': 'PostalAddress',
