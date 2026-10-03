@@ -21,6 +21,12 @@ export async function middleware(request: NextRequest) {
     // Ensure session cookies are refreshed in the background for public routes if needed
     await updateSession(request);
 
+        // 3. SEO: advertise the self-referencing canonical URL via the HTTP Link header,
+    // alongside the hreflang alternates next-intl already sets. Query strings are
+    // dropped so tracking parameters do not create duplicate URLs.
+    const canonicalUrl = 'https://www.rotabiletiket.com' + request.nextUrl.pathname;
+    response.headers.append('Link', '<' + canonicalUrl + '>; rel="canonical"');
+
     return response;
 }
 
