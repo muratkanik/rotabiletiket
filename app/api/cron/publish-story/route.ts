@@ -75,7 +75,7 @@ export async function GET(req: Request) {
                     .single();
 
                 if (randomArticle) {
-                    let imgUrl = randomArticle.image_url || "https://images.unsplash.com/photo-1555421689-491a97ff2040?auto=format&fit=crop&q=80&w=1000";
+                    const imgUrl = randomArticle.image_url || "https://images.unsplash.com/photo-1555421689-491a97ff2040?auto=format&fit=crop&q=80&w=1000";
                     itemRef = {
                         title: randomArticle.title,
                         price: "",

@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 const LANGUAGES = ['tr', 'en', 'de', 'fr', 'ar'];
 
@@ -30,6 +31,7 @@ export default function AdminSettingsPage() {
     const [kvkk, setKvkk] = useState<any>({});
     const [userAgreement, setUserAgreement] = useState<any>({});
     const [cookieConsent, setCookieConsent] = useState<any>({});
+    const [homepagePopup, setHomepagePopup] = useState({ enabled: false });
 
     useEffect(() => {
         fetchSettings();
@@ -40,7 +42,7 @@ export default function AdminSettingsPage() {
         const { data: settings, error } = await supabase
             .from('site_settings')
             .select('*')
-            .in('key', ['contact_info', 'footer_content', 'privacy_policy', 'kvkk', 'user_agreement', 'cookie_consent']);
+            .in('key', ['contact_info', 'footer_content', 'privacy_policy', 'kvkk', 'user_agreement', 'cookie_consent', 'homepage_popup']);
 
         if (settings) {
             settings.forEach(s => {
@@ -50,6 +52,7 @@ export default function AdminSettingsPage() {
                 if (s.key === 'kvkk') setKvkk(s.value);
                 if (s.key === 'user_agreement') setUserAgreement(s.value);
                 if (s.key === 'cookie_consent') setCookieConsent(s.value);
+                if (s.key === 'homepage_popup') setHomepagePopup({ enabled: s.value?.enabled === true });
             });
         }
         setLoading(false);
@@ -66,6 +69,7 @@ export default function AdminSettingsPage() {
             await supabase.from('site_settings').upsert({ key: 'kvkk', value: kvkk });
             await supabase.from('site_settings').upsert({ key: 'user_agreement', value: userAgreement });
             await supabase.from('site_settings').upsert({ key: 'cookie_consent', value: cookieConsent });
+            await supabase.from('site_settings').upsert({ key: 'homepage_popup', value: homepagePopup });
 
             toast.success('Ayarlar kaydedildi');
         } catch (error) {
@@ -98,6 +102,7 @@ export default function AdminSettingsPage() {
                     <TabsTrigger value="kvkk" className="px-6 py-2">KVKK</TabsTrigger>
                     <TabsTrigger value="agreement" className="px-6 py-2">Kullanıcı Sözleşmesi</TabsTrigger>
                     <TabsTrigger value="cookie" className="px-6 py-2">Çerez (Cookie) Uyarısı</TabsTrigger>
+                    <TabsTrigger value="popup" className="px-6 py-2">Ana Sayfa Popup</TabsTrigger>
                 </TabsList>
 
                 {/* Contact Info Tab */}
@@ -326,6 +331,30 @@ export default function AdminSettingsPage() {
                                     </TabsContent>
                                 ))}
                             </Tabs>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* Homepage Popup Tab */}
+                <TabsContent value="popup" className="mt-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Ana Sayfa Popup Yönetimi</CardTitle>
+                            <p className="text-sm text-slate-500">PPWR tedarikçi duyurusunun ana sayfa açılışında gösterilip gösterilmeyeceğini buradan yönetebilirsiniz.</p>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-5">
+                                <div>
+                                    <p className="font-semibold text-slate-900">Popup’ı göster</p>
+                                    <p className="mt-1 text-sm text-slate-500">Kapalı olduğunda ana sayfa popup olmadan açılır.</p>
+                                </div>
+                                <Switch
+                                    checked={homepagePopup.enabled}
+                                    onCheckedChange={(checked) => setHomepagePopup({ enabled: checked })}
+                                    aria-label="Ana sayfa popup gösterimi"
+                                />
+                            </div>
+                            <p className="mt-4 text-xs text-slate-500">Mevcut popup şu anda kapalı olarak ayarlanmıştır. Değişikliklerin geçerli olması için “Değişiklikleri Kaydet” butonuna basın.</p>
                         </CardContent>
                     </Card>
                 </TabsContent>

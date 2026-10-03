@@ -24,6 +24,10 @@
         "seeAllCategories": "Tüm Kategorileri Gör",
         "seeAllSectors": "Tüm Sektörel Çözümleri Gör",
         "serviceAreas": "Hizmet Bölgelerimiz"
+        ,"qualityPolicy": "Kalite Politikamız"
+        ,"productionFacility": "Üretim Tesisimiz"
+        ,"spareParts": "Yedek Parça"
+        ,"amazonLabels": "Amazon FBA Etiketleri"
     },
     "Hero": {
         "badge": "Endüstriyel Etiket & Barkod Çözümleri",
@@ -39,7 +43,10 @@
         "title": "Bilgi Bankası",
         "headerSubtitle": "Sektörel Rehber ve Teknik Bilgiler",
         "headerDescription": "Endüstriyel etiketleme, barkod sistemleri ve sektörel çözümler hakkında kapsamlı makaleler, rehberler ve teknik bilgiler.",
-        "readMore": "Devamını Oku"
+        "readMore": "Devamını Oku",
+        "description": "Endüstriyel etiketleme, barkod ve teknik çözümler hakkında bilgi bankası.",
+        "noContentTitle": "Henüz içerik bulunmuyor",
+        "noContentDescription": "Yeni teknik içerikler hazırlanıyor."
     },
     "Contact": {
         "title": "İletişim",

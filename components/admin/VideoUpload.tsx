@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { Loader2, Upload, X, PlayCircle, Youtube, Link as LinkIcon, Check } from 'lucide-react';
+import { Loader2, Upload, X, Youtube, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

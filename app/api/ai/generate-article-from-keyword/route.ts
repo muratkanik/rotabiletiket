@@ -138,7 +138,9 @@ Lütfen yukarıdaki kurallara uyarak JSON formatında makaleyi üret.`;
                 slug: finalSlug,
                 summary: generatedContent.summary,
                 content_html: generatedContent.content_html,
-                is_published: true // Publish immediately or leave as draft? Let's publish. Wait, let's keep it draft (false) so admin can review.
+                is_published: false,
+                ai_generated: true,
+                review_status: 'draft'
             })
             .select('id')
             .single();

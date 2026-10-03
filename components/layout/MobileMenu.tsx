@@ -17,7 +17,7 @@ interface MobileMenuProps {
     categories?: Category[];
 }
 
-export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
+export function MobileMenu({ categories = [] }: MobileMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const tNav = useTranslations('Navigation');
@@ -103,7 +103,7 @@ export function MobileMenu({ contactInfo, categories = [] }: MobileMenuProps) {
 
                         <div className="pt-4">
                             <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 text-lg" asChild>
-                                <Link href="/iletisim" onClick={toggleMenu}>
+                                <Link href="/teklif-al" onClick={toggleMenu}>
                                     <Phone className="mr-2 h-5 w-5" /> {tCommon('getQuote')}
                                 </Link>
                             </Button>

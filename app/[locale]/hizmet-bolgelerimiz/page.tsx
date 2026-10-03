@@ -3,17 +3,19 @@ import locationsData from '@/data/locations.json';
 import { LocationSearch } from '@/components/locations/LocationSearch';
 import { MapPin } from 'lucide-react';
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
     const t = await getTranslations('Common');
     return {
         title: `${t('serviceAreas') || 'Hizmet Bölgelerimiz'} | Rotabil Etiket`,
-        description: 'Rotabil Etiket olarak Türkiye\'nin 81 iline ve ilçelerine profesyonel etiket üretim ve barkod yazıcı çözümleri sunuyoruz.',
-        keywords: 'hizmet bölgelerimiz, etiket firmaları, türkiye etiket üreticileri, istanbul etiket, ankara etiket, izmir etiket',
+        description: locale === 'de' ? 'Professionelle Etiketten- und Barcode-Drucklösungen von Rotabil Etiket für Unternehmen in Deutschland und Europa.' : 'Rotabil Etiket olarak Türkiye\'nin 81 iline ve ilçelerine profesyonel etiket üretim ve barkod yazıcı çözümleri sunuyoruz.',
+        keywords: locale === 'de' ? 'Servicegebiete, Industrieetiketten, Barcode-Etiketten, Deutschland' : 'hizmet bölgelerimiz, etiket firmaları, türkiye etiket üreticileri, istanbul etiket, ankara etiket, izmir etiket',
     };
 }
 
 export default async function ServiceAreasPage() {
     const locale = await getLocale();
+    const isGerman = locale === 'de';
     const t = await getTranslations('Common');
 
     return (
@@ -27,7 +29,7 @@ export default async function ServiceAreasPage() {
                         {t('serviceAreas') || 'Hizmet Bölgelerimiz'}
                     </h1>
                     <p className="text-lg text-slate-600">
-                        Türkiye&apos;nin dört bir yanındaki işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat ile yanınızdayız.
+                        {isGerman ? 'Wir bieten Unternehmen in ganz Deutschland und Europa professionelle Etikettenlösungen in allen Größen, Ausführungen und Mengen – mit direkter Herstellerqualität und schneller Lieferung.' : 'Türkiye&apos;nin dört bir yanındaki işletmelere her ölçü, tür ve adette profesyonel etiket çözümleri sunuyoruz. %100 üretici güvencesi ve hızlı teslimat ile yanınızdayız.'}
                     </p>
                 </div>
 

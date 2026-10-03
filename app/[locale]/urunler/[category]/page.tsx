@@ -45,11 +45,11 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     if (!category) return { title: 'Ürünler | Rotabil Etiket' };
 
     const trans = category.category_translations?.find((t: any) => t.language_code === locale)
-        || category.category_translations?.find((t: any) => t.language_code === 'tr')
+        || category.category_translations?.find((t: any) => t.language_code === 'en')
         || {};
 
     const title = trans.seo_title || trans.title || category.title;
-    const description = trans.seo_description || trans.description || category.description || `En kaliteli ${title} çeşitleri.`;
+    const description = trans.seo_description || trans.description || category.description || (locale === 'de' ? `Hochwertige ${title}-Produkte.` : `En kaliteli ${title} çeşitleri.`);
     const keywords = trans.keywords || '';
 
     return {
@@ -97,7 +97,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     }
 
     const trans = category.category_translations?.find((t: any) => t.language_code === locale)
-        || category.category_translations?.find((t: any) => t.language_code === 'tr')
+        || category.category_translations?.find((t: any) => t.language_code === 'en')
         || {};
 
     const displayTitle = trans.title || category.title;
@@ -159,7 +159,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                 </div>
                 <h1 className="text-4xl font-bold mb-4">{displayTitle}</h1>
                 <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                    Endüstriyel standartlarda, yüksek kaliteli {displayTitle.toLowerCase()} çözümlerimiz.
+                    {locale === 'de' ? `Hochwertige ${displayTitle.toLowerCase()}-Lösungen nach industriellen Standards.` : `Endüstriyel standartlarda, yüksek kaliteli ${displayTitle.toLowerCase()} çözümlerimiz.`}
                 </p>
             </div>
 
@@ -171,7 +171,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     ))}
                     {products?.length === 0 && (
                         <div className="col-span-full text-center py-20 text-slate-500">
-                            {locale === 'en' ? 'No products found in this category yet.' : locale === 'ar' ? 'لا توجد منتجات في هذه الفئة بعد.' : 'Bu kategoride henüz ürün bulunmuyor.'}
+                            {locale === 'de' ? 'In dieser Kategorie wurden noch keine Produkte gefunden.' : locale === 'en' ? 'No products found in this category yet.' : locale === 'ar' ? 'لا توجد منتجات في هذه الفئة بعد.' : 'Bu kategoride henüz ürün bulunmuyor.'}
                         </div>
                     )}
                 </div>

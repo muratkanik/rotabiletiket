@@ -1,13 +1,11 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { getSiteSettings } from "@/lib/settings";
-import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Common' });
     return {
-        title: `Gizlilik Politikası | Rotabil Etiket`, // Should ideally be localized too
-        description: 'Rotabil Etiket gizlilik politikası ve veri güvenliği ilkeleri.'
+        title: locale === 'de' ? 'Datenschutzrichtlinie | Rotabil Etiket' : `Gizlilik Politikası | Rotabil Etiket`,
+        description: locale === 'de' ? 'Datenschutzrichtlinie und Grundsätze der Datensicherheit von Rotabil Etiket.' : 'Rotabil Etiket gizlilik politikası ve veri güvenliği ilkeleri.'
     };
 }
 
@@ -41,8 +39,8 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
                         />
                     ) : (
                         <div className="text-center text-slate-500 py-12">
-                            <p className="mb-4">İçerik henüz eklenmemiş.</p>
-                            <p className="text-sm">Admin panelinden içerik ekleyebilirsiniz.</p>
+                            <p className="mb-4">{locale === 'de' ? 'Inhalt wurde noch nicht hinzugefügt.' : 'İçerik henüz eklenmemiş.'}</p>
+                            <p className="text-sm">{locale === 'de' ? 'Sie können Inhalte im Administrationsbereich hinzufügen.' : 'Admin panelinden içerik ekleyebilirsiniz.'}</p>
                         </div>
                     )}
                 </div>

@@ -35,7 +35,7 @@ export async function Hero({ locale }: { locale: string }) {
     // Process slides to inject correct translation
     const localizedSlides = slides.map((slide: any) => {
         const translation = slide.hero_slide_translations.find((t: any) => t.language_code === locale)
-            || slide.hero_slide_translations.find((t: any) => t.language_code === 'tr') // Fallback to TR
+            || slide.hero_slide_translations.find((t: any) => t.language_code === 'en')
             || slide.hero_slide_translations[0]; // Fallback to any
 
         return {

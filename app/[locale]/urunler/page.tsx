@@ -53,7 +53,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {categories?.map((category: any) => {
                         const trans = category.category_translations?.find((t: any) => t.language_code === locale)
-                            || category.category_translations?.find((t: any) => t.language_code === 'tr')
+                            || category.category_translations?.find((t: any) => t.language_code === 'en')
                             || {};
                         const title = trans.title || category.title;
                         

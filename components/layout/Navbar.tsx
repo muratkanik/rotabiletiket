@@ -5,8 +5,15 @@ import { getSiteSettings } from '@/lib/settings';
 import { MobileMenu } from './MobileMenu';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { ProductsMegaMenu } from './ProductsMegaMenu';
+
+// Navbar data is public and read-only. Keep this client independent from
+// request cookies so locale pages remain statically renderable on Vercel.
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function Navbar() {
     const locale = await getLocale();
@@ -14,8 +21,6 @@ export async function Navbar() {
     const tCommon = await getTranslations('Common');
     const contactInfo = await getSiteSettings('contact_info');
 
-    const supabase = await createClient();
-    
     // Fetch categories and products for Mega Menu
     const { data: categories } = await supabase
         .from('categories')
@@ -86,7 +91,7 @@ export async function Navbar() {
                 <div className="hidden md:flex items-center gap-2">
                     <LanguageSwitcher />
                     <Button className="bg-orange-600 hover:bg-orange-700 text-white" asChild>
-                        <Link href="/iletisim">{tCommon('getQuote')}</Link>
+                        <Link href="/teklif-al">{tCommon('getQuote')}</Link>
                     </Button>
                 </div>
 

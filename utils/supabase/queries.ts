@@ -37,7 +37,10 @@ export async function getLocalizedProduct(slug: string, locale: string) {
         .from('products')
         .select(`
         *,
-        category:categories(*),
+        category:categories(
+            *,
+            category_translations(language_code, slug)
+        ),
         images:product_images(*)
     `)
         .eq('id', productId)
@@ -59,12 +62,26 @@ export async function getLocalizedProduct(slug: string, locale: string) {
         .eq('language_code', locale)
         .maybeSingle();
 
+    const getLocalizedCategorySlug = () => {
+        if (!product.category) return null;
+        if (locale === 'tr') return product.category.slug;
+        const catTranslations = product.category.category_translations || [];
+        const catTrans = catTranslations.find((t: any) => t.language_code === locale);
+        if (catTrans && catTrans.slug) return catTrans.slug;
+        const enCatTrans = catTranslations.find((t: any) => t.language_code === 'en');
+        if (enCatTrans && enCatTrans.slug) return enCatTrans.slug;
+        return product.category.slug;
+    };
+
+    const localizedCategorySlug = getLocalizedCategorySlug();
+
     if (locale === 'tr') {
         // For TR, we use base product fields, but we might have stored keywords in translations
         // If we didn't store keywords in base table, we need them from translation table
         return {
             ...product,
-            keywords: translation?.keywords || ''
+            keywords: translation?.keywords || '',
+            localized_category_slug: localizedCategorySlug
         };
     }
 
@@ -79,9 +96,35 @@ export async function getLocalizedProduct(slug: string, locale: string) {
             keywords: translation.keywords || '',
             // Keep other fields like images, category, etc. from base
             // Override slug to match what was probably requested or correct for this locale
-            slug: translation.slug || product.slug
+            slug: translation.slug || product.slug,
+            localized_category_slug: localizedCategorySlug
         };
     }
 
-    return product;
+    if (locale !== 'tr') {
+        const { data: englishTranslation } = await supabase
+            .from('product_translations')
+            .select('*')
+            .eq('product_id', productId)
+            .eq('language_code', 'en')
+            .maybeSingle();
+
+        if (englishTranslation) {
+            return {
+                ...product,
+                title: englishTranslation.title || product.title,
+                description_html: englishTranslation.description_html || product.description_html,
+                seo_title: englishTranslation.seo_title || product.seo_title,
+                seo_description: englishTranslation.seo_description || product.seo_description,
+                keywords: englishTranslation.keywords || '',
+                slug: englishTranslation.slug || product.slug,
+                localized_category_slug: localizedCategorySlug
+            };
+        }
+    }
+
+    return {
+        ...product,
+        localized_category_slug: localizedCategorySlug
+    };
 }

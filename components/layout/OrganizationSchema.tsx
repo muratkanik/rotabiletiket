@@ -1,6 +1,6 @@
 import { getSiteSettings } from '@/lib/settings';
 
-export async function OrganizationSchema() {
+export async function OrganizationSchema({ locale = 'tr' }: { locale?: string }) {
     const contactInfo = await getSiteSettings('contact_info');
     const seoSettings = await getSiteSettings('global_seo');
 
@@ -12,7 +12,7 @@ export async function OrganizationSchema() {
         url: 'https://www.rotabiletiket.com',
         logo: 'https://www.rotabiletiket.com/logo.png',
         image: seoSettings?.og_image_url || 'https://www.rotabiletiket.com/logo.png',
-        description: seoSettings?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
+        description: locale === 'de' ? 'Hochwertige Etiketten, Barcode-Drucker und Farbbänder für industrielle Anwendungen.' : seoSettings?.default_description || 'Yüksek kaliteli etiket üretimi, barkod yazıcılar ve ribon çözümleri. Endüstriyel ihtiyaçlarınız için profesyonel çözüm ortağınız.',
         telephone: contactInfo?.phone || '+90 212 000 00 00',
         email: contactInfo?.email || 'info@rotabiletiket.com',
         address: {
@@ -25,7 +25,7 @@ export async function OrganizationSchema() {
             '@type': 'ContactPoint',
             telephone: contactInfo?.phone || '+90 212 000 00 00',
             contactType: 'customer service',
-            availableLanguage: ['Turkish', 'English']
+            availableLanguage: locale === 'de' ? ['German', 'English'] : ['Turkish', 'English']
         },
         sameAs: [
             contactInfo?.social_media?.instagram,
