@@ -44,6 +44,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locationS
         title: `${name} Etiket Üreticisi ve İmalatı | Tüm Ölçülerde Hızlı Teslimat - Rotabil Etiket`,
         description: `Rotabil Etiket olarak ${name} ve çevresindeki işletmeler için her ölçüde ve türde etiket üretim ihtiyaçlarınızı karşılıyoruz. ${name} etiket firması arıyorsanız, üretici fiyatlarıyla garantili ürünler.`,
         keywords: `${name} etiket, ${name} etiket firmaları, ${name} etiket üreticisi, ${name} etiket imalatı, ${name} rulo etiket, barkod etiketi ${name}, kuşe etiket ${name}`,
+        alternates: {
+            canonical: `https://www.rotabiletiket.com/${resolvedParams.locale}/${locationSlug}`,
+            languages: {
+                ...Object.fromEntries(
+                    routing.locales.map((l) => [l, `https://www.rotabiletiket.com/${l}/${locationSlug}`])
+                ),
+                'x-default': `https://www.rotabiletiket.com/tr/${locationSlug}`,
+            },
+        },
     };
 }
 
