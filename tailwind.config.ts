@@ -16,12 +16,20 @@ const config: Config = {
     		}
     	},
     	extend: {
-    		fontFamily: {
-    			sans: [
-    				'var(--font-inter)',
-    				'sans-serif'
-    			]
-    		},
+		fontFamily: {
+				sans: [
+					'Inter',
+					'ui-sans-serif',
+					'system-ui',
+					'-apple-system',
+					'BlinkMacSystemFont',
+					'"Segoe UI"',
+					'"Noto Sans Arabic"',
+					'Tahoma',
+					'Arial',
+					'sans-serif'
+				]
+			},
     		colors: {
     			border: 'hsl(var(--border))',
     			input: 'hsl(var(--input))',

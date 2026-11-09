@@ -2,6 +2,24 @@ import { Hero } from '@/components/home/Hero';
 import { QuickCategories } from '@/components/home/QuickCategories';
 import { FeatureCards } from '@/components/home/FeatureCards';
 import { SectorsSection } from '@/components/home/SectorsSection';
+import { PPWRBanner } from '@/components/home/PPWRBanner';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    alternates: {
+        canonical: './',
+        languages: {
+            'x-default': '/tr',
+            'tr': '/tr',
+            'en': '/en',
+            'de': '/de',
+            'fr': '/fr',
+            'ar': '/ar',
+            'es': '/es',
+            'it': '/it'
+        }
+    }
+};
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -10,6 +28,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <Hero locale={locale} />
             <QuickCategories locale={locale} />
             <FeatureCards locale={locale} />
+            <PPWRBanner locale={locale} />
             <SectorsSection locale={locale} />
 
             {/* Footer Placeholder (Using layout usually, but for now explicitly here or in layout) */}

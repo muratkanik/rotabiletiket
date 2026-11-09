@@ -31,7 +31,7 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
                 <input
                     type="text"
                     className="block w-full pl-11 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all text-lg"
-                    placeholder="İl veya ilçe arayın (Örn: Pendik, İzmir)..."
+                    placeholder={locale === 'de' ? 'Stadt oder Landkreis suchen (z. B. Berlin)...' : 'İl veya ilçe arayın (Örn: Pendik, İzmir)...'}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -40,7 +40,6 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
             {/* Results Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredLocations.map((loc) => {
-                    const name = loc.district || loc.city;
                     const isCity = !loc.district;
                     
                     return (
@@ -54,11 +53,11 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
                                     <MapPin size={20} />
                                 </div>
                                 <h3 className="font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
-                                    {loc.district ? `${loc.district}, ${loc.city}` : loc.city} Etiket
+                                    {loc.district ? `${loc.district}, ${loc.city}` : loc.city} {locale === 'de' ? 'Etiketten' : 'Etiket'}
                                 </h3>
                             </div>
                             <div className="flex items-center text-sm font-medium text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
-                                Hizmetleri Gör <ArrowRight className="ml-1 w-4 h-4" />
+                                {locale === 'de' ? 'Services ansehen' : 'Hizmetleri Gör'} <ArrowRight className="ml-1 w-4 h-4" />
                             </div>
                         </Link>
                     );
@@ -68,8 +67,8 @@ export function LocationSearch({ locations, locale }: { locations: Location[], l
             {filteredLocations.length === 0 && (
                 <div className="text-center py-16 bg-slate-50 rounded-2xl border border-slate-100">
                     <MapPin className="mx-auto h-12 w-12 text-slate-300 mb-4" />
-                    <h3 className="text-lg font-medium text-slate-900 mb-1">Bölge bulunamadı</h3>
-                    <p className="text-slate-500">Arama kriterlerinize uygun hizmet bölgesi bulamadık.</p>
+                    <h3 className="text-lg font-medium text-slate-900 mb-1">{locale === 'de' ? 'Gebiet nicht gefunden' : 'Bölge bulunamadı'}</h3>
+                    <p className="text-slate-500">{locale === 'de' ? 'Für Ihre Suchkriterien wurde kein Servicegebiet gefunden.' : 'Arama kriterlerinize uygun hizmet bölgesi bulamadık.'}</p>
                 </div>
             )}
         </div>

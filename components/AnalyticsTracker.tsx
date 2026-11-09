@@ -9,7 +9,7 @@ export default function AnalyticsTracker() {
 
     useEffect(() => {
         if (pathname && !pathname.startsWith('/admin')) {
-            trackPageView(pathname);
+            void trackPageView(pathname, document.referrer);
         }
     }, [pathname]);
 

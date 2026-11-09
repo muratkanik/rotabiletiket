@@ -31,11 +31,10 @@ export const config = {
 
         // Set a cookie to remember the previous locale for
         // all requests that have a locale prefix
-        '/(tr|en|de|fr|ar)/:path*',
+        '/(tr|en|de|fr|ar|es|it)/:path*',
 
         // Enable redirects that add missing locales
         // (e.g. `/about` -> `/en/about`)
         '/((?!api|_next|_vercel|.*\\..*).*)'
     ]
 };
-

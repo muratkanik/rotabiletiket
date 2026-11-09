@@ -24,7 +24,7 @@ export async function SectorsSection({ locale }: { locale: string }) {
 
     const localizedSectors = sectors?.map((sec: any) => {
         const trans = sec.sector_translations?.find((t: any) => t.language_code === locale)
-            || sec.sector_translations?.find((t: any) => t.language_code === 'tr')
+            || sec.sector_translations?.find((t: any) => t.language_code === 'en')
             || {};
         return { ...sec, title: trans.title || sec.title };
     }) || [];
@@ -77,7 +77,7 @@ export async function SectorsSection({ locale }: { locale: string }) {
                 <div className="mt-16 text-center">
                     <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 shadow-lg shadow-blue-200">
                         <Link href="/sektorel-cozumler" className="flex items-center">
-                            {common('seeAllSectors') || 'Tüm Sektörel Çözümleri Gör'} <ArrowRight className="ml-2 w-5 h-5" />
+                            {common('seeAllSectors')} <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                     </Button>
                 </div>

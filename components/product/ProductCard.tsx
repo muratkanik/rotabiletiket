@@ -1,8 +1,6 @@
 import { Link } from '@/src/i18n/routing';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge'; // Will need to create Badge
-
 import { useLocale } from 'next-intl';
 
 export function ProductCard({ product, categorySlug }: { product: any, categorySlug: string }) {

@@ -54,7 +54,7 @@ async function run() {
 
     // 2. Fix Products
     // Products created today. We can get them by checking created_at > 1 hour ago
-    let timeAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+    const timeAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
     console.log('[*] Fetching Newly Imported Products...');
     
     let page = 0;

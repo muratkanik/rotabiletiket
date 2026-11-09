@@ -46,7 +46,7 @@ export default function CookieBanner({ locale }: { locale: string }) {
                     <div className="p-2 bg-orange-100 rounded-full text-orange-600">
                         <Cookie size={20} />
                     </div>
-                    <h3 className="font-semibold text-lg">Çerez Politikası</h3>
+                    <h3 className="font-semibold text-lg">{locale === 'de' ? 'Cookie-Richtlinie' : 'Çerez Politikası'}</h3>
                 </div>
                 <button
                     onClick={() => setIsVisible(false)}

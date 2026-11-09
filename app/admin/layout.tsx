@@ -1,8 +1,5 @@
-import { Inter } from 'next/font/google';
 import '../globals.css';
 import { Toaster } from 'sonner';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
     title: 'Rotabil Etiket - Yönetim Paneli',
@@ -16,7 +13,7 @@ export default function AdminRootLayout({
 }) {
     return (
         <html lang="tr">
-            <body className={`${inter.className} antialiased`}>
+            <body className="font-sans antialiased">
                 {children}
                 <Toaster />
             </body>
