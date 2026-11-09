@@ -14,6 +14,19 @@ function localizedValue(items: any[] | null | undefined, locale: string, key: st
         || fallback;
 }
 
+// Product and category pages resolve their canonical slug as:
+// locale translation -> English translation -> base (tr) slug, and for the tr
+// locale always the base slug (see getLocalizedCategorySlug / getLocalizedProduct
+// in utils/supabase/queries.ts). The sitemap has to follow the same order, or it
+// lists URLs that the page 301-redirects to the canonical one, which Search
+// Console reports as "Page with redirect" and which wastes crawl budget.
+function canonicalSlug(items: any[] | null | undefined, locale: string, fallback: string) {
+    if (locale === 'tr') return fallback;
+    return items?.find((item) => item.language_code === locale)?.slug
+        || items?.find((item) => item.language_code === 'en')?.slug
+        || fallback;
+}
+
 function route(
     path: string,
     priority: number,
@@ -62,16 +75,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const productRoutes = (products || []).flatMap((product: any) =>
         locales.flatMap((locale) => {
             const category = product.categories;
-            const categorySlug = localizedValue(
+            const categorySlug = canonicalSlug(
                 category?.category_translations,
                 locale,
-                'slug',
                 category?.slug
             );
-            const productSlug = localizedValue(
+            const productSlug = canonicalSlug(
                 product.product_translations,
                 locale,
-                'slug',
                 product.slug
             );
 
@@ -85,7 +96,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .select('slug, category_translations(language_code, slug)');
     const categoryRoutes = (categories || []).flatMap((category: any) =>
         locales.map((locale) => {
-            const slug = localizedValue(category.category_translations, locale, 'slug', category.slug);
+            const slug = canonicalSlug(category.category_translations, locale, category.slug);
             return route(`/${locale}/urunler/${slug}`, 0.9, 'weekly');
         })
     );
